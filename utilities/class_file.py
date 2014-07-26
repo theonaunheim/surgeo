@@ -17,7 +17,7 @@ class SurgeoModel(object):
         db_path = os.path.join(os.path.expanduser('~'),
                                '.surgeo',
                                'census.db')
-        if not sys.path.exists(db_path):
+        if not os.path.exists(db_path):
             raise SurgeoError('DB does not exist. Run surgeo.data_setup().')
         self.db = sqlite3.connect(db_path)
 
