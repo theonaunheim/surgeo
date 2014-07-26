@@ -18,15 +18,15 @@ Windows ('--user' option for unprivileged)
 
 <h1>If using as a Python Module</h1>
 
-<code>import surgeo
+<code>import surgeo</code>
 
-surgeo.data_setup(verbose=True) # Download data and create tables
+<code>surgeo.data_setup(verbose=True) # Download data and create tables</code>
 
-model = surgeo.SurgeoModel() # Create model object
+<code>model = surgeo.SurgeoModel() # Create model object</code>
 
-model.guess_race(12345, 'Naunheim') # Simple version returns 'White'
+<code>model.guess_race(12345, 'Naunheim') # Simple version returns 'White'</code>
 
-surgeo_result = model.race_data(63110, 'Naunheim') # race_data() returns object
+<code>surgeo_result = model.race_data(63110, 'Naunheim') # race_data() returns object
 print(surgeo_result.probable_race) # 'White'
 print(surgeo_result.black) # '.0328'
 print(surgeo_result.surname) # 'Naunheim'
