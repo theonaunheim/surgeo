@@ -1,4 +1,8 @@
-surgeo
-======
+![alt tag](http://i.imgur.com/pe0GZMP.jpg)
 
-Hackish Attempt To Reverse Engineer CFPB's Bayesian Improved Surname Geocoding (BISG) Model in Python3
+surgeo
+========
+
+surgeo is a hackish attempt to reverse engineer the Consumer Financial 
+Protection Bureau's (CFPB) Bayesian Improved Surname Geocode Analysis (BISG).
+
