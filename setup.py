@@ -3,7 +3,7 @@
 
 from distutils.core import setup
 
-setup(name='open_surgeo',
+setup(name='surgeo',
       version='0.5',
       description='Disparate impact testing through surname geocoding analysis',
       author='Theo Naunheim',

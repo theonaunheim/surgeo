@@ -13,23 +13,22 @@ grandparent_dir = os.path.dirname(parent_dir)
 sys.path.append(grandparent_dir)
 
 # Put SurgeoModel, SurgeoResult, and SurgeoError in surgeo namespace
-from surgeo.class_file import SurgeoModel
-from surgeo.class_file import SurgeoResult
-from surgeo.class_file import SurgeoError
+from surgeo.utilities.class_file import SurgeoModel
+from surgeo.utilities.class_file import SurgeoResult
+from surgeo.utilities.class_file import SurgeoError
 
 import surgeo.db
 import surgeo.model
 import surgeo.utilities
-import surgeo.tests
 
 def data_setup(verbose=True):
     '''Downloads data needed to instantiate SurgeoModel.'''
     # Create necessary user data in home directory
     surgeo.utilities.setup_folder(verbose)
     # Setup surname db
-    surgeo.utilities.setup_surname_table(verbose)
+    surgeo.db.setup_surname_table(verbose)
     # Setup race db
-    surgeo.utilities.setup_geocode_table(verbose)
+    surgeo.db.setup_geocode_table(verbose)
     # Reconstitute items supressed for confidentiality and index
     surgeo.db.reconstitute_data()
     # Remove zip and other unnecessary files

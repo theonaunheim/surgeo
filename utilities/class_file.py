@@ -17,7 +17,7 @@ class SurgeoModel(object):
         db_path = os.path.join(os.path.expanduser('~'),
                                '.surgeo',
                                'census.db')
-        if not sys.path.exists(db_path):
+        if not os.path.exists(db_path):
             raise SurgeoError('DB does not exist. Run surgeo.data_setup().')
         self.db = sqlite3.connect(db_path)
 
@@ -61,6 +61,7 @@ class SurgeoResult(object):
                  multiracial):
         self.surname = surname
         self.zcta = zcta
+        self.zip = zcta
         self.hispanic = hispanic
         self.white = white
         self.black = black

@@ -1,5 +1,5 @@
 import surgeo
 
-surgeo.data_setup(verbose=True)
+#surgeo.data_setup(verbose=True)
 model = surgeo.SurgeoModel()
 
