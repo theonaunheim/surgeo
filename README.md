@@ -29,9 +29,9 @@ Windows ('--user' option for unprivileged)
 <code>surgeo_result = model.race_data(63110, 'Naunheim') # race_data() returns object
 print(surgeo_result.probable_race) # 'White'
 print(surgeo_result.black) # '.0328'
-print(surgeo_result.surname) # 'Naunheim'
+print(surgeo_result.surname) # 'Naunheim'</code>
 
-model.process_csv(csv_path, new_csv_path) # Create new .csv with race data</code>
+<code>model.process_csv(csv_path, new_csv_path) # Create new .csv with race data</code>
 
 <h1>If using as a program</h1>
 
