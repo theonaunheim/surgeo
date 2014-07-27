@@ -1,0 +1,4 @@
+settings file with one setting is pointless.
+gui
+cli
+percentage & vs .01
