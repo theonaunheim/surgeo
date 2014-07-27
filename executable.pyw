@@ -36,40 +36,66 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'''
 
 ################################################################################
-'''
+# Bootstrap
+################################################################################
+
 import os
 import sys
 
-# Version check before most imports. If not updated, kill import or execution.
-sys.stdout.write('Checking Python version ... \t\t\t')
-PYTHON_3_4_HEXVERSION = 50594032
-if sys.hexversion < PYTHON_3_4_HEXVERSION:
-    # If executing raise base exception.
-    if __name__ == "__main__":
-        raise Exception('Python version of 3.4 or higher required.')
-sys.stdout.write('{}OK{}\n'.format('\033[92m','\033[0m'))
+# Kludgy fix for path   
+file_path = os.path.abspath(__file__)
+parent_dir = os.path.dirname(file_path)
+grandparent_dir = os.path.dirname(parent_dir)
+sys.path.append(grandparent_dir)
 
-# Add top-level namespace 'surgeo' for debug.
-if __name__ == "__main__":
-    # Get file location, get parent dir, get dir above that, append to path
-    file_path = os.path.abspath(__file__)
-    parent_dir = os.path.dirname(file_path)
-    grandparent_dir = os.path.dirname(parent_dir)
-    sys.path.append(grandparent_dir)
-    # Now that surgeo module is on path, import
-    import surgeo
-'''
 ################################################################################
-# Program
+# Bootstrap
 ################################################################################
+
+import argparse
+import sys
 
 import surgeo
-import argparse
 
 def main(*args):
     '''This is the main application when running the program from a CLI.'''
-    main
-
+    parsed_args = surgeo.utilities.get_parser_args()
+##### Setup
+    if parsed_args.setup:
+        surgeo.data_setup(verbose=True)
+    model = surgeo.SurgeoModel()
+    # Pipe
+    if parsed_args.pipe:
+        try:
+            while True:
+                for line in sys.stdin:
+                    # Remove surrounding whitespace
+                    line.strip()
+                    zcta, surname = line.split()
+                    result = model.race_data(zcta, surname)
+                    sys.stdout.write(result.as_string())
+        except EOFError:
+            pass  
+##### Simple
+    elif parsed_args.simple:
+        zcta = parsed_args.simple[0]
+        surname = parsed_args.simple[1]
+        race = model.guess_race(zcta, surname)
+        print(race)    
+##### Complex
+    elif parsed_args.complex:
+        zcta = parsed_args.complex[0]
+        surname = parsed_args.complex[1]
+        result = model.race_data(zcta, surname)
+        print(result.to_string())  
+##### File
+    elif parsed_args.file:
+        infile = parsed_args.file[0]
+        outfile = parsed_args.file[1]
+        model.process_csv(infile, outfile)
+##### GUI
+    else:
+        print('Placeholder, tkinter window.')
     
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

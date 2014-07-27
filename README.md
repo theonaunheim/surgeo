@@ -30,7 +30,7 @@ Windows ('--user' option for unprivileged)
 
 <code>model = surgeo.SurgeoModel() # Create model object</code>
 
-<code>model.guess_race(12345, 'Naunheim') # Simple version returns 'White'</code>
+<code>model.guess_race(63110, 'Naunheim') # Simple version returns 'White'</code>
 
 <code>surgeo_result = model.race_data(63110, 'Naunheim') # race_data() returns object</code>
 
@@ -61,9 +61,9 @@ GUI version if no arguments
 
 --pipe takes comma separated zip and surname
 
-<code>echo "63110,Naunheim" | python3 /path_here/executeable.pyw --pipe | cat
+<code>echo "63110,Naunheim" | python3 /path_here/executeable.pyw --pipe | cat</code>
 
+--setup takes no arguments
 
-
-
+<code>python3 /path_here/executeable.pyw --setup</code>
 

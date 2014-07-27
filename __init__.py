@@ -1,10 +1,9 @@
 import os
 import sys
 
-# Version check before imports. If not proper version, kill import.
-PYTHON_3_4_HEXVERSION = 50594032
-if sys.hexversion < PYTHON_3_4_HEXVERSION:
-    raise ImportError('Python version of 3.4 or higher required.')
+# Version check before imports. If not Python3, kill import
+if sys.hexversion < 0x03000000:
+    raise ImportError('Python version of 3.0 or higher required.')
 
 # Kludgy fix for path   
 file_path = os.path.abspath(__file__)
@@ -18,6 +17,7 @@ from surgeo.utilities.class_file import SurgeoResult
 from surgeo.utilities.class_file import SurgeoError
 
 import surgeo.db
+import surgeo.gui
 import surgeo.model
 import surgeo.utilities
 

@@ -152,6 +152,21 @@ class SurgeoResult(object):
                    self.asian_or_pi,
                    self.american_indian,
                    self.multiracial)
+                   
+    @property
+    def as_string(self):
+        string = ','.join(['probable_race={},'.format(probable_race),
+            'probable_race_percent={},'.format(probable_race_percentage),
+            'surname={},'.format(self.surname),
+            'zip={},'.format(self.zcta),
+            'hispanic={},'.format(self.hispanic),
+            'white={},'.format(self.white),
+            'black={},'.format(self.black),
+            'asian={},'.format(self.asian_or_pi),
+            'indian={},'.format(self.american_indian),
+            'multiracial={},'.format(self.multiracial),
+            '\n'])
+        return string
        
 ################################################################################
        
