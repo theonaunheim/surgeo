@@ -139,7 +139,7 @@ def setup_geocode_table(verbose):
                         num_ai = table_p8[4]
                         num_asian = table_p8[5]
                         num_pacisland = table_p8[6]
-                        num_api = num_asian + num_pacisland
+                        num_api = str(int(num_asian) + int(num_pacisland))
                         num_other = table_p8[7]
                         num_multi = table_p8[8]
                         num_hispanic = table_p8[9]

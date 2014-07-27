@@ -1,4 +1,3 @@
-settings file with one setting is pointless.
 gui (later)
-cli
-percentage & vs .01
+
+

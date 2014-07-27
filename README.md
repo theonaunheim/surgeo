@@ -44,9 +44,6 @@ Windows ('--user' option for unprivileged)
 
 <h1>If using as a program</h1>
 
-GUI version if no arguments
-<code>python3 /path_here/executeable.pyw
-
 --file argument takes input and output (no return)
 
 <code>python3 /path_here/executeable.pyw --file /path/input.csv /path/output.csv</code>
@@ -67,3 +64,6 @@ GUI version if no arguments
 
 <code>python3 /path_here/executeable.pyw --setup</code>
 
+TODO: GUI version if no arguments
+
+<code>python3 /path_here/executeable.pyw</code>

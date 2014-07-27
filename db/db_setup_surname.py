@@ -1,4 +1,4 @@
-'''Downloads data (if needed) and creates an sqlite3 census database in ram.'''
+'''Downloads data (if needed) and creates an sqlite3 census table.'''
 
 import configparser
 import decimal
@@ -31,7 +31,7 @@ def setup_surname_table(verbose):
                                    'configuration.txt')
         parser_instance = configparser.ConfigParser()
         parser_instance.read(config_path)
-        url = parser_instance['DATA']['url']
+        url = 'http://www.census.gov/genealogy/www/data/2000surnames/names.zip'
         # No try block for url. If it fails, no point in continuing.     
         #site = urllib.request.urlopen(url)
         #length_in_bytes = int(site.info()['Content-Length'])
