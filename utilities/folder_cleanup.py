@@ -12,5 +12,7 @@ def folder_cleanup():
             continue
         if filename == 'configuration.txt':
             continue
+        if filename == 'logo.jpg':
+            continue
         os.remove(os.path.join(data_dir_path,
                                filename))

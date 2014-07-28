@@ -95,7 +95,8 @@ def main(*args):
         model.process_csv(infile, outfile)
 ##### GUI
     else:
-        print('Placeholder, tkinter window.')
+        gui = surgeo.gui.Gui(model)
+        gui.root.mainloop()
     
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
