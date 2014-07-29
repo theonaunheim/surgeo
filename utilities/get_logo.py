@@ -5,9 +5,8 @@ import urllib.request
 def fetch():
     image_destination = os.path.join(os.path.expanduser('~'),
                                      '.surgeo',
-                                     'logo.jpg')
-    logo_link = ('https://docs.google.com/uc?export=download&'
-                 'id=0B7gDDyKBmu83OWROOXBCYjkzNWc')
+                                     'logo.gif')
+    logo_link = 'http://i.imgur.com/6OI0Yda.gif?1'
     response = urllib.request.urlretrieve(logo_link,
                                           image_destination)
 
