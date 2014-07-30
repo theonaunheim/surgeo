@@ -36,3 +36,5 @@ def data_setup(verbose=True):
     # Remove zip and other unnecessary files
     surgeo.utilities.folder_cleanup()
     
+if __name__ == '__main__':
+    surgeo.executable.main()

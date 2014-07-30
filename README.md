@@ -1,6 +1,6 @@
 ![alt tag](http://i.imgur.com/pe0GZMP.jpg)
 
-<h1>Surgeo</h1>
+##Surgeo
 
 Surgeo is a hackish attempt to reverse engineer the Consumer Financial 
 Protection Bureau's (CFPB) Bayesian Improved Surname Geocode Analysis (BISG).
@@ -12,58 +12,58 @@ Created as a trial run so that when the CFPB releases its whitepaper on proxy
 analysis Summer 2014, the model can be quickly adapted to conform to it. I am
 not a programmer nor a statistician, so please use at your own risk.
 
-<h1>Installing</h1>
+###Installing
 
 Unix/Linux ('--user' option for unprivileged)
 
-<code>python3 /path_to_surgeo/surgeo/setup.py install</code>
+    python3 /path_to_surgeo/surgeo/setup.py install
 
 Windows ('--user' option for unprivileged)
 
-<code>/path_to_surgeo/surgeo/setup.py install</code>
+    /path_to_surgeo/surgeo/setup.py install
 
-<h1>If using as a Python Module</h1>
+###If using as a Python module in your program
 
-<code>import surgeo</code>
+    import surgeo
 
-<code>surgeo.data_setup(verbose=True) # Download data and create tables</code>
+    surgeo.data_setup(verbose=True) # Download data and create tables
 
-<code>model = surgeo.SurgeoModel() # Create model object</code>
+    model = surgeo.SurgeoModel() # Create model object
 
-<code>model.guess_race(63110, 'Naunheim') # Simple version returns 'White'</code>
+    model.guess_race(63110, 'Naunheim') # Simple version returns 'White'
 
-<code>surgeo_result = model.race_data(63110, 'Naunheim') # race_data() returns object</code>
+    surgeo_result = model.race_data(63110, 'Naunheim') # race_data() returns object
 
-<code>print(surgeo_result.probable_race) # 'White'</code>
+    print(surgeo_result.probable_race) # 'White'
 
-<code>print(surgeo_result.black) # '.0328'</code>
+    print(surgeo_result.black) # '.0328'
 
-<code>print(surgeo_result.surname) # 'Naunheim'</code>
+    print(surgeo_result.surname) # 'Naunheim'
 
-<code>model.process_csv(csv_path, new_csv_path) # Create new .csv with race data</code>
+    model.process_csv(csv_path, new_csv_path) # Create new .csv with race data
 
-<h1>If using as a program</h1>
+###If using as a program (if installed can also 'python3 -m surgeo')
 
 --file argument takes input and output (no return)
 
-<code>python3 /path_here/executeable.pyw --file /path/input.csv /path/output.csv</code>
+    python3 /path_here/executeable.pyw --file /path/input.csv /path/output.csv
 
 --simple takes zip and surname (returns string)
 
-<code>python3 /path_here/executeable.pyw --simple 63110 Naunheim</code>
+    python3 /path_here/executeable.pyw --simple 63110 Naunheim
 
 --complex takes zip and surname (returns detailed string)
 
-<code>python3 /path_here/executeable.pyw --complex 63110 Naunheim</code>
+    python3 /path_here/executeable.pyw --complex 63110 Naunheim
 
 --pipe takes comma separated zip and surname
 
-<code>echo "63110,Naunheim" | python3 /path_here/executeable.pyw --pipe | cat</code>
+    echo "63110,Naunheim" | python3 /path_here/executeable.pyw --pipe | cat
 
 --setup takes no arguments
 
-<code>python3 /path_here/executeable.pyw --setup</code>
+    python3 /path_here/executeable.pyw --setup
 
-TODO: GUI version if no arguments
+No arguments at all starts GUI
 
-<code>python3 /path_here/executeable.pyw</code>
+    python3 /path_here/executeable.pyw
