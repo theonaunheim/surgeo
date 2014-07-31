@@ -10,7 +10,7 @@ details, please see BACKGROUND.txt.
 
 Created as a trial run so that when the CFPB releases its whitepaper on proxy 
 analysis Summer 2014, the model can be quickly adapted to conform to it. I am
-not a programmer nor a statistician, so please use at your own risk.
+not a developer nor a statistician, so please use at your own risk.
 
 ###Installing
 
@@ -20,7 +20,7 @@ Unix/Linux ('--user' option for unprivileged)
 
 Windows ('--user' option for unprivileged)
 
-    /path_to_surgeo/surgeo/setup.py install
+    \path_to_surgeo\surgeo\setup.py install
 
 ###If using as a Python module in your program
 

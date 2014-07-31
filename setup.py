@@ -8,5 +8,5 @@ setup(name='surgeo',
       description='Disparate impact testing through surname geocoding analysis',
       author='Theo Naunheim',
       author_email='theonaunheim@gmail.com',
-      packages=['distutils', 'distutils.command'],
+      license='MIT'
      )

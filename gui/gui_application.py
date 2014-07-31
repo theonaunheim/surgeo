@@ -38,11 +38,19 @@ class Gui(object):
         self.logo_label = Label(self.main_frame, image=self.logo, borderwidth=0)
         self.logo_label.grid(row=0, column=0)
         self.widget_dict['logo_label'] = self.logo_label
+######### Frame for race data
+        self.race_frame = tkinter.ttk.Frame(self.main_frame).grid(row=0, 
+                                                                  column=0,
+                                                                  rowspan=10, 
+                                                                  columnspan=10)
+        self.widget_dict['race_frame'] = self.race_frame
+######### Add labels and text boxes to race_frame
+        self.white_static = Label(self.race_frame, text='White')
+        self.white_variable = Label(self.race_frame, text='')
          
         
         # Finally root after all
         self.root.after(100, func=self.update_all)
-        
         
     def csv_process(self):
         pass
@@ -58,10 +66,11 @@ class Gui(object):
         while not self.input_queue.empty():
             result = self.input_queue.get()
             widget_text = result[0]
+            command_text = result[1]
             widget_reference = self.widget_dict[widget_text]
             widget_type = type(widget_reference)
-            if widget_type == tkinter.Frame:
-                pass
+            if widget_type == tkinter.Label:
+                widget_reference.config(text=command_text)
         self.root.after(100, func=self.update_all)
             
         
