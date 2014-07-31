@@ -8,5 +8,6 @@ setup(name='surgeo',
       description='Disparate impact testing through surname geocoding analysis',
       author='Theo Naunheim',
       author_email='theonaunheim@gmail.com',
-      license='MIT'
+      license='MIT',
+      packages=['surgeo.db','surgeo.gui','surgeo.model','surgeo.utilities']
      )

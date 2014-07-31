@@ -72,5 +72,46 @@ class Gui(object):
             if widget_type == tkinter.Label:
                 widget_reference.config(text=command_text)
         self.root.after(100, func=self.update_all)
+'''
+Picture frame
+=====
+image
+
+Console frame
+======
+prog bar
+console
+
+Master frame
+======
+picture, console and input frames
+
+Input frame
+======
+#raise invalid zip
+text input name
+label name
+text input zip
+label zip
+button compute zip/name
+button csv process
+button load (grey out everything if not db)
+custton
+text display hispanic
+label hispanic
+text display white
+label white
+text display black
+label black
+text display asian
+label asian
+text display indian
+label indian
+text display multiracial
+label multi tracial
+
+
+
+'''
             
         
