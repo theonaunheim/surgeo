@@ -1,4 +1,5 @@
-.. image::http://i.imgur.com/pe0GZMP.jpg
+.. image:: logo.jpg
+:target: http://i.imgur.com/pe0GZMP.jpg
 
 Surgeo
 ==============
@@ -22,11 +23,6 @@ Unix/Linux ('--user' option for unprivileged)
 
     python3 /path_to_surgeo/surgeo/setup.py install
 
-Windows ('--user' option for unprivileged)
-
-::
-
-    \path_to_surgeo\surgeo\setup.py install
 
 If using as a Python module in your program
 --------------
@@ -34,20 +30,28 @@ If using as a Python module in your program
 ::
 
     import surgeo
+    
     # Download data and create tables
     surgeo.data_setup(verbose=True)
+    
     # Create model object
     model = surgeo.SurgeoModel() 
+    
     # Simple version returns 'White'
     model.guess_race(63110, 'Naunheim') 
+    
     # race_data() returns object
     surgeo_result = model.race_data(63110, 'Naunheim')
+    
     # 'White'
     print(surgeo_result.probable_race) 
+    
     # '.0328'
     print(surgeo_result.black) 
+    
     # 'Naunheim'
     print(surgeo_result.surname) 
+    
     # Create new .csv with race data
     model.process_csv(csv_path, new_csv_path) 
 
