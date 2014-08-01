@@ -18,70 +18,70 @@ Installing
 
 Unix/Linux ('--user' option for unprivileged)
 
-.. code:: python
+::
     python3 /path_to_surgeo/surgeo/setup.py install
 
 Windows ('--user' option for unprivileged)
 
-.. code:: python
+::
     \path_to_surgeo\surgeo\setup.py install
 
 If using as a Python module in your program
 --------------
 
-.. code:: python
+::
     import surgeo
-
-    surgeo.data_setup(verbose=True) # Download data and create tables
-
-    model = surgeo.SurgeoModel() # Create model object
-
-    model.guess_race(63110, 'Naunheim') # Simple version returns 'White'
-
-    surgeo_result = model.race_data(63110, 'Naunheim') # race_data() returns object
-
-    print(surgeo_result.probable_race) # 'White'
-
-    print(surgeo_result.black) # '.0328'
-
-    print(surgeo_result.surname) # 'Naunheim'
-
-    model.process_csv(csv_path, new_csv_path) # Create new .csv with race data
+    # Download data and create tables
+    surgeo.data_setup(verbose=True)
+    # Create model object
+    model = surgeo.SurgeoModel() 
+    # Simple version returns 'White'
+    model.guess_race(63110, 'Naunheim') 
+    # race_data() returns object
+    surgeo_result = model.race_data(63110, 'Naunheim')
+    # 'White'
+    print(surgeo_result.probable_race) 
+    # '.0328'
+    print(surgeo_result.black) 
+    # 'Naunheim'
+    print(surgeo_result.surname) 
+    # Create new .csv with race data
+    model.process_csv(csv_path, new_csv_path) 
 
 If using as a program (if installed can also 'python3 -m surgeo')
 --------------
 
 --file argument takes input and output (no return)
-.. code:: python
+::
     python3 /path_here/executeable.pyw --file /path/input.csv /path/output.csv
 
 --simple takes zip and surname (returns string)
-.. code:: python
+::
     python3 /path_here/executeable.pyw --simple 63110 Naunheim
 
 --complex takes zip and surname (returns detailed string)
-.. code:: python
+::
     python3 /path_here/executeable.pyw --complex 63110 Naunheim
 
 --pipe takes comma separated zip and surname
-.. code:: python
+::
     echo "63110,Naunheim" | python3 /path_here/executeable.pyw --pipe | cat
 
 --setup takes no arguments
-.. code:: python
+::
     python3 /path_here/executeable.pyw --setup
 
 No arguments at all starts GUI
-.. code:: python
+::
     python3 /path_here/executeable.pyw
 
 Prefab files for offline use
 --------------
 Database link:
-__ https://dl.dropboxusercontent.com/u/26853373/census.db
+https://dl.dropboxusercontent.com/u/26853373/census.db
 
 Logo link:
-__ https://dl.dropboxusercontent.com/u/26853373/logo.gif
+https://dl.dropboxusercontent.com/u/26853373/logo.gif
 
 
 
