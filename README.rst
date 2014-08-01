@@ -1,5 +1,4 @@
-.. image:: logo.jpg
-:target: http://i.imgur.com/pe0GZMP.jpg
+.. image:: logo.gif
 
 Surgeo
 ==============
