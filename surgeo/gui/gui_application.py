@@ -93,6 +93,7 @@ text input name
 label name
 text input zip
 label zip
+queue
 button compute zip/name
 button csv process
 button load (grey out everything if not db)

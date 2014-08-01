@@ -16,11 +16,9 @@ not a developer nor a statistician, so please use at your own risk.
 Installing
 --------------
 
-Unix/Linux ('--user' option for unprivileged)
-
 ::
 
-    python3 /path_to_surgeo/surgeo/setup.py install
+    pip install surgeo
 
 
 If using as a Python module in your program
