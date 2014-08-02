@@ -19,7 +19,7 @@ class Gui(object):
 ######### Structural elements
         self.input_queue = multiprocessing.Queue()
         self.widget_dict = {}
-######### Style. Default Darwin and Windows are good. Linux, not so much.
+######### Styles.
         self.style = Style()
         # Label style
         self.style.configure('TFrame',
@@ -57,7 +57,18 @@ class Gui(object):
         # If no logo, don't create tkinter.
         except _tkinter.TclError:
             pass
-######### Add labels and text boxes to race_frame
+######### Console text window
+        self.console = Text(self.main_frame,
+                            height=20,
+                            foreground='White',
+                            background='#1600FF',
+                            borderwidth=0,
+                            highlightbackground='#1600FF',
+                            state='disabled',
+                            relief='flat').grid(row=0, 
+                                                column=7,
+                                                columnspan=3)
+######### Add labels and text boxes to zip and surname
         self.surname_static = Label(self.main_frame,
                                     text='Surname').grid(row=1,
                                                          column=1,
@@ -69,7 +80,6 @@ class Gui(object):
                                                           column=1,
                                                           columnspan=2,
                                                           sticky=W)
-        #
         self.zip_static = Label(self.main_frame,
                                 text='ZIP').grid(row=4,
                                                  column=1, 
@@ -85,8 +95,12 @@ class Gui(object):
                                                       columnspan=2,
                                                       sticky=W)     
         
-        self.zip_static = 1#
-        self.zip_variable = 1#      
+        self.horiz_space_1 = Label(self.main_frame).grid(row=1, 
+                                                         column=2,
+                                                         columnspan=1,
+                                                         rowspan=5,
+                                                         sticky=W)
+######### Race percengages      
         self.white_static = Label(self.main_frame, text='White')
         self.white_variable = Label(self.main_frame, text='')
          
