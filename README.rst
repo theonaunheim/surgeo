@@ -18,7 +18,7 @@ Installing
 
 ::
 
-    pip install surgeo
+    pip install --pre surgeo
 
 
 If using as a Python module in your program
@@ -58,32 +58,32 @@ If using as a program (if installed can also 'python3 -m surgeo')
 --file argument takes input and output (no return)
 ::
 
-    python3 /path_here/executeable.pyw --file /path/input.csv /path/output.csv
+    python3 /path_here/executeable.py --file /path/input.csv /path/output.csv
 
 --simple takes zip and surname (returns string)
 ::
 
-    python3 /path_here/executeable.pyw --simple 63110 Naunheim
+    python3 /path_here/executeable.py --simple 63110 Naunheim
 
 --complex takes zip and surname (returns detailed string)
 ::
 
-    python3 /path_here/executeable.pyw --complex 63110 Naunheim
+    python3 /path_here/executeable.py --complex 63110 Naunheim
 
 --pipe takes comma separated zip and surname
 ::
 
-    echo "63110,Naunheim" | python3 /path_here/executeable.pyw --pipe | cat
+    echo "63110,Naunheim" | python3 /path_here/executeable.py --pipe | cat
 
 --setup takes no arguments
 ::
 
-    python3 /path_here/executeable.pyw --setup
+    python3 /path_here/executeable.py --setup
 
 No arguments at all starts GUI
 ::
 
-    python3 /path_here/executeable.pyw
+    python3 /path_here/executeable.py
 
 Prefab files for offline use
 --------------

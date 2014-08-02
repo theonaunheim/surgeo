@@ -6,6 +6,7 @@ from distutils.core import setup
 setup(name='surgeo',
       version='0.1.2000',
       description='Disparate impact testing through surname geocoding analysis',
+      url = 'https://github.com/theonaun/surgeo',
       author='Theo Naunheim',
       author_email='theonaunheim@gmail.com',
       license='MIT',

@@ -21,34 +21,76 @@ class Gui(object):
         self.widget_dict = {}
 ######### Style. Default Darwin and Windows are good. Linux, not so much.
         self.style = Style()
-        if 'Linux' in platform.system():
-            try:
-                self.style.theme_use('clam')
-            except tkinter.TclError:
-                pass
+        # Label style
+        self.style.configure('TFrame',
+                             relief='solid',
+                             sticky=W)
+        self.style.configure('TLabel',
+                             foreground='White',
+                             background='#1600FF',
+                             font=('Helvetica', 14),
+                             sticky=W)
+        # Entry style
+        self.style.configure('TEntry',
+                             foreground='#1600FF',
+                             background='White',
+                             font=('Helvetica', 14),
+                             sticky=W) 
+                              
 ######### Main frame
-        self.main_frame = tkinter.ttk.Frame(self.root).grid(row=0, column=0,
-                                                rowspan=10, columnspan=10)
+        self.main_frame = Frame(self.root, padding=(10,0,0,0)).grid(row=0, 
+                                                column=0, 
+                                                columnspan=10, 
+                                                rowspan=10)
         self.widget_dict['main_frame'] = self.main_frame
+
 ######### Logo
         logo_path = os.path.join(os.path.expanduser('~'),
                                  '.surgeo',
-                                 'logo.gif') 
-        self.logo = PhotoImage(file=logo_path)
-        self.logo_label = Label(self.main_frame, image=self.logo, borderwidth=0)
-        self.logo_label.grid(row=0, column=0)
-        self.widget_dict['logo_label'] = self.logo_label
-######### Frame for race data
-        self.race_frame = tkinter.ttk.Frame(self.main_frame).grid(row=0, 
-                                                                  column=0,
-                                                                  rowspan=10, 
-                                                                  columnspan=10)
-        self.widget_dict['race_frame'] = self.race_frame
+                                 'logo.gif')
+        try: 
+            self.logo = PhotoImage(file=logo_path)
+            self.logo_label = Label(self.main_frame, 
+                                    image=self.logo)
+            self.logo_label.grid(row=0, column=0, columnspan=7)
+            self.widget_dict['logo_label'] = self.logo_label
+        # If no logo, don't create tkinter.
+        except _tkinter.TclError:
+            pass
 ######### Add labels and text boxes to race_frame
-        self.white_static = Label(self.race_frame, text='White')
-        self.white_variable = Label(self.race_frame, text='')
-         
+        self.surname_static = Label(self.main_frame,
+                                    text='Surname').grid(row=1,
+                                                         column=1,
+                                                         columnspan=2,
+                                                         sticky=W)
+        self.surname_variable = Entry(self.main_frame,
+                                      text='').grid(row=2, column=1, sticky=W)
+        self.surname_spacer = Label(self.main_frame).grid(row=3, 
+                                                          column=1,
+                                                          columnspan=2,
+                                                          sticky=W)
+        #
+        self.zip_static = Label(self.main_frame,
+                                text='ZIP').grid(row=4,
+                                                 column=1, 
+                                                 columnspan=2,
+                                                 sticky=W)   
+        self.zip_variable = Entry(self.main_frame,
+                                  text='').grid(row=5, 
+                                                column=1, 
+                                                columnspan=2, 
+                                                sticky=W)
+        self.zip_spacer = Label(self.main_frame).grid(row=6, 
+                                                      column=1,
+                                                      columnspan=2,
+                                                      sticky=W)     
         
+        self.zip_static = 1#
+        self.zip_variable = 1#      
+        self.white_static = Label(self.main_frame, text='White')
+        self.white_variable = Label(self.main_frame, text='')
+         
+
         # Finally root after all
         self.root.after(100, func=self.update_all)
         
