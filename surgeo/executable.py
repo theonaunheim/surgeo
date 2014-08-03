@@ -53,6 +53,7 @@ sys.path.append(grandparent_dir)
 ################################################################################
 
 import argparse
+import os
 import sys
 
 import surgeo
@@ -63,8 +64,14 @@ def main(*args):
 ##### Setup
     if parsed_args.setup:
         surgeo.data_setup(verbose=True)
+##### Run setup if necessary
+    if not os.path.exists(os.path.join(os.path.expanduser('~'),
+                                       '.surgeo',
+                                       'census.db')):
+        surgeo.data_setup(verbose=True)
+##### Model creation
     model = surgeo.SurgeoModel()
-    # Pipe
+##### Pipe
     if parsed_args.pipe:
         try:
             while True:
