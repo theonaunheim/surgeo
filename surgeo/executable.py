@@ -64,15 +64,9 @@ def main(*args):
 ##### Setup
     if parsed_args.setup:
         surgeo.data_setup(verbose=True)
-##### Run setup if necessary
-    if not os.path.exists(os.path.join(os.path.expanduser('~'),
-                                       '.surgeo',
-                                       'census.db')):
-        surgeo.data_setup(verbose=True)
-##### Model creation
-    model = surgeo.SurgeoModel()
 ##### Pipe
     if parsed_args.pipe:
+        model = surgeo.SurgeoModel()
         try:
             while True:
                 for line in sys.stdin:
@@ -85,24 +79,27 @@ def main(*args):
             pass  
 ##### Simple
     elif parsed_args.simple:
+        model = surgeo.SurgeoModel()
         zcta = parsed_args.simple[0]
         surname = parsed_args.simple[1]
         race = model.guess_race(zcta, surname)
         print(race)    
 ##### Complex
     elif parsed_args.complex:
+        model = surgeo.SurgeoModel()
         zcta = parsed_args.complex[0]
         surname = parsed_args.complex[1]
         result = model.race_data(zcta, surname)
         print(result.to_string())  
 ##### File
     elif parsed_args.file:
+        model = surgeo.SurgeoModel()
         infile = parsed_args.file[0]
         outfile = parsed_args.file[1]
         model.process_csv(infile, outfile)
 ##### GUI
     else:
-        gui = surgeo.gui.Gui(model)
+        gui = surgeo.gui.Gui()
         gui.root.mainloop()
     
 if __name__ == "__main__":
