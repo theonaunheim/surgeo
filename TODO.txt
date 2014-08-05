@@ -1,5 +1,0 @@
-Text variables to zip input
-text variable to surname input
-Enter bind and button push to enter
-CSV function select box
-quit button

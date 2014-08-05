@@ -4,6 +4,7 @@ import decimal
 import os
 import sqlite3
 import sys
+import time
 import traceback
 
 def reconstitute_data():
@@ -16,6 +17,7 @@ def reconstitute_data():
         cursor = redacted_db.cursor()
         altered_rows = []
         for row in cursor.execute('''SELECT * FROM surname_data'''):
+            time.sleep(0)
             primary_key = row[0]
             surname = row[1]
             rank = row[2]
@@ -56,6 +58,7 @@ def reconstitute_data():
             # Add altered row to altered_rows
             altered_rows.append(row)
         for row in altered_rows:
+            time.sleep(0)
             primary_key = row[0]
             cursor.execute('''DELETE FROM surname_data WHERE id=?''',
                               (primary_key,))

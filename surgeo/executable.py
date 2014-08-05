@@ -64,6 +64,11 @@ def main(*args):
 ##### Setup
     if parsed_args.setup:
         surgeo.data_setup(verbose=True)
+    db_path = os.path.join(os.path.expanduser('~'),
+                           '.surgeo',
+                           'census.db')
+    if not os.path.exists(db_path):
+        surgeo.data_setup(verbose=True)
 ##### Pipe
     if parsed_args.pipe:
         model = surgeo.SurgeoModel()

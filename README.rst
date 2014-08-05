@@ -18,7 +18,9 @@ Installing
 
 ::
 
-    pip install --pre surgeo
+    python3-pip install --pre surgeo
+    
+    python3 <path_to_setup.py> install
 
 
 If using as a Python module in your program

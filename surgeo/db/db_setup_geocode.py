@@ -4,6 +4,7 @@ import itertools
 import os
 import sqlite3
 import sys
+import time
 import traceback
 import zipfile
 
@@ -20,18 +21,21 @@ def setup_geocode_table(verbose):
     ftp.cwd('census_2000/datasets/Summary_File_1')
     # List dir
     state_list = ftp.nlst()
+    time.sleep(0)
     # Drop all elements prior to states
     state_list = itertools.dropwhile(lambda x: x != 'Alabama', state_list)
     # Make dropwhile object to list
     state_list = list(state_list)
     zip_files_downloaded = []
     for state in state_list:
+        time.sleep(0)
         ftp.cwd('/')
         ftp.cwd(''.join(['census_2000/datasets/Summary_File_1', 
                          '/', 
                          state]))
         file_list = ftp.nlst()
         for item in file_list:
+            time.sleep(0)
             if '00002_uf1.zip' in item or 'geo_uf1.zip' in item:
                 if verbose == True:
                     print(''.join(['Downloading ', item]))
@@ -42,6 +46,7 @@ def setup_geocode_table(verbose):
         sys.stdout.write('\t\t\t\t\t{}OK{}\n'.format('\033[92m','\033[0m'))
     # unzip files
     for zipfile_path in zip_files_downloaded:
+        time.sleep(0)
         # Name of XXgeo_uf1.zip --> XXgeo.uf1
         # Name of XX00002_uf1.zip --> XX0000.uf1
         file_component = os.path.basename(zipfile_path).replace('.zip','')
@@ -72,6 +77,7 @@ def setup_geocode_table(verbose):
         list_of_filenames = os.listdir(data_dir_path)
         number_of_filenames = len(list_of_filenames)
         for index, filename in enumerate(list_of_filenames):
+            time.sleep(0)
             # First the geographic header file
             if 'geo.uf1' in filename:
                 if verbose == True:
@@ -91,6 +97,7 @@ def setup_geocode_table(verbose):
                 # Only latin1 appears to work, even thoug site specifies ascii
                 with open(file_path, 'r', encoding='latin-1') as f3:
                     for line in f3:
+                        time.sleep(0)
                         state = line[6:8]
                         summary_level = line[8:11]
                         logical_record = line[18:25]
@@ -110,6 +117,7 @@ def setup_geocode_table(verbose):
                                          .format(number_of_filenames,
                                                  number_of_filenames))
         for index, filename in enumerate(list_of_filenames):
+            time.sleep(0)
             # First the geographic header file
             if '00002.uf1' in filename:
                 if verbose == True:
@@ -128,6 +136,7 @@ def setup_geocode_table(verbose):
                                          filename)
                 with open(file_path, 'r', encoding='latin-1') as f4:
                     for line in f4:
+                        time.sleep(0)
                         state = line[5:7]
                         logical_record = line[15:22]
                         table_p8 = line.split(',')[86:103]

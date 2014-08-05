@@ -5,6 +5,7 @@ import decimal
 import os
 import sqlite3
 import sys
+import time
 import traceback
 import urllib.request
 import zipfile
@@ -50,15 +51,18 @@ def setup_surname_table(verbose):
             sys.stdout.write('{}OK{}\n'.format('\033[92m','\033[0m'))
             # Zip file
             sys.stdout.write('Extracting zip file ... \t\t\t')
+        time.sleep(0)
         with zipfile.ZipFile(zipfile_path, 'r') as f:
             data = f.read('app_c.csv')
         # Write zip data to csv
+        time.sleep(0)
         with open(csv_path, 'wb+') as f:
             f.write(data)
         if verbose == True:
             sys.stdout.write('{}OK{}\n'.format('\033[92m','\033[0m'))
         # Write line by line of csv to db
         csv_lines = open(csv_path, 'r').readlines()
+        time.sleep(0)
         csv_length = len(csv_lines)
         line_count = 0
         # Create DB
@@ -75,6 +79,7 @@ def setup_surname_table(verbose):
                               surname_data(name)''')
             # Strip csv header.
             for line in csv_lines[1:]:
+                time.sleep(0)
                 cursor.execute('''INSERT into surname_data VALUES (NULL, ?, ?,
                                   ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
                                   (line.split(',')))
@@ -113,5 +118,6 @@ def download_bar(block_count, block_size, total_size):
                       decimal.Decimal(block_size) /
                       decimal.Decimal(total_size) * 100))
     sys.stdout.write('\rDownloading surname data: {}%'.format(str(percentage)))
+    time.sleep(0)
 
 

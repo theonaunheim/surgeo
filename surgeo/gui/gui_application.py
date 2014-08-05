@@ -34,35 +34,7 @@ class StdoutRedirect(threading.Thread):
                                 ''.join([sys.stdout.getvalue(), '\n'])]
                 self.queue.put(command_list)
                 sys.stdout = io.StringIO('')
-                
-                
-class SpinoffSetup(threading.Thread):
-    '''This thread setups up the db if necessary.'''
-
-    def __init__(self, master_app):
-        super().__init__()
-        self.daemon = True
         
-    def run(self):
-        grayout_list = [master_app.surname_variable,
-                        master_app.zip_variable,
-                        master_app.csv_process_button,
-                        master_app.quit_button,
-                        master_app.enter_button]
-        for widget in greyout_list:
-            widget.config(state='disabled')
-        while True:
-            time.sleep(.1)
-            # Create db if needed
-            db_path = os.path.join(os.path.expanduser('~'),
-                                   '.surgeo',
-                                   'census.db')         
-            if not os.path.exists(db_path):
-                surgeo.data_setup(verbose=True)
-            for widget in greyout_list:
-                widget.config(state='normal')     
-        master_app.model = surgeo.SurgeoModel()       
-                
                 
 class SpinoffCSV(threading.Thread):
     '''This thread spins off the construction of the csv.'''
@@ -80,7 +52,7 @@ class SpinoffCSV(threading.Thread):
 class Gui(object):
     '''This is the main ttk/tkinter object for the program.'''
 
-    def __init__(self, model):
+    def __init__(self):
 ######### Root
         self.root = Tk()
         self.root.title('Surgeo')
@@ -194,6 +166,7 @@ class Gui(object):
         self.prompt_1.grid(row=2, column=0, columnspan=1, sticky=E)
         self.prompt_2 = Label(self.main_frame, text='>>>')
         self.prompt_2.grid(row=5, column=0, columnspan=1, sticky=E)
+        self.surname_text_var = StringVar()
         self.surname_static = Label(self.main_frame, width=15, text='Surname')
         self.surname_static.grid(row=1, column=1, columnspan=1, sticky=W)
         self.surname_variable = Entry(self.main_frame,
@@ -202,10 +175,12 @@ class Gui(object):
                                       style='Alt.TEntry',
                                       validate='key',
                                       validatecommand=self.sur_val_com,
+                                      textvariable=self.surname_text_var,
                                       text='')
         self.surname_variable.grid(row=2, column=1, sticky=W)
         self.surname_spacer = Label(self.main_frame)
         self.surname_spacer.grid(row=3, column=1, columnspan=1, sticky=W)
+        self.zip_text_var = StringVar()
         self.zip_static = Label(self.main_frame, text='ZIP') 
         self.zip_static.grid(row=4, column=1, columnspan=1, sticky=W) 
         self.zip_variable = Entry(self.main_frame,
@@ -214,6 +189,7 @@ class Gui(object):
                                   style='Alt.TEntry',
                                   validate='key',
                                   validatecommand=self.zip_val_com,
+                                  textvariable=self.zip_text_var,
                                   text='')
         self.zip_variable.grid(row=5, column=1,  columnspan=1, sticky=W)
         self.zip_spacer = Label(self.main_frame)
@@ -249,10 +225,14 @@ class Gui(object):
         self.multiracial_variable.grid(row=6, column=3, sticky=W, columnspan=2)
 ######### Buttons
         self.enter_button = Button(self.main_frame, text='<Enter>')
+        self.enter_button.bind('<Button-1>', self.race_query)
+        self.enter_button.bind('<Return>', self.race_query)
         self.enter_button.grid(row=2, column=7)                  
         self.csv_process_button = Button(self.main_frame, text='<Input CSV>')
         self.csv_process_button.grid(row=4, column=7)
         self.quit_button = Button(self.main_frame, text='<Quit>')
+        self.quit_button.bind('<Button-1>', sys.exit)
+        self.quit_button.bind('<Return>', sys.exit)        
         self.quit_button.grid(row=6, column=7)
 ######### Add items to widget_dict
         self.widget_dict = {}
@@ -265,19 +245,14 @@ class Gui(object):
         self.widget_dict['multiracial_variable'] = self.multiracial_variable
         self.widget_dict['surname_variable'] = self.surname_variable
         self.widget_dict['zip_variable'] = self.zip_variable
-        self.setup()
+        self.model = surgeo.SurgeoModel()
 ######### Finally root after all
-        self.root.after(100, func=self.update_all)
-
-    def setup(self):
-        '''Spins off setup thread if necessary.'''
-        # Pass reference to app to daemon thread.
-        setup_thread = SpinoffSetup(self)
-        setup_thread.start()
-        setup_thread.join()
+        self.root.after(100, func=self.update_all)             
         
-    def csv_process(self, infile_path, outfile_path):
+    def csv_process(self):
         '''Process csv file.'''
+        infile = filedialog.askopenfilename()
+        outfile = filedialog.asksaveasfilename()
         # Pass reference to app, infile path and outfile path.
         csv_spinoff_thread = SpinoffCSV(self,
                                         infile_path,
@@ -285,8 +260,9 @@ class Gui(object):
         csv_spinoff_thread.start()
         csv_spinoff_thread.join()
         
-    def race_query(self, zip_code, surname):
-        surgeo_result = self.model.race_data(zip_code, surname)
+    def race_query(self):
+        surgeo_result = self.model.race_data(self.zip_text_var,
+                                             self.surname_text_var)
         command_list = []
         command_list.append(['hispanic_variable', 
                              surgeo_result.hispanic])
@@ -355,13 +331,14 @@ class Gui(object):
                 return True
         # If deletion, allow
         else:
-            return True
+            return True     
             
     def update_all(self):
         while not self.input_queue.empty():
             result = self.input_queue.get()
             widget_text = result[0]
             command_text = result[1]
+            # If not command, done on a widget basis
             widget_reference = self.widget_dict[widget_text]
             widget_type = type(widget_reference)
             if widget_type == tkinter.ttk.Label:
@@ -369,7 +346,7 @@ class Gui(object):
             if widget_type == tkinter.Text:
                 widget_reference.config(state='normal')
                 widget_reference.insert('1.0', ''.join([command_text]))
-                widget_reference.config(state='disabled')
+                widget_reference.config(state='disabled')       
         self.root.after(100, func=self.update_all)
 
 
