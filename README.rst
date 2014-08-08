@@ -20,6 +20,12 @@ Installing
 
     python3-pip install --pre surgeo
     
+    or
+    
+    pip3 install surgeo
+    
+    or
+    
     python3 <path_to_setup.py> install
 
 
