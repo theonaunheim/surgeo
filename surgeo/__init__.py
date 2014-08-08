@@ -31,8 +31,6 @@ def data_setup(verbose=True):
     surgeo.db.setup_geocode_table(verbose)
     # Reconstitute items supressed for confidentiality and index
     surgeo.db.reconstitute_data()
-    # Fetch logo for GUI
-    surgeo.utilities.fetch()
     # Remove zip and other unnecessary files
     surgeo.utilities.folder_cleanup()
 
