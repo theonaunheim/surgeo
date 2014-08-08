@@ -16,6 +16,8 @@ import surgeo
                                          u(i,j,k)
    q(i|j,k) = ---------------------------------------------------------------
               u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
+              
+   What this means is better explained in the BACKGROUND.txt file.
 '''
 
 # Race dict for all functions
@@ -29,7 +31,22 @@ races = ['Hispanic',
 race_dict = { item[0] : item[1] for item in enumerate(races, start=1) }
 
 def run_model(zcta, surname, db):
-    '''Takes zcta, surname. Returns data percentages.'''
+    '''Takes zcta, surname. Returns data percentages.
+    
+    Takes zip code, surname, and a database instance. Returns 6 separate 
+    probabilities for each of the races above.
+    
+    For each (zcta, surname) pair, we must first get the probability for a 
+    specific race is based on surname. We must then get get the probability for
+    a specific race based on location. We then take prob_surname for that race
+    and multiply it by prob_location. We multiply these together to get a 
+    unified surname/geocode probability. We divide this probability by the
+    probability of all the races together to give us our final probability. 
+    Note that if there is no surname availible, fixed percentages are applied
+    that should apply for all non-represented names. The numbers for this 
+    particular statistic are fixed below, but the explanation is outside the 
+    scope of this program. 
+    '''
     #u(1,j,k) 
     prob_hispanic = get_combined_prob(1, zcta, surname, db)
     #u(2,j,k) 

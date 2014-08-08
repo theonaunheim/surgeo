@@ -1,8 +1,8 @@
-'''Delete all .uf1 and .zip files in folder.'''
 
 import os
 
 def folder_cleanup():
+    '''Delete all .uf1 and .zip files in folder.'''
     # Created named tuple for organizing
     home_dir_path = os.path.expanduser("~")
     data_dir_path = os.path.join(home_dir_path, '.surgeo')     

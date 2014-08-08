@@ -1,8 +1,8 @@
-'''This creates a parser and is invoked from main program.'''
 
 import argparse
 
 def get_parser_args():
+    '''This creates a parser and is invoked from main program.'''
     parser = argparse.ArgumentParser(description='Get Surgeo arguments.')
     # File argumets
     parser.add_argument('--file',

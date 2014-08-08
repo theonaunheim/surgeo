@@ -72,7 +72,7 @@ If using as a program (if installed can also 'python3 -m surgeo')
 
     python3 /path_here/executeable.py --complex 63110 Naunheim
 
---pipe takes comma separated zip and surname
+--pipe takes zip and surname arguments
 ::
 
     cat | python3 /path_here/executeable.py --pipe
@@ -82,10 +82,6 @@ If using as a program (if installed can also 'python3 -m surgeo')
 
     python3 /path_here/executeable.py --setup
 
-No arguments at all starts GUI
-::
-
-    python3 /path_here/executeable.py
 
 Prefab files for offline use
 --------------

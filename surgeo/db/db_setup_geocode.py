@@ -1,3 +1,4 @@
+
 import collections
 import ftplib
 import itertools
@@ -9,7 +10,17 @@ import traceback
 import zipfile
 
 def setup_geocode_table(verbose):
-    '''This sets up the geocoding database.'''    
+    '''This sets up the geocoding database.
+    
+    This takes no arguments.
+    
+    This function first downloads a geographic header file for each state. It 
+    then downloads file 00002 for each state. These are downloaded in zip 
+    format, and then unzipped. It then creates two tables, geocode_data and
+    logical_race_data and populates the database. The geocode_data contains 
+    data for geographic areas. The logical record from the geocode_data 
+    directly correlates with a specific population in the geographic area,
+    which is broken down by race.'''    
     if verbose == True:
         sys.stdout.write('Downloading census files ... \t\t\n')
     # Created named tuple for organizing

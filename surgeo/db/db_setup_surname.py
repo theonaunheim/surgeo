@@ -1,4 +1,3 @@
-'''Downloads data (if needed) and creates an sqlite3 census table.'''
 
 import configparser
 import decimal
@@ -11,7 +10,13 @@ import urllib.request
 import zipfile
 
 def setup_surname_table(verbose):
-    '''This creates the surname database and does housekeeping.'''
+    '''This creates the surname database and does housekeeping.
+    
+    It takes no arguments.
+    
+    This downloads a single census data file which gives the relative ethnic 
+    makeup for each individual name. It only includes names with over 100 
+    instances.'''
     if verbose == True:
         sys.stdout.write('Checking db existence ... \t\t\t')
     db_path = os.path.join(os.path.expanduser('~'),

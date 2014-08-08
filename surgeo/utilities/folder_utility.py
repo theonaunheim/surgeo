@@ -1,4 +1,3 @@
-'''Sets up a user folder and accompanying files.'''
 
 import configparser
 import os

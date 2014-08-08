@@ -30,7 +30,7 @@ class SurgeoModel(object):
         self.db = sqlite3.connect(db_path)
 
     def guess_race(self, zcta, surname):
-        '''zcta and surname goes in, race string.'''
+        '''zcta and surname go in and a simple race string comes out.'''
         # Check for existence of zip code. Return bad result if bad.
         try:
             cursor = self.db.cursor()
@@ -205,7 +205,7 @@ class SurgeoResult(object):
 
 
 class ErrorResult(object):
-    '''Result class containing BISG data.'''
+    '''Result class containing error data.'''
     def __init__(self):
         self.surname = 'Error'
         self.zcta = '00000'
