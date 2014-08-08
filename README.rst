@@ -75,7 +75,7 @@ If using as a program (if installed can also 'python3 -m surgeo')
 --pipe takes comma separated zip and surname
 ::
 
-    echo "63110,Naunheim" | python3 /path_here/executeable.py --pipe | cat
+    cat | python3 /path_here/executeable.py --pipe
 
 --setup takes no arguments
 ::

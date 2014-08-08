@@ -15,9 +15,9 @@ sys.path.append(grandparent_dir)
 from surgeo.utilities.class_file import SurgeoModel
 from surgeo.utilities.class_file import SurgeoResult
 from surgeo.utilities.class_file import SurgeoError
+from surgeo.utilities.class_file import ErrorResult
 
 import surgeo.db
-import surgeo.gui
 import surgeo.model
 import surgeo.utilities
 
@@ -35,6 +35,5 @@ def data_setup(verbose=True):
     surgeo.utilities.fetch()
     # Remove zip and other unnecessary files
     surgeo.utilities.folder_cleanup()
-    
-if __name__ == '__main__':
-    surgeo.executable.main()
+
+

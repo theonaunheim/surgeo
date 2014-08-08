@@ -51,12 +51,12 @@ def run_model(zcta, surname, db):
                      prob_multi)
     return surgeo.SurgeoResult(surname,
                                zcta,
-                               prob_hispanic/prob_combined,
-                               prob_white/prob_combined,
-                               prob_black/prob_combined,
-                               prob_api/prob_combined,
-                               prob_ai/prob_combined,
-                               prob_multi/prob_combined)
+                               '{0:f}'.format(prob_hispanic/prob_combined),
+                               '{0:f}'.format(prob_white/prob_combined),
+                               '{0:f}'.format(prob_black/prob_combined),
+                               '{0:f}'.format(prob_api/prob_combined),
+                               '{0:f}'.format(prob_ai/prob_combined),
+                               '{0:f}'.format(prob_multi/prob_combined))
         
 def get_combined_prob(race,
                       zcta,
@@ -118,8 +118,6 @@ def get_prob_zcta(race,
     cursor.execute('''SELECT state, logical_record FROM 
                       geocode_data WHERE zcta=?''', (zcta,))
     state, logical_record = cursor.fetchone()
-    print(state)
-    print(logical_record)
     # For each of the results, get race results for logical record
     # Each state will likely have a logical record with that number, filter
     # State 
@@ -128,7 +126,6 @@ def get_prob_zcta(race,
                       WHERE logical_record=? AND state=?''', 
                       (logical_record, state))
     row = cursor.fetchone()
-    print(row)
     # hispanic, white, black, api, indian, multirace.
     count_hispanic = row[0]
     count_white = row[1]

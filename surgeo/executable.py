@@ -64,22 +64,20 @@ def main(*args):
 ##### Setup
     if parsed_args.setup:
         surgeo.data_setup(verbose=True)
-    db_path = os.path.join(os.path.expanduser('~'),
-                           '.surgeo',
-                           'census.db')
-    if not os.path.exists(db_path):
-        surgeo.data_setup(verbose=True)
 ##### Pipe
     if parsed_args.pipe:
         model = surgeo.SurgeoModel()
         try:
             while True:
                 for line in sys.stdin:
-                    # Remove surrounding whitespace
-                    line.strip()
-                    zcta, surname = line.split()
-                    result = model.race_data(zcta, surname)
-                    sys.stdout.write(result.as_string())
+                    try:
+                        # Remove surrounding whitespace
+                        line.strip()
+                        zcta, surname = line.split()
+                        result = model.race_data(zcta, surname)
+                    except ValueError:
+                        result = model.race_data('00000', 'BAD_NAME')
+                    print(result.as_string)
         except EOFError:
             pass  
 ##### Simple
@@ -95,17 +93,19 @@ def main(*args):
         zcta = parsed_args.complex[0]
         surname = parsed_args.complex[1]
         result = model.race_data(zcta, surname)
-        print(result.to_string())  
+        print(result.as_string)  
 ##### File
     elif parsed_args.file:
         model = surgeo.SurgeoModel()
         infile = parsed_args.file[0]
         outfile = parsed_args.file[1]
         model.process_csv(infile, outfile)
-##### GUI
-    else:
-        gui = surgeo.gui.Gui()
-        gui.root.mainloop()
+    elif not any([ parsed_args.setup,
+                   parsed_args.pipe,
+                   parsed_args.simple,
+                   parsed_args.complex,
+                   parsed_args.file ]):
+        print('No arguments given. Try \'--help\'?')
     
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
