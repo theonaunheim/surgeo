@@ -64,18 +64,23 @@ def setup_geocode_table(verbose):
         sys.stdout.write('\t\t\t\t\tOK\n')
     # unzip files
     for zipfile_path in zip_files_downloaded:
+    
         time.sleep(0)
         # Name of XXgeo_uf1.zip --> XXgeo.uf1
         # Name of XX00002_uf1.zip --> XX0000.uf1
         file_component = os.path.basename(zipfile_path).replace('.zip','')
         file_component = file_component.replace('_','.')
+        if verbose == True:
+            print('Writing {}'.format(file_component)) 
         dir_component = os.path.dirname(zipfile_path)
+        # Zip file is now and iterator to save on ram.
         with zipfile.ZipFile(zipfile_path, 'r') as f:
-            data = f.read(file_component)
-            with open(os.path.join(dir_component, file_component), 'wb+') as f2:
-                if verbose == True:
-                    print('Writing {}'.format(file_component)) 
-                f2.write(data)
+            with f.open(file_component, 'r') as f2:
+                 with open(os.path.join(dir_component, 
+                                        file_component),
+                                        'w+b') as f3:
+                     for line in f2:
+                        f3.write(line)
     # Now everything has been downloaded. Start commit to db
     try:
         db_path = os.path.join(os.path.expanduser('~'),
