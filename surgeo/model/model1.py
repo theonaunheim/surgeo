@@ -11,7 +11,7 @@ import surgeo
                     5 = American Indian / Alaska Native, 
                     6 = Multiracial)
 
-   Where u(i,j,k) = p(i|j) + r(k|i):
+   Where u(i,j,k) = p(i|j) * r(k|i):
 
                                          u(i,j,k)
    q(i|j,k) = ---------------------------------------------------------------
