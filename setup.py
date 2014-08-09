@@ -5,7 +5,7 @@ from distutils.core import setup
 from distutils.core import DistutilsError
     
 setup(name='surgeo',
-      version='0.5.2000',
+      version='0.6.2000',
       description='Disparate impact testing through surname geocoding analysis',
       url = 'https://github.com/theonaun/surgeo',
       author='Theo Naunheim',

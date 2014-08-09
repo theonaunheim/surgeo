@@ -10,13 +10,13 @@ import os
 import sys
 
 # Kludgy fix for path if you want to execute outside of path.  
-##file_path = os.path.abspath(__file__)
-##parent_dir = os.path.dirname(file_path)
-##grandparent_dir = os.path.dirname(parent_dir)
-##sys.path.append(grandparent_dir)
+file_path = os.path.abspath(__file__)
+parent_dir = os.path.dirname(file_path)
+grandparent_dir = os.path.dirname(parent_dir)
+sys.path.append(grandparent_dir)
 
 ################################################################################
-# Bootstrap
+# Main
 ################################################################################
 
 import argparse
