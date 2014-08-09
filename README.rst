@@ -13,6 +13,11 @@ Created as a trial run so that when the CFPB releases its whitepaper on proxy
 analysis Summer 2014, the model can be quickly adapted to conform to it. I am
 not a developer nor a statistician, so please use at your own risk.
 
+Please note that your shortcut to Python may be 'python' or 'python3' depending 
+on how it is installed. Additionally, this guide presumes you are working on
+a Unix-like system. If running Windows, you will need to substitute backslashes 
+instead of the slashes used in the paths below.
+
 Installing
 --------------
 
