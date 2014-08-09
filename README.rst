@@ -17,12 +17,8 @@ Installing
 --------------
 
 ::
-
-    python3-pip install --pre surgeo
     
-    or
-    
-    pip3 install surgeo
+    pip3 install --pre surgeo
     
     or
     
@@ -36,7 +32,7 @@ If using as a Python module in your program
 
     import surgeo
     
-    # Download data and create tables
+    # Download data and create tables (takes some time)
     surgeo.data_setup(verbose=True)
     
     # Create model object
