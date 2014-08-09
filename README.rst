@@ -18,7 +18,7 @@ Installing
 
 ::
     
-    pip3 install --pre surgeo
+    pip3 install surgeo
     
     or
     

@@ -18,6 +18,7 @@ import surgeo
               u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
               
    What this means is better explained in the BACKGROUND.txt file.
+   
 '''
 
 # Race dict for all functions
@@ -32,6 +33,15 @@ race_dict = { item[0] : item[1] for item in enumerate(races, start=1) }
 
 def run_model(zcta, surname, db):
     '''Takes zcta, surname. Returns data percentages.
+    
+    Args:
+        zcta: int
+        surname: text
+        db: Sqlite3 database connection instance
+    Returns:
+        SurgeoResult instance
+    Raises:
+        None
     
     Takes zip code, surname, and a database instance. Returns 6 separate 
     probabilities for each of the races above.
@@ -79,7 +89,19 @@ def get_combined_prob(race,
                       zcta,
                       surname,
                       db):
-    '''This gets combined probability: u(i,j,k)'''
+    '''This gets combined probability: u(i,j,k)
+    
+    Args:
+        race: int
+        zcta: text
+        surname: text
+        db: Sqlite3 database connection instance
+    Returns:
+        combined_prob: float
+    Raises:
+        None
+    
+    '''
     surname_prob = get_prob_surname(race, surname, db)
     zcta_prob = get_prob_zcta(race, zcta, db)
     combined_prob = surname_prob * zcta_prob
@@ -88,7 +110,18 @@ def get_combined_prob(race,
 def get_prob_surname(race,
                      surname,
                      db):
-    '''This gets probability of surname: p(i|j)'''
+    '''This gets probability of surname: p(i|j)
+    
+    Args:
+        race: int
+        surname: text
+        db: Sqlite3 database connection instance
+    Returns:
+        combined_prob: float
+    Raises:
+        None
+    
+    '''
     cursor = db.cursor()
     cursor.execute('''SELECT pcthispanic, pctwhite, pctblack, pctapi,
                       pctaian, pct2prace FROM surname_data WHERE name=?''',
@@ -122,7 +155,19 @@ def get_prob_surname(race,
 def get_prob_zcta(race,
                   zcta,
                   db):
-    '''This gets probability of zcta: r(k|i).'''
+    '''This gets probability of zcta: r(k|i).
+    
+    Args:
+        race: int
+        zcta: text
+        db: Sqlite3 database connection instance
+    Returns:
+        prob_index: dict
+    Raises:
+        None
+        
+    '''
+    
     # Add up all the blocks in the zip.
     cursor = db.cursor()
     count_hispanic = 0

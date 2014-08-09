@@ -1,4 +1,4 @@
-'''This file exists solely for 'python3 -m surgeo'.'''
+'''This __main__.py file exists solely to allow for module execution.'''
 
 from surgeo.executable import main
 

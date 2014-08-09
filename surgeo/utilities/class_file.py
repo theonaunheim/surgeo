@@ -1,6 +1,6 @@
 '''This is the main class for using the model in other Python3 programs.
     
-   Added to the 'surgeo' namespace.'''
+   Added to the surgeo namespace.'''
 
 import csv
 import io
@@ -17,7 +17,16 @@ import surgeo
 
 
 class SurgeoModel(object):
-    '''Contains data references and methods for running a BISG model.'''
+    '''Contains data references and methods for running a BISG model.
+    
+    Attributes:
+        self.db: an sqlite3 database connection shared for all methods
+    Methods:
+        guess_race: takes zip and surname and returns a string.
+        race_data: takes zip and surname and returns a SurgeoResult object.
+        process_csv: takes to paths. Reads path one. Processed result to path 2.
+    
+    '''
 
     def __init__(self):
         # Load entire db to memory for performance DISK DATABSE
@@ -30,7 +39,17 @@ class SurgeoModel(object):
         self.db = sqlite3.connect(db_path)
 
     def guess_race(self, zcta, surname):
-        '''zcta and surname go in and a simple race string comes out.'''
+        '''zcta and surname go in and a simple race string comes out.
+
+        Args:
+            zcta: zip code, string or int
+            surname: string
+        Returns:
+            result.probable_race: string
+        Raises:
+            None
+
+        '''
         # Check for existence of zip code. Return bad result if bad.
         try:
             cursor = self.db.cursor()
@@ -46,7 +65,17 @@ class SurgeoModel(object):
         return result.probable_race
         
     def race_data(self, zcta, surname):
-        '''zcta and surname goes in, formatted SurgeoResult comes out.'''
+        '''zcta and surname goes in, formatted SurgeoResult comes out.
+        
+        Args:
+            zcta: zip code, string or int
+            surname: string
+        Returns:
+            result: SurgeoResult object
+        Raises:
+            None
+            
+        '''
         # Check for existence of zip code. Return bad result if bad.
         try:
             cursor = self.db.cursor()
@@ -65,7 +94,18 @@ class SurgeoModel(object):
                     filepath_in,
                     filepath_out,
                     verbose=True):
-        '''This takes a csv filepath and creates new csv with race data.'''
+        '''This takes a csv filepath and creates new csv with race data.
+        
+        Args:
+            filepath_in: file path of csv from which data is read
+            filepath_out: file path of csv where data is written
+            verbose: True/False which determines if updates are printed
+        Returns:
+            result: SurgeoResult object
+        Raises:
+            None
+            
+        '''
         # Open file, determine if zip and name in header
         tempfile = open(filepath_in, 'rU')
         number_of_rows = len(tempfile.readlines())
@@ -147,7 +187,24 @@ class SurgeoModel(object):
            
            
 class SurgeoResult(object):
-    '''Result class containing BISG data.'''
+    '''Result class containing BISG data.
+    
+    Attributes:
+        self.surname: string
+        self.zcta: string
+        self.zip: string
+        self.hispanic: float
+        self.white: float
+        self.black: float
+        self.asian_or_pi: float
+        self.american_indian: float
+        self.multiracial: float
+        self.probable_race: @property string
+        self.probable_race_percentage: @property float
+        self.as_string: @property string
+     
+    '''
+    
     def __init__(self, 
                  surname, 
                  zcta, 
@@ -205,7 +262,24 @@ class SurgeoResult(object):
 
 
 class ErrorResult(object):
-    '''Result class containing error data.'''
+    '''Result class containing error data.
+    
+    Attributes:
+        self.surname: string
+        self.zcta: string
+        self.zip: string
+        self.hispanic: float
+        self.white: float
+        self.black: float
+        self.asian_or_pi: float
+        self.american_indian: float
+        self.multiracial: float
+        self.probable_race: @property string
+        self.probable_race_percentage: @property float
+        self.as_string: @property string
+        
+    '''
+    
     def __init__(self):
         self.surname = 'Error'
         self.zcta = '00000'

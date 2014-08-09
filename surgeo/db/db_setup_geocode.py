@@ -11,8 +11,13 @@ import zipfile
 
 def setup_geocode_table(verbose):
     '''This sets up the geocoding database.
-    
-    This takes no arguments.
+
+    Args:
+        verbose: True/False for whether function outputs info.
+    Returns:
+        None
+    Raises:
+        None
     
     This function first downloads a geographic header file for each state. It 
     then downloads file 00002 for each state. These are downloaded in zip 
@@ -20,7 +25,9 @@ def setup_geocode_table(verbose):
     logical_race_data and populates the database. The geocode_data contains 
     data for geographic areas. The logical record from the geocode_data 
     directly correlates with a specific population in the geographic area,
-    which is broken down by race.'''    
+    which is broken down by race.
+    
+    '''    
     if verbose == True:
         sys.stdout.write('Downloading census files ... \t\t\n')
     # Created named tuple for organizing
@@ -54,7 +61,7 @@ def setup_geocode_table(verbose):
                 zip_files_downloaded.append(file_path)
                 ftp.retrbinary('RETR ' + item, open(file_path, 'wb+').write)
     if verbose == True:  
-        sys.stdout.write('\t\t\t\t\t{}OK{}\n'.format('\033[92m','\033[0m'))
+        sys.stdout.write('\t\t\t\t\tOK\n')
     # unzip files
     for zipfile_path in zip_files_downloaded:
         time.sleep(0)
@@ -187,7 +194,7 @@ def setup_geocode_table(verbose):
                           geocode_data(zcta)''')
         cursor.execute('''CREATE INDEX IF NOT EXISTS logical_record_index ON 
                           logical_race_data(logical_record)''')
-        sys.stdout.write('{}OK{}\n'.format('\033[92m','\033[0m'))
+        sys.stdout.write('OK\n')
         # Now commit
         connection.commit()
         connection.close()                                                 

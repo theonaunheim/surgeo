@@ -12,11 +12,19 @@ import zipfile
 def setup_surname_table(verbose):
     '''This creates the surname database and does housekeeping.
     
-    It takes no arguments.
+    Args:
+        verbose: True/False for whether function outputs info.
+    Returns:
+        None
+    Raises:
+        None
     
     This downloads a single census data file which gives the relative ethnic 
     makeup for each individual name. It only includes names with over 100 
-    instances.'''
+    instances.
+    
+    '''
+    
     if verbose == True:
         sys.stdout.write('Checking db existence ... \t\t\t')
     db_path = os.path.join(os.path.expanduser('~'),
@@ -30,8 +38,7 @@ def setup_surname_table(verbose):
                             'census_data.csv')               
     if not os.path.exists(db_path):
         if verbose == True:
-            sys.stdout.write('{}FAIL{}\n'.format('\033[91m','\033[0m'))
-            sys.stdout.write('Creating db ... \n')
+            sys.stdout.write('\nCreating db ... \n')
         config_path = os.path.join(os.path.expanduser('~'),
                                    '.surgeo',
                                    'configuration.txt')
@@ -53,7 +60,7 @@ def setup_surname_table(verbose):
         # Done
         if verbose == True:
             sys.stdout.write('Re-checking folder setup ... \t\t\t')
-            sys.stdout.write('{}OK{}\n'.format('\033[92m','\033[0m'))
+            sys.stdout.write('OK\n')
             # Zip file
             sys.stdout.write('Extracting zip file ... \t\t\t')
         time.sleep(0)
@@ -64,7 +71,7 @@ def setup_surname_table(verbose):
         with open(csv_path, 'wb+') as f:
             f.write(data)
         if verbose == True:
-            sys.stdout.write('{}OK{}\n'.format('\033[92m','\033[0m'))
+            sys.stdout.write('OK\n')
         # Write line by line of csv to db
         csv_lines = open(csv_path, 'r').readlines()
         time.sleep(0)
@@ -107,7 +114,7 @@ def setup_surname_table(verbose):
             connection.commit()
             connection.close()
             if verbose == True:
-                sys.stdout.write('{}OK{}\n'.format('\033[92m','\033[0m'))
+                sys.stdout.write('OK\n')
         except sqlite3.Error as e:
             traceback.print_exc()
             connection.rollback()
@@ -115,7 +122,7 @@ def setup_surname_table(verbose):
             raise e
     else:
         if verbose == True:
-            sys.stdout.write('{}OK{}\n'.format('\033[92m','\033[0m'))
+            sys.stdout.write('OK\n')
             
 def download_bar(block_count, block_size, total_size):
     '''Report hook for use in db_setup_in_ram function.'''

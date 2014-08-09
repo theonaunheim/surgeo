@@ -26,7 +26,24 @@ import sys
 import surgeo
 
 def main(*args):
-    '''This is the main application when running the program from a CLI.'''
+    '''This is the main application when running the program from a CLI.
+    
+    Args:
+        --setup: (0 args) downloads and creates database for model instantiation
+        --pipe: (0 args) takes stdin, processes, and sends to stdout
+        --file: (2 args) takes 1. filepath input csv 2. filepath output csv
+        --simple: (2 args) takes zip and surname, returns text string
+        --complex: (2 args) takes zip and surname, returns detailed string
+    Returns:
+        --setup: None
+        --pipe: long text string
+        --file: None (output to csv file)
+        --simple: text string ('White')
+        --complex: long text string
+    Raises:
+        None
+    
+    '''
     parsed_args = surgeo.utilities.get_parser_args()
 ##### Setup
     if parsed_args.setup:

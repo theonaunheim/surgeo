@@ -31,7 +31,9 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.'''
+THE SOFTWARE.
+
+'''
 
 import os
 import sys
@@ -51,7 +53,17 @@ import surgeo.model
 import surgeo.utilities
 
 def data_setup(verbose=True):
-    '''Downloads data needed to instantiate SurgeoModel.'''
+    '''Downloads data needed to instantiate SurgeoModel.
+    
+    Args:
+        verbose: True/False determines whether text is output.
+    Returns:
+        None
+    Raises:
+        None
+    
+    '''
+    
     # Create necessary user data in home directory
     surgeo.utilities.setup_folder(verbose)
     # Setup surname db

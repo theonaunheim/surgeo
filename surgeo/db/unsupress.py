@@ -10,13 +10,21 @@ import traceback
 def reconstitute_data():
     '''Go through each row. Fill in estimates for redacted items.
     
-    This takes no arguments. 
+    Args:
+        None
+    Returns:
+        None
+    Raises:
+        None
     
     It is a simple function that transforms the database. For confidentiality 
     purposes, the Census Bureau scrubs certain data on race. This function 
     reconstitutes that data. We take the total number of scrubbed items, and 
     then divide it equally between the scrubbed categories. This yields an
-    approximation.'''
+    approximation.
+    
+    '''
+    
     db_path = os.path.join(os.path.expanduser('~'),
                            '.surgeo',
                            'census.db') 
