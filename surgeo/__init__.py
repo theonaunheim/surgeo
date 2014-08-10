@@ -1,13 +1,13 @@
 '''surgeo is a Bayesian Improved Surname Geocoding model written in Python 3.
- ___ _   _ _ __ __ _  ___  ___  
-/ __| | | | '__/ _` |/ _ \/ _ \ 
+ ___ _   _ _ __ __ _  ___  ___
+/ __| | | | '__/ _` |/ _ \/ _ \
 \__ \ |_| | | | (_| |  __/ (_) |
-|___/\__,_|_|  \__, |\___|\___/ 
-               |___/            
-               
+|___/\__,_|_|  \__, |\___|\___/
+               |___/
+
 Python code by Theo Naunheim. Model created by Mark N. Elliot et al.
 
-############################################################################### 
+###############################################################################
 License
 ###############################################################################
 
@@ -52,18 +52,19 @@ import surgeo.db
 import surgeo.model
 import surgeo.utilities
 
+
 def data_setup(verbose=True):
     '''Downloads data needed to instantiate SurgeoModel.
-    
+
     Args:
         verbose: True/False determines whether text is output.
     Returns:
         None
     Raises:
         None
-    
+
     '''
-    
+
     # Create necessary user data in home directory
     surgeo.utilities.setup_folder(verbose)
     # Setup surname db
@@ -74,5 +75,3 @@ def data_setup(verbose=True):
     surgeo.db.reconstitute_data()
     # Remove zip and other unnecessary files
     surgeo.utilities.folder_cleanup()
-
-

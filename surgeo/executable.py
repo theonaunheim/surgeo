@@ -2,22 +2,22 @@
 #coding: utf-8
 '''This is an executable wrapper for surgeo.'''
 
-################################################################################
+###############################################################################
 # Bootstrap
-################################################################################
+###############################################################################
 
 import os
 import sys
 
-# Kludgy fix for path if you want to execute outside of path.  
+# Kludgy fix for path if you want to execute outside of path.
 file_path = os.path.abspath(__file__)
 parent_dir = os.path.dirname(file_path)
 grandparent_dir = os.path.dirname(parent_dir)
 sys.path.append(grandparent_dir)
 
-################################################################################
+###############################################################################
 # Main
-################################################################################
+###############################################################################
 
 import argparse
 import os
@@ -25,11 +25,12 @@ import sys
 
 import surgeo
 
+
 def main(*args):
     '''This is the main application when running the program from a CLI.
-    
+
     Args:
-        --setup: (0 args) downloads and creates database for model instantiation
+        --setup: (0 args) downloads and creates database for model creation
         --pipe: (0 args) takes stdin, processes, and sends to stdout
         --file: (2 args) takes 1. filepath input csv 2. filepath output csv
         --simple: (2 args) takes zip and surname, returns text string
@@ -42,8 +43,9 @@ def main(*args):
         --complex: long text string
     Raises:
         None
-    
+
     '''
+
     parsed_args = surgeo.utilities.get_parser_args()
 ##### Setup
     if parsed_args.setup:
@@ -63,35 +65,33 @@ def main(*args):
                         result = model.race_data('00000', 'BAD_NAME')
                     print(result.as_string)
         except EOFError:
-            pass  
+            pass
 ##### Simple
     elif parsed_args.simple:
         model = surgeo.SurgeoModel()
         zcta = parsed_args.simple[0]
         surname = parsed_args.simple[1]
         race = model.guess_race(zcta, surname)
-        print(race)    
+        print(race)
 ##### Complex
     elif parsed_args.complex:
         model = surgeo.SurgeoModel()
         zcta = parsed_args.complex[0]
         surname = parsed_args.complex[1]
         result = model.race_data(zcta, surname)
-        print(result.as_string)  
+        print(result.as_string)
 ##### File
     elif parsed_args.file:
         model = surgeo.SurgeoModel()
         infile = parsed_args.file[0]
         outfile = parsed_args.file[1]
         model.process_csv(infile, outfile)
-    elif not any([ parsed_args.setup,
-                   parsed_args.pipe,
-                   parsed_args.simple,
-                   parsed_args.complex,
-                   parsed_args.file ]):
+    elif not any([parsed_args.setup,
+                  parsed_args.pipe,
+                  parsed_args.simple,
+                  parsed_args.complex,
+                  parsed_args.file]):
         print('No arguments given. Try \'--help\'?')
-    
+
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
-    
-

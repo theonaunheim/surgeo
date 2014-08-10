@@ -9,35 +9,36 @@ import traceback
 import urllib.request
 import zipfile
 
+
 def setup_surname_table(verbose):
     '''This creates the surname database and does housekeeping.
-    
+
     Args:
         verbose: True/False for whether function outputs info.
     Returns:
         None
     Raises:
         None
-    
-    This downloads a single census data file which gives the relative ethnic 
-    makeup for each individual name. It only includes names with over 100 
+
+    This downloads a single census data file which gives the relative ethnic
+    makeup for each individual name. It only includes names with over 100
     instances.
-    
+
     '''
-    
-    if verbose == True:
+
+    if verbose is True:
         sys.stdout.write('Checking db existence ... \t\t\t')
     db_path = os.path.join(os.path.expanduser('~'),
                            '.surgeo',
-                           'census.db')    
+                           'census.db')
     zipfile_path = os.path.join(os.path.expanduser('~'),
                                 '.surgeo',
-                                'data.zip')  
+                                'data.zip')
     csv_path = os.path.join(os.path.expanduser('~'),
                             '.surgeo',
-                            'census_data.csv')               
+                            'census_data.csv')
     if not os.path.exists(db_path):
-        if verbose == True:
+        if verbose is True:
             sys.stdout.write('\nCreating db ... \n')
         config_path = os.path.join(os.path.expanduser('~'),
                                    '.surgeo',
@@ -45,20 +46,20 @@ def setup_surname_table(verbose):
         parser_instance = configparser.ConfigParser()
         parser_instance.read(config_path)
         url = 'http://www.census.gov/genealogy/www/data/2000surnames/names.zip'
-        # No try block for url. If it fails, no point in continuing.     
+        # No try block for url. If it fails, no point in continuing.
         #site = urllib.request.urlopen(url)
         #length_in_bytes = int(site.info()['Content-Length'])
-        if verbose == True:
+        if verbose is True:
             urllib.request.urlretrieve(url,
                                        zipfile_path,
                                        download_bar)
         else:
             urllib.request.urlretrieve(url,
                                        zipfile_path)
-        if verbose == True:
+        if verbose is True:
             sys.stdout.write('\n')
         # Done
-        if verbose == True:
+        if verbose is True:
             sys.stdout.write('Re-checking folder setup ... \t\t\t')
             sys.stdout.write('OK\n')
             # Zip file
@@ -70,7 +71,7 @@ def setup_surname_table(verbose):
         time.sleep(0)
         with open(csv_path, 'wb+') as f:
             f.write(data)
-        if verbose == True:
+        if verbose is True:
             sys.stdout.write('OK\n')
         # Write line by line of csv to db
         csv_lines = open(csv_path, 'r').readlines()
@@ -81,39 +82,40 @@ def setup_surname_table(verbose):
         connection = sqlite3.connect(db_path)
         cursor = connection.cursor()
         try:
-            cursor.execute('''CREATE TABLE IF NOT EXISTS surname_data (id 
-                              INTEGER PRIMARY KEY, name TEXT, rank INTEGER, 
-                              count INTEGER, prop1000K REAL, cum_prop100K REAL, 
-                              pctwhite REAL, pctblack REAL, pctapi REAL, 
-                              pctaian REAL, pct2prace REAL, 
+            cursor.execute('''CREATE TABLE IF NOT EXISTS surname_data (id
+                              INTEGER PRIMARY KEY, name TEXT, rank INTEGER,
+                              count INTEGER, prop1000K REAL, cum_prop100K REAL,
+                              pctwhite REAL, pctblack REAL, pctapi REAL,
+                              pctaian REAL, pct2prace REAL,
                               pcthispanic REAL)''')
-            cursor.execute('''CREATE INDEX IF NOT EXISTS name_index ON 
+            cursor.execute('''CREATE INDEX IF NOT EXISTS name_index ON
                               surname_data(name)''')
             # Strip csv header.
             for line in csv_lines[1:]:
                 time.sleep(0)
                 cursor.execute('''INSERT into surname_data VALUES (NULL, ?, ?,
                                   ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                                  (line.split(',')))
+                               (line.split(',')))
                 line_count += 1
-                percent = int(decimal.Decimal(line_count) / 
+                percent = int(decimal.Decimal(line_count) /
                               decimal.Decimal(csv_length) * 100)
-                if verbose == True:
+                if verbose is True:
                     try:
                         last_written_percent
                     except NameError:
                         last_written_percent = 0
                     # Prevent flicker. Only update when percentage changes
                     if percent > last_written_percent:
-                        sys.stdout.write('\rItems written: {}%'.format(percent))
+                        sys.stdout.write('\rItems written: {}%'.
+                                         format(percent))
                         last_written_percent = percent
-            if verbose == True:
+            if verbose is True:
                 sys.stdout.write('\rItems written: 100%')
                 sys.stdout.write('\n')
                 sys.stdout.write('Db write cleanup ... \t\t\t\t')
             connection.commit()
             connection.close()
-            if verbose == True:
+            if verbose is True:
                 sys.stdout.write('OK\n')
         except sqlite3.Error as e:
             traceback.print_exc()
@@ -121,15 +123,14 @@ def setup_surname_table(verbose):
             connection.close()
             raise e
     else:
-        if verbose == True:
+        if verbose is True:
             sys.stdout.write('OK\n')
-            
+
+
 def download_bar(block_count, block_size, total_size):
     '''Report hook for use in db_setup_in_ram function.'''
-    percentage = int((decimal.Decimal(block_count) * 
+    percentage = int((decimal.Decimal(block_count) *
                       decimal.Decimal(block_size) /
                       decimal.Decimal(total_size) * 100))
     sys.stdout.write('\rDownloading surname data: {}%'.format(str(percentage)))
     time.sleep(0)
-
-
