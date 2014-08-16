@@ -97,12 +97,3 @@ https://dl.dropboxusercontent.com/u/26853373/census.db
 
 Database dump:
 https://dl.dropboxusercontent.com/u/26853373/sql_dump.txt
-
-
-
-
-
-
-
-
-https://www.jeffknupp.com/blog/2013/11/29/improve-your-python-decorators-explained/
