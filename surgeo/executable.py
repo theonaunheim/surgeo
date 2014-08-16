@@ -3,24 +3,10 @@
 '''This is an executable wrapper for surgeo.'''
 
 ###############################################################################
-# Bootstrap
-###############################################################################
-
-import os
-import sys
-
-# Kludgy fix for path if you want to execute outside of path.
-file_path = os.path.abspath(__file__)
-parent_dir = os.path.dirname(file_path)
-grandparent_dir = os.path.dirname(parent_dir)
-sys.path.append(grandparent_dir)
-
-###############################################################################
 # Main
 ###############################################################################
 
 import argparse
-import os
 import sys
 
 import surgeo
@@ -46,6 +32,7 @@ def main(*args):
 
     '''
 
+##### Parse arguments
     parsed_args = surgeo.utilities.get_parser_args()
 ##### Setup
     if parsed_args.setup:
@@ -92,6 +79,7 @@ def main(*args):
                   parsed_args.complex,
                   parsed_args.file]):
         print('No arguments given. Try \'--help\'?')
+        # GUI code to go here
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

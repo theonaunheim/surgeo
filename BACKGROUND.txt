@@ -1,6 +1,6 @@
-################################################################################
+###############################################################################
 Background
-################################################################################
+###############################################################################
 
 The Consumer Financial Protection Bureau (CFPB) appears to use Bayesian 
 Improved Surname Geocoding Analysis as a tool for analyzing disparate impact 
@@ -17,9 +17,9 @@ providing a preliminary indication as to whether disparate impact
 discrimination may exist. For simplicity's sake, surgeo uses the same US Census 
 data referenced in the original model.
 
-################################################################################
+###############################################################################
 Model
-################################################################################
+###############################################################################
 
 Where k is census block
 Where j is surname
@@ -47,9 +47,9 @@ Unlisted surnames are given calues consistent with the percentages below.
 
 Geocode data comes from racial proportions in SF1 file.
 
-################################################################################
+###############################################################################
 Surname Data: Correction for surnames less than 100 in Census information
-################################################################################
+###############################################################################
 
 Unlisted name popuation breakdown according to Jirousek and Preucil
 On the effective implementation of the iterative proportional fitting procedure.
@@ -62,9 +62,9 @@ Comput. Stat. Data Anal. 19(2), 177–189 (1995):
 0.8% multiracial
 0.9% AI/AN
 
-################################################################################
+###############################################################################
 Surname Data: Database fields for names occuring more than 100 times
-################################################################################
+###############################################################################
 
 Surname file:
 http://www.census.gov/genealogy/www/freqnames2k.html
@@ -89,9 +89,9 @@ pctaian         Percent Non-Hispanic American Indian and Alaskan Native Only
 pct2prace       Percent Non-Hispanic of Two or More Races
 pcthispanic     Percent Hispanic Origin
 
-################################################################################
+###############################################################################
 Block Race Data
-################################################################################
+###############################################################################
 
 Census file 1, data components (need all 50 states):
 http://www2.census.gov/census_2000/datasets/Summary_File_1/
@@ -109,7 +109,7 @@ State file 01 contains tables P1-P5 (5 meta, 222 data items).
 ------P1 = line[5:6] (Total population)
 ------P2 = line[6:12] (Urban and rural)
 ------P3 = line[12:83] (Race)
-------P4 = line[83:156] (Hispanic and latino and not hispanic or latino by race)
+------P4 = line[83:156] (Hispanic and latino and not hisp or latino by race)
 ------P5 = line[156:227] (Race for population 18 and older)
     
 State file 02 contains tables P6-P18 (5 meta, 238 data items)

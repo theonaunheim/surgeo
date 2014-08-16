@@ -35,22 +35,33 @@ THE SOFTWARE.
 
 '''
 
-import os
 import sys
+
 
 # Version check before imports. If not Python3, kill import
 if sys.hexversion < 0x03000000:
     raise ImportError('Python version of 3.0 or higher required.')
 
-# Put SurgeoModel, SurgeoResult, and SurgeoError in surgeo namespace
-from surgeo.utilities.class_file import SurgeoModel
-from surgeo.utilities.class_file import SurgeoResult
-from surgeo.utilities.class_file import SurgeoError
-from surgeo.utilities.class_file import ErrorResult
 
+# Put SurgeoModel, SurgeoResult, and SurgeoError in surgeo namespace
+import surgeo
 import surgeo.db
 import surgeo.model
 import surgeo.utilities
+
+from surgeo.utilities.error_class import SurgeoError
+
+from surgeo.utilities.surgeo_class import SurgeoModel
+from surgeo.utilities.surgeo_class import SurgeoResult
+from surgeo.utilities.surgeo_class import SurgeoErrorResult
+
+from surgeo.utilities.sur_class import SurModel
+from surgeo.utilities.sur_class import SurResult
+from surgeo.utilities.sur_class import SurErrorResult
+
+from surgeo.utilities.geo_class import GeoModel
+from surgeo.utilities.geo_class import GeoResult
+from surgeo.utilities.geo_class import GeoErrorResult
 
 
 def data_setup(verbose=True):

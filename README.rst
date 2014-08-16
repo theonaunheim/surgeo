@@ -40,7 +40,7 @@ If using as a Python module in your program
     # Download data and create tables (takes some time)
     surgeo.data_setup(verbose=True)
     
-    # Create model object
+    # Create model object (SurModel and GeoModel also exist)
     model = surgeo.SurgeoModel() 
     
     # Simple version returns 'White'
