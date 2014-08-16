@@ -95,8 +95,8 @@ Prefab files for offline use
 Database link:
 https://dl.dropboxusercontent.com/u/26853373/census.db
 
-Logo link:
-https://dl.dropboxusercontent.com/u/26853373/logo.gif
+Database dump:
+https://dl.dropboxusercontent.com/u/26853373/sql_dump.txt
 
 
 
@@ -105,4 +105,4 @@ https://dl.dropboxusercontent.com/u/26853373/logo.gif
 
 
 
-
+https://www.jeffknupp.com/blog/2013/11/29/improve-your-python-decorators-explained/
