@@ -129,7 +129,7 @@ class SurModel(object):
             try:
                 surname_index
             except NameError:
-                raise SurgeoError('.csv row 1 lacks \'surname\' field.')
+                raise surgeo.SurgeoError('.csv row 1 lacks \'surname\' field.')
             # Go through all lines, amended lines with new data, and stage.
             # Writing to string buffer rather than file.
             line_buffer = io.StringIO()

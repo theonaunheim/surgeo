@@ -142,7 +142,7 @@ class GeoModel(object):
             try:
                 zip_index
             except NameError:
-                raise SurgeoError('.csv row 1 lacks \'zip\' field.')
+                raise surgeo.SurgeoError('.csv row 1 lacks \'zip\' field.')
             # Go through all lines, amended lines with new data, and stage.
             # Writing to string buffer rather than file.
             line_buffer = io.StringIO()
