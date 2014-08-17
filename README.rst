@@ -114,7 +114,7 @@ If using as a program (if installed can also 'python3 -m surgeo')
 Prefab files
 --------------
 Windows installer:
-https://dl.dropboxusercontent.com/u/26853373/surgeo-0.6.6-amd64.msi
+https://dl.dropboxusercontent.com/u/26853373/surgeo-0.6.7-amd64.msi
 
 Database link:
 https://dl.dropboxusercontent.com/u/26853373/census.db
