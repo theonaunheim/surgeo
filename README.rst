@@ -3,7 +3,7 @@
 Surgeo
 ==============
 
-*Link to Windows installer at bottom.*
+**Link to Windows installer at bottom.**
 
 Surgeo is a hackish attempt to reverse engineer the Consumer Financial 
 Protection Bureau's (CFPB) Bayesian Improved Surname Geocode Analysis (BISG).
