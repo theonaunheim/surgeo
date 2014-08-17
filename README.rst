@@ -20,10 +20,15 @@ on how it is installed. Additionally, this guide presumes you are working on
 a Unix-like system. If running Windows, you will need to substitute backslashes 
 instead of the slashes used in the paths below.
 
+Command line utility only as of August 2014. GUI to follow.
+
 Installing
 --------------
 
 ::
+    <Download installer at link below. Run. Type 'surgeo' into cmd.exe>
+    
+    or
     
     pip3 install surgeo
     
@@ -76,10 +81,23 @@ If using as a program (if installed can also 'python3 -m surgeo')
 
     surgeo --simple 63110 Naunheim
 
+    White
+    
 --complex takes zip and surname (returns detailed string)
 ::
 
     surgeo /path_here/executeable.py --complex 63110 Naunheim
+    
+    probable_race=White
+    probable_race_percent=0.817650
+    surname=NAUNHEIM
+    zip=63110
+    hispanic=0.007056
+    white=0.817650
+    black=0.172591
+    asian=0.002249
+    indian=0.000077
+    multiracial=0.000377
 
 --pipe takes zip and surname arguments
 ::
