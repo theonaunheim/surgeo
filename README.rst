@@ -3,6 +3,8 @@
 Surgeo
 ==============
 
+*Link to Windows installer at bottom.*
+
 Surgeo is a hackish attempt to reverse engineer the Consumer Financial 
 Protection Bureau's (CFPB) Bayesian Improved Surname Geocode Analysis (BISG).
 
@@ -67,31 +69,34 @@ If using as a program (if installed can also 'python3 -m surgeo')
 --file argument takes input and output (no return)
 ::
 
-    python3 /path_here/executeable.py --file /path/input.csv /path/output.csv
+    surgeo --file /path/input.csv /path/output.csv
 
 --simple takes zip and surname (returns string)
 ::
 
-    python3 /path_here/executeable.py --simple 63110 Naunheim
+    surgeo --simple 63110 Naunheim
 
 --complex takes zip and surname (returns detailed string)
 ::
 
-    python3 /path_here/executeable.py --complex 63110 Naunheim
+    surgeo /path_here/executeable.py --complex 63110 Naunheim
 
 --pipe takes zip and surname arguments
 ::
 
-    cat | python3 /path_here/executeable.py --pipe
+    cat | surgeo --pipe
 
 --setup takes no arguments
 ::
 
-    python3 /path_here/executeable.py --setup
+    surgeo --setup
 
 
-Prefab files for offline use
+Prefab files
 --------------
+Windows installer:
+https://dl.dropboxusercontent.com/u/26853373/surgeo-0.6.6-amd64.msi
+
 Database link:
 https://dl.dropboxusercontent.com/u/26853373/census.db
 
