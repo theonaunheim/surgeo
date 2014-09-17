@@ -26,7 +26,6 @@ Installing
 --------------
 
 ::
-
     <Download installer at link below. Run. Type 'surgeo' into cmd.exe>
     
     or
@@ -36,41 +35,15 @@ Installing
     or
     
     python3 <path_to_setup.py> install
-
-
-If using as a Python module in your program
---------------
-
-::
-
-    import surgeo
     
-    # Download data and create tables (takes some time)
-    surgeo.data_setup(verbose=True)
     
-    # Create model object (SurModel and GeoModel also exist)
-    model = surgeo.SurgeoModel() 
-    
-    # Simple version returns 'White'
-    model.guess_race(63110, 'Naunheim') 
-    
-    # race_data() returns object
-    surgeo_result = model.race_data(63110, 'Naunheim')
-    
-    # 'White'
-    print(surgeo_result.probable_race) 
-    
-    # '.0328'
-    print(surgeo_result.black) 
-    
-    # 'Naunheim'
-    print(surgeo_result.surname) 
-    
-    # Create new .csv with race data
-    model.process_csv(csv_path, new_csv_path) 
-
 If using as a program (if installed can also 'python3 -m surgeo')
 --------------
+
+--setup needs to be run before program will work. Requires internet access.
+::
+
+    surgeo --setup
 
 --file argument takes input and output (no return)
 ::
@@ -105,10 +78,37 @@ If using as a program (if installed can also 'python3 -m surgeo')
 
     cat | surgeo --pipe
 
---setup takes no arguments
+
+If using as a Python module in your program
+--------------
+
 ::
 
-    surgeo --setup
+    import surgeo
+    
+    # Download data and create tables (takes some time)
+    surgeo.data_setup(verbose=True)
+    
+    # Create model object (SurModel and GeoModel also exist)
+    model = surgeo.SurgeoModel() 
+    
+    # Simple version returns 'White'
+    model.guess_race(63110, 'Naunheim') 
+    
+    # race_data() returns object
+    surgeo_result = model.race_data(63110, 'Naunheim')
+    
+    # 'White'
+    print(surgeo_result.probable_race) 
+    
+    # '.0328'
+    print(surgeo_result.black) 
+    
+    # 'Naunheim'
+    print(surgeo_result.surname) 
+    
+    # Create new .csv with race data
+    model.process_csv(csv_path, new_csv_path) 
 
 
 Prefab files
