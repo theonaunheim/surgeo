@@ -2,24 +2,43 @@
 Background
 ###############################################################################
 
-The Consumer Financial Protection Bureau (CFPB) appears to use Bayesian 
-Improved Surname Geocoding Analysis as a tool for analyzing disparate impact 
-discrimination (see Ally Financial consent order, December 2013). In a CFPB 
-blog post titled "Preventing illegal discrimination in auto lending" dated 
-November 4, 2013, a CFPB representitive referenced a study which was cited as 
-supporting the CFPB's approach. This study, "Using the Census Bureau's Surname 
-List to Improve Estimates of Race/Ethnicity and Associated Disparities", was 
-published in the Journal of Health Services and Outcomes Research Methodology 
-v. 9, no. 2, June 2009, p. 69-83.
+On September 18, 2014, the Consumer Financial Protection Bureau (CFPB) 
+released a whitepaper entitled, "Using Publicly Available Information to Proxy 
+For Unidentified Race and Ethnicity". Link here (current as of September 19, 
+2014):
 
-surgeo is an MIT-licensed tool for quickly analyzing datasets and then 
+http://files.consumerfinance.gov/f/201409_cfpb_report_proxy-methodology.pdf
+
+The whitepaper detailed the CFPB's use of Bayesian Improved Surname Geocoding 
+(BISG) analysis for analyzing disparate impact discrimination under the Equal 
+Credit Opportunity Act (ECOA). BISG analysis allows for the determination of 
+race through the use of proxy information (such as surname and geographical 
+information). The CFPB's BISG model is based off of a 2009 study, "Using the 
+Census Bureau's Surname List to Improve Estimates of Race/Ethnicity and 
+Associated Disparities", which was published in the Journal of Health Services 
+and Outcomes Research Methodology v. 9, no. 2, June 2009, p. 69-83. A copy of 
+this study may be purchased here:
+
+http://link.springer.com/article/10.1007%2Fs10742-009-0047-1
+
+At the same time the whitepaper was released, the CFPB released a reference 
+model which it claims to use for its analysis. The model is writen in STATA 12 
+and requires geocode pre-formatted data. The model can be found here:
+
+https://github.com/cfpb/proxy-methodology
+
+Surgeo is an MIT-licensed tool for quickly analyzing datasets and then 
 providing a preliminary indication as to whether disparate impact 
-discrimination may exist. For simplicity's sake, surgeo uses the same US Census 
-data referenced in the original model.
+discrimination may exist. It uses publically availible data and can be run 
+using free and open source components.
 
 ###############################################################################
 Model
 ###############################################################################
+
+The model upon which this software is based was created by Mark N. Elliot et 
+al. in the article "Using the Census Bureau's surname list to improve 
+estimates of race/ethnicity and associated disparities".
 
 Where k is census block
 Where j is surname
@@ -36,20 +55,18 @@ Where u(i,j,k) = p(i|j) * r(k|i):
 q(i|j,k) = ---------------------------------------------------------------
            u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
 
-The model upon which this software is based was created by Mark N. Elliot et 
-al. in the article "Using the Census Bureau's surname list to improve estimates 
-of race/ethnicity and associated disparities". The license above only covers 
-the computer program itself. The author of this software claims no proprietary 
-right in the model.
 
-Listed surnames come from file giving proportions for all names (count >= 100)
-Unlisted surnames are given calues consistent with the percentages below.
+
+
 
 Geocode data comes from racial proportions in SF1 file.
 
 ###############################################################################
-Surname Data: Correction for surnames less than 100 in Census information
+Surname Data
 ###############################################################################
+
+Listed surnames come from file giving proportions for all names (count >= 100)
+Unlisted surnames are given calues consistent with the percentages below.
 
 Unlisted name popuation breakdown according to Jirousek and Preucil
 On the effective implementation of the iterative proportional fitting procedure.
