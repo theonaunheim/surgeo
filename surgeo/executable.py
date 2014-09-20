@@ -11,6 +11,7 @@ import sys
 
 import surgeo
 
+
 def main(*args):
     '''This is the main application when running the program from a CLI.
 

@@ -1,0 +1,4 @@
+1. Subclass SurgeoModel, SurModel, and GeoModel from abstract base class
+2. Make model1 more modular
+3. Write tests for everything.
+4. DRY: automatically create strings, csv from attributes
