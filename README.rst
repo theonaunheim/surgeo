@@ -59,7 +59,7 @@ If using as a program (if installed can also 'python3 -m surgeo')
 --complex takes zip and surname (returns detailed string)
 ::
 
-    surgeo --complex 63110 Naunheim
+    surgeo /path_here/executeable.py --complex 63110 Naunheim
     
     probable_race=White
     probable_race_percent=0.817650
