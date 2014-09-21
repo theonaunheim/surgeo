@@ -6,18 +6,15 @@ Surgeo
 **Link to Windows installer at bottom.**
 
 Surgeo is an attempt to reverse engineer the Consumer Financial Protection 
-Bureau's (CFPB) Bayesian Improved Surname Geocode Analysis (BISG).
+Bureau's (CFPB) Bayesian Improved Surname Geocode Analysis (BISG). Python code 
+by Theo Naunheim. Model created by Mark N. Elliot et al. For details, please 
+see BACKGROUND.txt.
 
-Python code by Theo Naunheim. Model created by Mark N. Elliot et al. For 
-details, please see BACKGROUND.txt.
-
-Please note that your shortcut to Python may be 'python' or 'python3' depending 
-on how it is installed.
-
-Command line utility only as of August 2014 (run through cmd.exe). GUI later.
+Please note that your shortcut to Python may be 'python' or 'python3' 
+depending on how it is installed. Command line utility only as of August 2014 
+(run through cmd.exe). GUI later.
 
 Version v0.6.8: 
-
 1) more closely mimics the CFPB model by only providing valid results where 
 both name and zip are availible.
 2) fixes a misapplication of iterative proportional fitting.
