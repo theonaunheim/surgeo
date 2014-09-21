@@ -48,21 +48,6 @@ Unlisted surnames are given calues consistent with the percentages below.
 Geocode data comes from racial proportions in SF1 file.
 
 ###############################################################################
-Surname Data: Correction for surnames less than 100 in Census information
-###############################################################################
-
-Unlisted name popuation breakdown according to Jirousek and Preucil
-On the effective implementation of the iterative proportional fitting procedure.
-Comput. Stat. Data Anal. 19(2), 177–189 (1995):
-
-70.5% White
-11.1% Hispanic
-11.3% Black
-7.0% API
-0.8% multiracial
-0.9% AI/AN
-
-###############################################################################
 Surname Data: Database fields for names occuring more than 100 times
 ###############################################################################
 
@@ -131,7 +116,7 @@ P8[3] = Not H&L Black (Used for Black)
 P8[4] = Not H&L AI (Used for AI)
 P8[5] = Not H&L Asian (Used for Asian)
 P8[6] = Not H&L PI (Used for PI)
-P8[7] = Not H&L Other
+P8[7] = Not H&L Other (used for all; see proportional fitting below)
 P8[8] = Not H&L 2 or more races
 P8[9] = H&L Total (used for Hispanic)
 P8[10] = H&L White 
@@ -152,8 +137,20 @@ State Geo file ties census blocks to zip codes
 --block = line[62:66]
 --ZCTA (approximation for ZIP) = line[160:165]
 
+###############################################################################
+Proportional fitting; census correction for "Other Race"
+###############################################################################
 
+For items listed "Other Race" breakdown according to Jirousek and Preucil
+On the effective implementation of the iterative proportional fitting procedure.
+Comput. Stat. Data Anal. 19(2), 177–189 (1995):
 
+70.5% White
+11.1% Hispanic
+11.3% Black
+7.0% API
+0.8% multiracial
+0.9% AI/AN
 
 
 

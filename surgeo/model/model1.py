@@ -134,22 +134,13 @@ def get_prob_surname(race,
                       pctaian, pct2prace FROM surname_data WHERE name=?''',
                    (surname,))
     fetched = cursor.fetchone()
-    try:
-        # csv in percentage form
-        hispanic = fetched[0]/100
-        white = fetched[1]/100
-        black = fetched[2]/100
-        api = fetched[3]/100
-        ai = fetched[4]/100
-        multiracial = fetched[5]/100
-    except TypeError:
-        # If not in database (nonetype returned), fixed percentages from study
-        hispanic = float(11.1)/100
-        white = float(70.5)/100
-        black = float(11.3)/100
-        api = float(7.0)/100
-        ai = float(.9)/100
-        multiracial = float(.8)/100
+    # csv in percentage form
+    hispanic = fetched[0]/100
+    white = fetched[1]/100
+    black = fetched[2]/100
+    api = fetched[3]/100
+    ai = fetched[4]/100
+    multiracial = fetched[5]/100
     # Sync race with probability
     prob_index = {1: hispanic,
                   2: white,

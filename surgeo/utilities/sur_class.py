@@ -49,7 +49,17 @@ class SurModel(object):
             None
 
         '''
-
+        
+        # Check for name
+        try:
+            cursor = self.db.cursor()
+            cursor.execute('''SELECT pctwhite, pctblack FROM
+                              surname_data WHERE name=?''', 
+                              (surname.upper(),))
+            num_white, num_black = cursor.fetchone()
+        except TypeError:
+            result = SurErrorResult()
+            return result.probable_race
         try:
             result_probabilities = dict()
             for key, value in surgeo.model.model1.race_dict.items():
@@ -79,6 +89,15 @@ class SurModel(object):
 
         '''
 
+        try:
+            cursor = self.db.cursor()
+            cursor.execute('''SELECT pctwhite, pctblack FROM
+                              surname_data WHERE name=?''', 
+                              (surname.upper(),))
+            num_white, num_black = cursor.fetchone()
+        except TypeError:
+            result = SurErrorResult()
+            return result.probable_race
         try:
             result_probabilities = dict()
             for key, value in surgeo.model.model1.race_dict.items():

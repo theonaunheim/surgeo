@@ -53,10 +53,15 @@ class SurgeoModel(object):
         # Check for existence of zip code. Return bad result if bad.
         try:
             cursor = self.db.cursor()
+            # Will throw type error if not in db
             cursor.execute('''SELECT state, logical_record FROM
                            geocode_data WHERE zcta=?''', (zcta,))
             state, logical_record = cursor.fetchone()
-            # Zip code is in database, so run it.
+            cursor.execute('''SELECT pctwhite, pctblack FROM
+                           surname_data WHERE name=?''', 
+                           (surname.upper(),))
+            num_white, num_black = cursor.fetchone()
+            # DB entries present is in database, so run it.
             result = surgeo.model.model1.run_model(zcta,
                                                    surname.upper(),
                                                    self.db)
@@ -83,7 +88,11 @@ class SurgeoModel(object):
             cursor.execute('''SELECT state, logical_record FROM
                            geocode_data WHERE zcta=?''', (zcta,))
             state, logical_record = cursor.fetchone()
-            # Zip code is in database, so run it.
+            cursor.execute('''SELECT pctwhite, pctblack FROM
+                           surname_data WHERE name=?''', 
+                           (surname.upper(),))
+            num_white, num_black = cursor.fetchone()            
+            # data is in database, so run it.
             result = surgeo.model.model1.run_model(zcta,
                                                    surname.upper(),
                                                    self.db)

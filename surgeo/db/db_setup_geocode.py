@@ -29,6 +29,15 @@ def setup_geocode_table(verbose):
     which is broken down by race.
 
     '''
+    
+    # For 'Other race" Iterative Proportional Fitting is used. Costants here.
+    OTHER_RACE_HISPANIC_RATE = float(11.1)/100
+    OTHER_RACE_WHITE_RATE = float(70.5)/100
+    OTHER_RACE_BLACK_RATE = float(11.3)/100
+    OTHER_RACE_API_RATE = float(7.0)/100
+    OTHER_RACE_AI_RATE = float(.9)/100
+    OTHER_RACE_MULTIRACIAL_RATE = float(.8)/100
+    
     if verbose is True:
         sys.stdout.write('Downloading census files ... \t\t\n')
     # Created named tuple for organizing
@@ -158,22 +167,47 @@ def setup_geocode_table(verbose):
                                          filename)
                 with open(file_path, 'r', encoding='latin-1') as f4:
                     for line in f4:
-                        time.sleep(0)
+                        # Remainder db input
+                        table_p8 = line.split(',')[86:103]
                         state = line[5:7]
                         logical_record = line[15:22]
-                        table_p8 = line.split(',')[86:103]
+                        # Need to translate "Other race" into one of the
+                        # six categories through proportional fitting.
+                        num_other = table_p8[7]
+                        OTHER_RACE_HISPANIC_RATE
+                        OTHER_RACE_WHITE_RATE
+                        OTHER_RACE_BLACK_RATE
+                        OTHER_RACE_API_RATE
+                        OTHER_RACE_AI_RATE
+                        OTHER_RACE_MULTIRACIAL_RATE
+                        other_hispanic = str(round(int(num_other) * 
+                                                   OTHER_RACE_HISPANIC_RATE))
+                        other_white = str(round(int(num_other) * 
+                                                OTHER_RACE_WHITE_RATE))
+                        other_black = str(round(int(num_other) * 
+                                                OTHER_RACE_BLACK_RATE))
+                        other_api = str(round(int(num_other) * 
+                                              OTHER_RACE_API_RATE))
+                        other_ai = str(round(int(num_other) * 
+                                             OTHER_RACE_AI_RATE))
+                        other_multiracial = str(round(int(num_other) * 
+                                                OTHER_RACE_MULTIRACIAL_RATE))
                         # Breaking up table p8
                         total_pop = table_p8[0]
                         total_not_hispanic = table_p8[1]
-                        num_white = table_p8[2]
-                        num_black = table_p8[3]
-                        num_ai = table_p8[4]
+                        num_white = str(int(table_p8[2]) + int(other_white))
+                        num_black = str(int(table_p8[3]) + int(other_black))
+                        num_ai = str(int(table_p8[4]) + int(other_ai))
                         num_asian = table_p8[5]
                         num_pacisland = table_p8[6]
-                        num_api = str(int(num_asian) + int(num_pacisland))
+                        num_api = str(int(num_asian) + 
+                                      int(num_pacisland) +
+                                      int(other_api))
                         num_other = table_p8[7]
-                        num_multi = table_p8[8]
-                        num_hispanic = table_p8[9]
+                        num_multi = str(int(table_p8[8]) + 
+                                        int(other_multiracial))
+                        num_hispanic = str(int(table_p8[9]) +
+                                           int(other_hispanic))  
                         cursor.execute('''INSERT INTO logical_race_data(
                                           id, state, logical_record,
                                           num_white, num_black,
