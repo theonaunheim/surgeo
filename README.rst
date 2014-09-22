@@ -133,5 +133,5 @@ If using as a Python module in your program
 Prefab files
 --------------
 Windows installer:
-https://dl.dropboxusercontent.com/u/26853373/surgeo-0.6.7-amd64.msi
+https://dl.dropboxusercontent.com/u/26853373/surgeo-0.6.8-amd64.msi
 

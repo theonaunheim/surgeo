@@ -1,6 +1,12 @@
 #!/usr/local/bin/python3
 #coding: utf-8
 
+#python setup.py bdist_msi --add-to-path True 
+#python3 setup.py bdist_msi --add-to-path True
+# Should also have a 'surgeo.py' file in the setup.py directory that contains:
+#   from surgeo.executable import main
+#   main
+
 from cx_Freeze import setup, Executable
 
 build_exe_options = {'include_msvcr': True}
