@@ -14,7 +14,8 @@ Please note that your shortcut to Python may be 'python' or 'python3'
 depending on how it is installed. Command line utility only as of August 2014 
 (run through cmd.exe). GUI later.
 
-Version v0.6.8: 
+Version v0.6.8:
+
 1) more closely mimics the CFPB model by only providing valid results where 
 both name and zip are availible.
 2) fixes a misapplication of iterative proportional fitting.

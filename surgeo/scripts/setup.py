@@ -18,7 +18,7 @@ exe = Executable(
     compress = True)
 
 setup(name='surgeo',
-      version='0.6.7',
+      version='0.6.8',
       description='Disparate impact testing and surname geocoding analysis',
       url='https://github.com/theonaun/surgeo',
       author='Theo Naunheim',

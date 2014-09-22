@@ -97,7 +97,7 @@ class SurModel(object):
             num_white, num_black = cursor.fetchone()
         except TypeError:
             result = SurErrorResult()
-            return result.probable_race
+            return result
         try:
             result_probabilities = dict()
             for key, value in surgeo.model.model1.race_dict.items():
