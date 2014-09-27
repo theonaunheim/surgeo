@@ -128,7 +128,50 @@ If using as a Python module in your program
     
     # Create new .csv with race data
     model.process_csv(csv_path, new_csv_path) 
+ 
+
+Weighted Arithmetic Mean (Not in PyPI or .exe; requires Python 3.4)
+--------------
+
+::
+
+    import surgeo
+    from surgeo.experimental.weighted_mean import get_weighted_mean
     
+    get_weighted_mean('/path/input.csv', '/path/output.csv')
+
+    # Takes csv in the following format
+    
+    surname	    zip	    examined_subject
+    Hernandez	93040	1
+    Molina	    93040	1
+    Martinez	93040	1
+    Garcia	    93040	2
+    Jackson	    63110	4
+    Rice	    63110	5
+    Smith	    63110	4
+    Uncommon	63144	8
+    Smith	    0	    8
+    Johnson	    63144	8
+    Davidson	63144	8
+    Brown	    63144	8
+    White	    63144	10
+    Green	    63144	10
+    Blue	    63144	8
+    Black	    63144	8
+
+    # And outputs csv
+    
+    Sample mean: 5.571428571428571
+    Sample standard deviation: 3.3903547741358127
+
+    Average Hispanic: 1.255362810425815
+    Average White: 6.519340790629925
+    Average Black: 4.514216991667383
+    Average API: 1.9147187362174731
+    Average AI: 1.3957282520704903
+    Average Multi: 1.3318490666947582
+
 
 Prefab files
 --------------

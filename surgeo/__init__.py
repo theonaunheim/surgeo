@@ -39,6 +39,7 @@ import sys
 
 
 # Version check before imports. If not Python3, kill import
+# python 34 = 50594032
 if sys.hexversion < 0x03000000:
     raise ImportError('Python version of 3.0 or higher required.')
 
