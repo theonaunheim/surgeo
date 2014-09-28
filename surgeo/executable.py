@@ -11,6 +11,8 @@ import sys
 
 import surgeo
 
+from surgeo.utilities.redirector_class import Redirector
+
 def main(*args):
     '''This is the main application when running the program from a CLI.
 
@@ -20,6 +22,7 @@ def main(*args):
         --file: (2 args) takes 1. filepath input csv 2. filepath output csv
         --simple: (2 args) takes zip and surname, returns text string
         --complex: (2 args) takes zip and surname, returns detailed string
+        -q: 'quiet' option that suppresses output.
     Returns:
         --setup: None
         --pipe: long text string
@@ -30,12 +33,15 @@ def main(*args):
         None
 
     '''
-
+    
 ##### Parse arguments
     parsed_args = surgeo.utilities.get_parser_args()
+    surgeo.redirector = Redirector()
+    if parsed_args.quiet or parsed_args.pipe:
+        surgeo.redirector.direct_to_null()
 ##### Setup
-    if parsed_args.setup:
-        surgeo.data_setup(verbose=True)
+    surgeo.redirector.add('Running setup ...')
+    surgeo.setup_functions()
 ##### Pipe
     if parsed_args.pipe:
         model = surgeo.SurgeoModel()

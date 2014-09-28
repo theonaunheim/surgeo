@@ -18,7 +18,7 @@ class GeocodeModel(BaseModel):
     
     def __init__(self):
         super().__init__()
-    
+  
     def db_check(self):
         '''This checks accuracy of database.
         
@@ -73,7 +73,7 @@ class GeocodeModel(BaseModel):
         atexit.register(self.temp_cleanup)
         ftp = ftplib.FTP('ftp.census.gov')
         ftp.login()
-        ftp.cwd('census_2000/datasets/Summary_File_1')
+        ftp.cwd('census_2010/04-Summary_File_1')
         # List files
         state_list = ftp.nlst()
         # Drop all elements prior to states

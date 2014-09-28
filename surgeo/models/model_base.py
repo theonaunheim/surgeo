@@ -26,6 +26,7 @@ class BaseModel(metaclass=abc.ABCMeta):
         db_destroy(): removes database tables associated with this class.
         get_result_object(): take parameters return result ProxyResult object.
         get_result_string(): takes parameters and returns result as string.
+        get_summary_data(): takes csv, returns summary statistic csv.
         process_csv(): takes two paths. Reads one, writes to another.
         temp_cleanup(): this function is used with atexit for cleanup.
 
@@ -43,16 +44,19 @@ class BaseModel(metaclass=abc.ABCMeta):
         '''Does setup for model.'''
         pass
 
+    @classmethod
     @abc.abstractmethod  
     def db_check(self):
         '''Checks whether the proper db tables exist.'''
         raise NotImplementedError
-
+    
+    @classmethod
     @abc.abstractmethod      
     def db_create(self):
         '''Downloads information from public sources and creates tables.'''
         raise NotImplementedError
-        
+    
+    @classmethod    
     def db_destroy(self):
         '''Destroys tables prefixed with classname.'''
         connection = sqlite3.connect(self.db_path)
@@ -79,6 +83,12 @@ class BaseModel(metaclass=abc.ABCMeta):
         proxy_result = self.get_result_object(**kwargs)
         result_string = proxy_result.as_string()
         return result_string
+        
+    @abc.abstractmethod  
+    def get_summary_data(self,
+                         **kwargs):
+        '''Takes csv and returns a csv with summary data.'''
+        raise NotImplementedError
 
     def process_csv(self,
                     filepath_in,
