@@ -1,18 +1,21 @@
 import io
+import multiprocessing
 import os
 import queue
 import sys
 
-class Redirector():
+
+class Redirector(multiprocessing.Process):
     '''This shunts stdout data to a queue that redirects.'''
 
-    def __init__(self, queue):
+    def __init__(self):
         super().__init__()
         self.queue = queue.Queue()
+        self.running = True
 
     def add(self, item):
         self.queue.put(item)
-        sys.stdout.write(''.join([item, '\n'])
+        sys.stdout.write(''.join([item, '\n']))
         
     def direct_to_file(self):
         fake_stdout = io.StringIO('')
@@ -26,9 +29,20 @@ class Redirector():
         true_stdout = sys.__stdout__
         setattr(sys.modules['sys'], 'stdout', true_stdout)
         
+    def kill(self):
+        self.running = False
+        
     def quiet(self):
         self.direct_to_null()
-    
+        
+    def run(self):
+        while self.running == True:
+            try:
+                popped_item = self.queue.get(True, .1)
+                sys.stdout.write(popped_item)
+            except queue.Empty:
+                pass
+        self.terminate()
     def verbose(self):
         self.direct_to_stdout()
 

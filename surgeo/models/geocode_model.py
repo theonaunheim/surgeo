@@ -9,16 +9,34 @@ import sqlite3
 import sys
 import zipfile
 
+import surgeo
+
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
-
+from surgeo.utilities.download_bar import graphical_download
 
 class GeocodeModel(BaseModel):
     '''Contains data references and methods for running a Geocode model.'''
     
     def __init__(self):
         super().__init__()
-  
+        self.census_states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas',
+                              'California', 'Colorado','Connecticut',
+                              'Delaware', 'District_of_Columbia', 'Florida',
+                              'Georgia', 'Hawaii', 'Idaho', 'Illinois',
+                              'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+                              'Louisiana', 'Maine', 'Maryland', 
+                              'Massachusetts', 'Michigan', 'Minnesota',
+                              'Mississippi', 'Missouri', 'Montana', 'Nebraska',
+                              'Nevada', 'New_Hampshire', 'New_Jersey',
+                              'New_Mexico', 'New_York', 'North_Carolina',
+                              'North_Dakota', 'Ohio', 'Oklahoma', 'Oregon',
+                              'Pennsylvania', 'Puerto_Rico', 'Rhode_Island',
+                              'South_Carolina', 'South_Dakota', 'Tennessee',
+                              'Texas', 'Utah', 'Vermont', 'Virginia',
+                              'Washington', 'West_Virginia', 'Wisconsin',
+                              'Wyoming']
+
     def db_check(self):
         '''This checks accuracy of database.
         
@@ -49,25 +67,7 @@ class GeocodeModel(BaseModel):
             return False
 
     def db_create(self):
-        '''Creates geocode database based on Census 2000 data.
-
-           This function first downloads a geographic header file for each 
-           state. It then downloads file 00002 for each state. These are 
-           downloaded in zip format, and then unzipped. It then creates two 
-           tables, geocode_logical and logical_race and populates the 
-           database. The geocode_logical contains data for geographic areas.
-           Logical record from the geocode_race directly correlates with a 
-           specific population in the geographic area, which is broken down by 
-           race.
-           
-           Following this, certain redacted data is reformed. For 
-           confidentiality purposes, the Census Bureau scrubs certain data on 
-           race. This reconstitutes that data. We take the total number of 
-           scrubbed items, and then divide it equally between the scrubbed 
-           categories. This yields an approximation.
-           
-        '''
-        
+        '''Creates geocode database based on Census 2010 data.'''    
 ######## FTP
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
@@ -77,16 +77,21 @@ class GeocodeModel(BaseModel):
         # List files
         state_list = ftp.nlst()
         # Drop all elements prior to states
-        state_list = itertools.dropwhile(lambda x: x != 'Alabama', state_list)
-        # Make dropwhile object to list
-        state_list = list(state_list)
         zip_files_downloaded = []
-        for state in state_list:
+        for state in self.census_states:
             ftp.cwd('/')
-            ftp.cwd(''.join(['census_2000/datasets/Summary_File_1',
+            ftp.cwd(''.join(['census_2010/04-Summary_File_1',
                              '/',
                              state]))
-            file_list = ftp.nlst()
+            state_file_list = ftp.nlst()
+            for item in state_file_list:
+                if '2010.sf1.zip' in item:
+                    file_path = os.path.join(self.temp_folder_path, item)    
+                    
+            
+            al2010.sf1.zip
+            
+            # File:al2010.sf1.zip
             for item in file_list:
                 if '00002_uf1.zip' in item or 'geo_uf1.zip' in item:
                     file_path = os.path.join(self.temp_folder_path, item)

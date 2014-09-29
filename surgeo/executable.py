@@ -11,7 +11,6 @@ import sys
 
 import surgeo
 
-from surgeo.utilities.redirector_class import Redirector
 
 def main(*args):
     '''This is the main application when running the program from a CLI.
@@ -36,14 +35,13 @@ def main(*args):
     
 ##### Parse arguments
     parsed_args = surgeo.utilities.get_parser_args()
-    surgeo.redirector = Redirector()
-    if parsed_args.quiet or parsed_args.pipe:
+    if parsed_args.quiet:
         surgeo.redirector.direct_to_null()
 ##### Setup
     surgeo.redirector.add('Running setup ...')
-    surgeo.setup_functions()
 ##### Pipe
     if parsed_args.pipe:
+        surgeo.redirector.direct_to_stdout()
         model = surgeo.SurgeoModel()
         try:
             while True:

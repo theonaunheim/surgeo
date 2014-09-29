@@ -10,6 +10,8 @@ import os
 import surgeo.models
 import surgeo.utilities
 
+from surgeo.utilities.redirector_class import Redirector
+
 
 def setup_directories():
     '''This function sets up the necessary directories to run Surgeo.'''
@@ -27,6 +29,16 @@ def setup_logger():
                                                'surgeo_log.txt')),
                         filemode='w',
                         level=logging.DEBUG)
+
+def get_prefab_db_if_necessary():
+    db_path = os.path.join(os.path.expanduser('~'),
+                           '.surgeo',
+                           'surgeo.sqlite')
+    if not os.path.exists(db_path):
+        try:
+            pass # Download dropbox link here
+        except:
+            surgeo.redirector.add('No prefab database availible.')
 
 def autoload_default_modules():
     '''Loads modules in default and sets up databases'''
@@ -49,7 +61,13 @@ def autoload_default_modules():
                         member_object.db_create()
 
 def setup_functions():
+    surgeo.redirector = Redirector()
+    surgeo.redirector.start()
     setup_directories()
     setup_logger()
+    get_prefab_db_if_necessary()
     autoload_default_modules()
+
+# Bad Python to run on import, but oh so convenient.  
+setup_functions()
 

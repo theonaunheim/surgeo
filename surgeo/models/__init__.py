@@ -20,6 +20,9 @@ def load_model(model_module_name):
                     setattr(sys.modules['surgeo.models'],
                             member_name,
                             member_object)
+                    # Db setup
+                    if member_object.db_check() is False:
+                        member_object.db_create()
         else:
             raise SurgeoError('No module availible by that name.')
 
