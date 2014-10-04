@@ -74,8 +74,6 @@ class GeocodeModel(BaseModel):
         ftp = ftplib.FTP('ftp.census.gov')
         ftp.login()
         ftp.cwd('census_2010/04-Summary_File_1')
-        # List files
-        state_list = ftp.nlst()
         # Drop all elements prior to states
         zip_files_downloaded = []
         for state in self.census_states:
@@ -83,9 +81,13 @@ class GeocodeModel(BaseModel):
             ftp.cwd(''.join(['census_2010/04-Summary_File_1',
                              '/',
                              state]))
-            state_file_list = ftp.nlst()
-            for item in state_file_list:
+            files_for_individual_state = ftp.nlst()
+            for item in files_for_individual_state:
                 if '2010.sf1.zip' in item:
+                
+                #TODO BOOKMARK
+                graphical_download
+                
                     file_path = os.path.join(self.temp_folder_path, item)    
                     
             

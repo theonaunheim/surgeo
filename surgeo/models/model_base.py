@@ -188,6 +188,11 @@ class BaseModel(metaclass=abc.ABCMeta):
                 f.write(line_buffer.getvalue())
             line_buffer.close()
 
+    def summary_of_csv(self,
+                    **kwargs):
+        '''Takes csv and returns summary data.'''
+        raise NotImplementedError #TODO
+
     def temp_cleanup(self):
         '''This function is used with atexit to ensure cleanup.'''
         try:

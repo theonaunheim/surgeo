@@ -19,6 +19,7 @@ def autoload_default_modules():
     parent_directory = os.path.dirname(os.path.abspath(__file__))
     file_list = os.listdir(parent_directory)
     for item in file_list:
+        #TODO, does parent directory point us to the right spot
         if not '_model.py' in item:
             continue
         else:
@@ -44,6 +45,7 @@ def construct_db(verbose=True):
         except:
             surgeo.redirector.add('No prefab database availible ...')
             # Import all model object from modules with '_model.py'
+            # TODO, does parent directory point us to the right spot
             parent_directory = os.path.dirname(os.path.abspath(__file__))
             file_list = os.listdir(parent_directory)
             for item in file_list:
