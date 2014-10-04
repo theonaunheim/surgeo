@@ -15,17 +15,18 @@ from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
 from surgeo.utilities.download_bar import graphical_download
 
+
 class GeocodeModel(BaseModel):
     '''Contains data references and methods for running a Geocode model.'''
-    
+
     def __init__(self):
         super().__init__()
         self.census_states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas',
-                              'California', 'Colorado','Connecticut',
+                              'California', 'Colorado', 'Connecticut',
                               'Delaware', 'District_of_Columbia', 'Florida',
                               'Georgia', 'Hawaii', 'Idaho', 'Illinois',
                               'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-                              'Louisiana', 'Maine', 'Maryland', 
+                              'Louisiana', 'Maine', 'Maryland',
                               'Massachusetts', 'Michigan', 'Minnesota',
                               'Mississippi', 'Missouri', 'Montana', 'Nebraska',
                               'Nevada', 'New_Hampshire', 'New_Jersey',
@@ -39,15 +40,15 @@ class GeocodeModel(BaseModel):
 
     def db_check(self):
         '''This checks accuracy of database.
-        
+
            If valid, returns True.
            If invalid, returns False.
-        
+
            Count geocode_logical is 33233
            Count geocode_data is 9541315
-        
+
         '''
-        
+
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
         try:
@@ -67,7 +68,7 @@ class GeocodeModel(BaseModel):
             return False
 
     def db_create(self):
-        '''Creates geocode database based on Census 2010 data.'''    
+        '''Creates geocode database based on Census 2010 data.'''
 ######## FTP
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
@@ -84,7 +85,9 @@ class GeocodeModel(BaseModel):
             files_for_individual_state = ftp.nlst()
             for item in files_for_individual_state:
                 if '2010.sf1.zip' in item:
-                
+
+
+
                 #TODO BOOKMARK
                 graphical_download
                 
@@ -122,11 +125,11 @@ class GeocodeModel(BaseModel):
             cursor = connection.cursor()
             cursor.execute('''CREATE TABLE IF NOT EXISTS
                               geocode_logical(id INTEGER PRIMARY KEY,
-                              state TEXT, summary_level TEXT, 
+                              state TEXT, summary_level TEXT,
                               logical_record TEXT, zcta TEXT)''')
             cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_race(id
-                              INTEGER PRIMARY KEY, state TEXT, 
-                              logical_record TEXT, num_white REAL, 
+                              INTEGER PRIMARY KEY, state TEXT,
+                              logical_record TEXT, num_white REAL,
                               num_black REAL, num_ai REAL, num_api REAL,
                               num_hispanic REAL, num_multi REAL)''')
             # now start loading to db
@@ -138,7 +141,7 @@ class GeocodeModel(BaseModel):
                     file_path = os.path.join(self.temp_folder_path,
                                              filename)
                     DESIRED_SUMMARY_LEVEL = '871'
-                    # Only latin1 appears to work, even thoug site specifies ascii
+                    # Only latin1 appears to work, even thoug site says ascii
                     with open(file_path, 'r', encoding='latin-1') as f3:
                         for line in f3:
                             state = line[6:8]
@@ -152,7 +155,7 @@ class GeocodeModel(BaseModel):
                             if 'XX' or 'HH' in zcta:
                                 continue
                             cursor.execute('''INSERT INTO geocode_logical(id,
-                                              state, summary_level, 
+                                              state, summary_level,
                                               logical_record, zcta)
                                               VALUES(NULL, ?, ?, ?, ?)''',
                                            (state,
@@ -197,7 +200,7 @@ class GeocodeModel(BaseModel):
                                             num_hispanic))
             cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index ON
                               geocode_logical(zcta)''')
-            cursor.execute('''CREATE INDEX IF NOT EXISTS logical_record_index 
+            cursor.execute('''CREATE INDEX IF NOT EXISTS logical_record_index
                               ON geocode_race(logical_record)''')
             # Now commit
             connection.commit()
@@ -213,21 +216,21 @@ class GeocodeModel(BaseModel):
            Args:
             zip_code: 5 digit zip code
         Returns:
-            Result object with attributes: 
+            Result object with attributes:
                 zcta string
                 hispanic float
                 white float
                 black float
-                api float 
+                api float
                 ai float
                 multi float
         Raises:
             None
-        
+
         '''
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''SELECT state, logical_record FROM geocode_logical 
+        cursor.execute('''SELECT state, logical_record FROM geocode_logical
                           WHERE zcta=?''', (zip_code,))
         try:
             state, logical_record = cursor.fetchone()
@@ -268,13 +271,13 @@ class GeocodeModel(BaseModel):
                       count_api +
                       count_ai +
                       count_multi)
-        argument_dict = {'zcta' : zip_code,
-                         'hispanic' : round((count_hispanic/total), 5),
-                         'white' : round((count_white/total), 5),
-                         'black' : round((count_black/total), 5),
-                         'api' : round((count_api/total), 5),
-                         'ai' : round((count_ai/total), 5),
-                         'multi' : round((count_multi/total), 5)}
+        argument_dict = {'zcta': zip_code,
+                         'hispanic': round((count_hispanic/total), 5),
+                         'white': round((count_white/total), 5),
+                         'black': round((count_black/total), 5),
+                         'api': round((count_api/total), 5),
+                         'ai': round((count_ai/total), 5),
+                         'multi': round((count_multi/total), 5)}
         result = Result(**argument_dict)
         return result
 

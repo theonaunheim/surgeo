@@ -18,7 +18,7 @@ class BaseModel(metaclass=abc.ABCMeta):
         self.surgeo_folder_path: path to surgeo directory
         self.model_folder_path: path to surgeo model directory
         self.temp_folder_path: path to temp folder
-        
+
     Methods:
         build_up(): setups up data as necessary
         db_check(): checks db for proper table
@@ -45,23 +45,23 @@ class BaseModel(metaclass=abc.ABCMeta):
         pass
 
     @classmethod
-    @abc.abstractmethod  
+    @abc.abstractmethod
     def db_check(self):
         '''Checks whether the proper db tables exist.'''
         raise NotImplementedError
-    
+
     @classmethod
-    @abc.abstractmethod      
+    @abc.abstractmethod
     def db_create(self):
         '''Downloads information from public sources and creates tables.'''
         raise NotImplementedError
-    
-    @classmethod    
+
+    @classmethod
     def db_destroy(self):
         '''Destroys tables prefixed with classname.'''
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        for row in cursor.execute('''SELECT name FROM sqlite_master WHERE 
+        for row in cursor.execute('''SELECT name FROM sqlite_master WHERE
                                      type=\'table\''''):
             table_name = row[0]
             table_prefix = row[0].partition('_')[0].lower()
@@ -71,7 +71,7 @@ class BaseModel(metaclass=abc.ABCMeta):
         connection.commit()
         connection.close()
 
-    @abc.abstractmethod  
+    @abc.abstractmethod
     def get_result_object(self,
                           **kwargs):
         '''Takes arguments and generates result object.'''
@@ -83,8 +83,8 @@ class BaseModel(metaclass=abc.ABCMeta):
         proxy_result = self.get_result_object(**kwargs)
         result_string = proxy_result.as_string()
         return result_string
-        
-    @abc.abstractmethod  
+
+    @abc.abstractmethod
     def get_summary_data(self,
                          **kwargs):
         '''Takes csv and returns a csv with summary data.'''
@@ -92,12 +92,12 @@ class BaseModel(metaclass=abc.ABCMeta):
 
     def process_csv(self,
                     filepath_in,
-                    filepath_out, 
+                    filepath_out,
                     header_tuple,
                     argument_tuple,
                     continue_on_model_fail=True):
         '''This this the public facing csv processing function.
-        
+
         Args:
             filepath_in: file path of csv from which data is read
             filepath_out: file path of csv where data is written
@@ -174,7 +174,7 @@ class BaseModel(metaclass=abc.ABCMeta):
                     if continue_on_model_fail is True:
                         raise e
                     else:
-                        self.logger.exception(''.join([e.__class__.__name__, 
+                        self.logger.exception(''.join([e.__class__.__name__,
                                                        ': ',
                                                        e.__str__()]))
                 result_list = result.value_list()
@@ -189,9 +189,9 @@ class BaseModel(metaclass=abc.ABCMeta):
             line_buffer.close()
 
     def summary_of_csv(self,
-                    **kwargs):
+                       **kwargs):
         '''Takes csv and returns summary data.'''
-        raise NotImplementedError #TODO
+        raise NotImplementedError  # TODO
 
     def temp_cleanup(self):
         '''This function is used with atexit to ensure cleanup.'''

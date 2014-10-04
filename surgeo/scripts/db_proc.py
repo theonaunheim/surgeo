@@ -22,10 +22,10 @@ for tuple_ in zip_logical_record_tuples:
         int(zcta)
     except ValueError:
         continue
-    cursor.execute('''SELECT num_white, num_black, num_ai, num_api, num_hispanic,
-                      num_multi FROM logical_race_data WHERE
+    cursor.execute('''SELECT num_white, num_black, num_ai, num_api,
+                      num_hispanic, num_multi FROM logical_race_data WHERE
                       logical_record=?''',
-                      (logical_record,))
+                   (logical_record,))
     result = cursor.fetchone()
     white = result[0]
     black = result[1]
@@ -33,7 +33,9 @@ for tuple_ in zip_logical_record_tuples:
     api = result[3]
     hispanic = result[4]
     multi = result[5]
-    cursor.execute('''INSERT INTO merge_data VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)''',
+    cursor.execute('''INSERT INTO merge_data VALUES(NULL, ?, ?, ?, ?, ?, ?,
+                      ?)''',
                    (zcta, white, black, ai, api, hispanic, multi))
 connection.commit()
 connection.close()
+

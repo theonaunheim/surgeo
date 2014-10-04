@@ -6,7 +6,6 @@
 # Main
 ###############################################################################
 
-import argparse
 import sys
 
 import surgeo
@@ -32,7 +31,7 @@ def main(*args):
         None
 
     '''
-    
+
 ##### Parse arguments
     parsed_args = surgeo.utilities.get_parser_args()
     if parsed_args.quiet:
@@ -86,3 +85,4 @@ def main(*args):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
+

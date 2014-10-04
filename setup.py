@@ -2,7 +2,6 @@
 #coding: utf-8
 
 from distutils.core import setup
-from distutils.core import DistutilsError
 
 setup(name='surgeo',
       version='0.7.0',
@@ -20,3 +19,4 @@ setup(name='surgeo',
                    'Programming Language :: Python :: 3',
                    'Topic :: Office/Business :: Financial']
       )
+

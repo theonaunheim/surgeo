@@ -3,3 +3,4 @@
 from surgeo.executable import main
 
 main()
+

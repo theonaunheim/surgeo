@@ -13,6 +13,7 @@ import surgeo.utilities
 from surgeo.utilities.redirector_class import Redirector
 from surgeo.utilities.download_bar import graphical_download
 
+
 def autoload_default_modules():
     '''Runs automatically. Loads modules in default and sets up databases'''
     # Import all model object from modules with '_model.py'
@@ -24,12 +25,13 @@ def autoload_default_modules():
             continue
         else:
             item = ''.join(['surgeo.models.', item[:-3]])
-            module = importlib.import_module(item) 
+            module = importlib.import_module(item)
             for member_name, member_object in inspect.getmembers(module):
                 if inspect.isclass(member_object):
                     setattr(sys.modules['surgeo.models'],
                             member_name,
                             member_object)
+
 
 def construct_db(verbose=True):
     '''Does not run automatically. Creates database.'''
@@ -41,7 +43,7 @@ def construct_db(verbose=True):
     if not os.path.exists(db_path):
         try:
             surgeo.redirector.add('Trying prefab database ...')
-            pass # Download dropbox link here
+            pass  # Download dropbox link here
         except:
             surgeo.redirector.add('No prefab database availible ...')
             # Import all model object from modules with '_model.py'
@@ -53,20 +55,22 @@ def construct_db(verbose=True):
                     continue
                 else:
                     item = ''.join(['surgeo.models.', item[:-3]])
-                    module = importlib.import_module(item) 
+                    module = importlib.import_module(item)
                     for name, member_object in inspect.getmembers(module):
                         if inspect.isclass(member_object):
                             if member_object.db_check() is False:
                                 member_object.db_create()
     surgeo.redirector.direct_to_stdout()
-            
+
+
 def setup_directories():
     '''Runs automatically and sets up the directories to run Surgeo.'''
-    for path in [ os.path.join(os.path.expanduser('~'), '.surgeo'),
-                  os.path.join(os.path.expanduser('~'), '.surgeo', 'models'),
-                  os.path.join(os.path.expanduser('~'), '.surgeo', 'temp') ]:
+    for path in [os.path.join(os.path.expanduser('~'), '.surgeo'),
+                 os.path.join(os.path.expanduser('~'), '.surgeo', 'models'),
+                 os.path.join(os.path.expanduser('~'), '.surgeo', 'temp')]:
         if not os.path.exists(path):
             os.mkdir(path)
+
 
 def setup_logger():
     '''Runs automatically and sets up logger.'''
@@ -78,6 +82,7 @@ def setup_logger():
                         filemode='w',
                         level=logging.DEBUG)
 
+
 def setup_functions():
     '''Runs automatically and consolidates the necessary functions to run.'''
     surgeo.redirector = Redirector()
@@ -86,6 +91,6 @@ def setup_functions():
     setup_logger()
     autoload_default_modules()
 
-# Bad, bad Python to run on import, but oh so convenient.  
+# Bad, bad Python to run on import, but oh so convenient.
 setup_functions()
 

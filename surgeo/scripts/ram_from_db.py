@@ -6,12 +6,13 @@ import sqlite3
 import sys
 import traceback
 
+
 def db_to_ram(verbose):
-    '''This function loads the database to ram and returns a database object.'''
+    '''This function loads the database to ram and returns a db object.'''
     db_path = os.path.join(os.path.expanduser('~'),
                            '.surgeo',
                            'census.db')
-    if verbose == True:
+    if verbose is True:
         sys.stdout.write('Populating ram db ... \n')
     # Create temporary file and write all rows to file.
     temporary_file = io.StringIO()
@@ -19,16 +20,16 @@ def db_to_ram(verbose):
         connection = sqlite3.connect(db_path)
         for index, row in enumerate(connection.iterdump()):
             temporary_file.write('{}'.format(row))
-            if verbose == True:
+            if verbose is True:
                 if index % 10000 == 0:
                     sys.stdout.write('\rPreparing rows: {}'.format(index))
-        connection.close()  
+        connection.close()
     except sqlite3.Error as e:
         traceback.print_exc()
         connection.close()
         raise e
     # Create new sqlite3 database in ram and write tempfile.
-    if verbose == True:
+    if verbose is True:
         sys.stdout.write('\n')
     temporary_file.seek(0)
     temporary_file_items = temporary_file.getvalue().count(';')
@@ -36,9 +37,10 @@ def db_to_ram(verbose):
         ram_db = sqlite3.connect(':memory:')
         ram_cursor = ram_db.cursor()
         # Last rows have commit items.
-        for index, line in enumerate(temporary_file.getvalue().split(';')[:-2]):
-            ram_cursor.execute(''.join([line,';']))
-            if verbose == True:
+        temp_list = temporary_file.getvalue().split(';')[:-2]
+        for index, line in enumerate(temp_list):
+            ram_cursor.execute(''.join([line, ';']))
+            if verbose is True:
                 try:
                     last_write
                 except NameError:
@@ -47,12 +49,12 @@ def db_to_ram(verbose):
                     if index % 10000 == 0:
                         sys.stdout.write('\rDumping db to ram: {} of {}'
                                          .format(index,
-                                                 temporary_file_items)) 
-                        last_write = index 
-        if verbose == True:                                           
+                                                 temporary_file_items))
+                        last_write = index
+        if verbose is True:
             sys.stdout.write('\rDumping db to ram: {} of {}\n'
-                              .format(temporary_file_items,
-                                      temporary_file_items))  
+                             .format(temporary_file_items,
+                                     temporary_file_items))
             sys.stdout.write('Committing ...')
             sys.stdout.flush()
         ram_db.commit()
@@ -62,13 +64,7 @@ def db_to_ram(verbose):
         ram_db.commit()
         ram_db.close()
         raise e
-    if verbose == True:
-        sys.stdout.write('\t\t\t\t{}OK{}\n'.format('\033[92m','\033[0m'))
+    if verbose is True:
+        sys.stdout.write('\t\t\t\tOK\n')
     return ram_db
-        
-        
-        
-                   
 
-            
-        
