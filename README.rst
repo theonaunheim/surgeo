@@ -142,23 +142,23 @@ Weighted Arithmetic Mean (Not in PyPI or .exe; requires Python 3.4)
 
     # Takes csv in the following format
     
-    surname	    zip	    examined_subject
-    Hernandez	93040	1
-    Molina	    93040	1
-    Martinez	93040	1
-    Garcia	    93040	2
-    Jackson	    63110	4
-    Rice	    63110	5
-    Smith	    63110	4
-    Uncommon	63144	8
-    Smith	    0	    8
-    Johnson	    63144	8
-    Davidson	63144	8
-    Brown	    63144	8
-    White	    63144	10
-    Green	    63144	10
-    Blue	    63144	8
-    Black	    63144	8
+    surname         zip         examined_subject
+    Hernandez       93040       1
+    Molina          93040       1
+    Martinez        93040       1
+    Garcia          93040       2
+    Jackson         63110       4
+    Rice            63110       5
+    Smith           63110       4
+    Uncommon        63144       8
+    Smith           0           8
+    Johnson         63144       8
+    Davidson        63144       8
+    Brown           63144       8
+    White           63144       10
+    Green           63144       10
+    Blue            63144       8
+    Black           63144       8
 
     # And outputs csv
     
