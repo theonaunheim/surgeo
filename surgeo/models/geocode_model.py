@@ -13,7 +13,7 @@ import surgeo
 
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
-from surgeo.utilities.download_bar import graphical_download
+from surgeo.utilities.download_bar import graphical_ftp_download
 
 
 class GeocodeModel(BaseModel):
@@ -85,25 +85,13 @@ class GeocodeModel(BaseModel):
             files_for_individual_state = ftp.nlst()
             for item in files_for_individual_state:
                 if '2010.sf1.zip' in item:
-
-
-
-                #TODO BOOKMARK
-                graphical_download
-                
-                    file_path = os.path.join(self.temp_folder_path, item)    
-                    
-            
-            al2010.sf1.zip
-            
-            # File:al2010.sf1.zip
-            for item in file_list:
-                if '00002_uf1.zip' in item or 'geo_uf1.zip' in item:
                     file_path = os.path.join(self.temp_folder_path, item)
-                    zip_files_downloaded.append(file_path)
-                    ftp.retrbinary('RETR ' + item, open(file_path,
-                                                        'wb+').write)
-######## unzip files
+                    downloaded = 0
+                    graphical_ftp_download(item,
+                                           ftp.size(item),
+                                           file_path,
+                                           ftp)
+######## Unzip files
         for zipfile_path in zip_files_downloaded:
             # Name of XXgeo_uf1.zip --> XXgeo.uf1
             # Name of XX00002_uf1.zip --> XX0000.uf1
