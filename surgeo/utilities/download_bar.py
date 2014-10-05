@@ -1,5 +1,4 @@
 import decimal
-import sys
 import time
 import urllib.request
 
@@ -8,6 +7,7 @@ try:
     import surgeo
 except ImportError:
     pass
+
 
 def graphical_download(url, destination, title='data'):
     if not 'http://' in url:
@@ -22,16 +22,14 @@ def graphical_download(url, destination, title='data'):
         except NameError:
             last_written_percentage = 0
         if percentage > last_written_percentage:
-        try:
-            surgeo.redirector.add('\rDownloading {}: {}%'.format(title,
-                str(percentage)))
-        # Relies heavily on surgeo, but this added for modularity
-        except (NameError, AttributeError)
-            print('\rDownloading {}: {}%'.format(title, str(percentage))))
-        time.sleep(0)
+            try:
+                surgeo.redirector.add('\rDownloading {}: {}%'.format(title,
+                                      str(percentage)))
+            # Relies heavily on surgeo, but this added for modularity
+            except (NameError, AttributeError):
+                print('\rDownloading {}: {}%'.format(title, str(percentage)))
     urllib.request.urlretrieve(url,
                                destination,
                                download_bar)
     time.sleep(0)
-
 

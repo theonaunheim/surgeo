@@ -1,6 +1,6 @@
 '''This creates a parser and is invoked from main program.'''
-
 import argparse
+
 
 def get_parser_args():
     parser = argparse.ArgumentParser(description='Get Surgeo arguments.')
@@ -28,12 +28,12 @@ def get_parser_args():
     parser.add_argument('--setup',
                         action='store_true',
                         help='Takes no inputs and sets up database.',
-                        dest='setup')                       
+                        dest='setup')
     parser.add_argument('-q',
                         action='store_true',
                         help='Used to suppress output.',
-                        dest='quiet')                                                             
-    #parse and return args  
+                        dest='quiet')
+    #parse and return args
     parsed_args = parser.parse_args()
     return parsed_args
 

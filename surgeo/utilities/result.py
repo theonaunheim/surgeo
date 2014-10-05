@@ -1,7 +1,5 @@
-import collections
 import inspect
 import io
-import operator
 
 
 class Result(object):
@@ -18,7 +16,7 @@ class Result(object):
         self.attribute_list(): returns list of attribute
         self.errorify(): returns nothing but makes it fail conspicuously
         self.value_list(): returns list of values
-        
+
     '''
 
     def __init__(self,
@@ -31,7 +29,7 @@ class Result(object):
             self._created_by = calling_class.__class__.__name__
         except:
             pass
-        
+
     def absorb(self, other_result):
         '''Get another result's data. If already has that attribute, skip.'''
         members_self = inspect.getmembers(self)
@@ -61,13 +59,13 @@ class Result(object):
             csv_string.write('\",')
         csv_string = csv_string.getvalue()[:-1]
         return csv_string
-        
+
     def as_dict(self):
         '''Returns a dictionary.'''
         zipped_list = zip(self.attribute_list(), self.value_list())
-        info_dict = { key : value for (key, value) in zipped_list }
+        info_dict = {key: value for key, value in zipped_list}
         return info_dict
-        
+
     def as_string(self, tuple_to_list=('all',)):
         '''Provides string. Defaults all attr. Tuple is attributes to list.'''
         members = inspect.getmembers(self)
@@ -86,7 +84,7 @@ class Result(object):
                 string.write(str(member_obj))
                 string.write('\n')
         return string.getvalue()[:-1]
-        
+
     def attribute_list(self):
         '''This returns a list of a ProxyResult's attributes.'''
         attribute_list = []
@@ -99,9 +97,9 @@ class Result(object):
             if inspect.ismethod(member_obj):
                 continue
             else:
-                attribute_list.append(member_name) 
+                attribute_list.append(member_name)
         return attribute_list
-        
+
     def errorify(self):
         '''Make the result a conspicuously fail when listing.'''
         self._error_result = True
@@ -115,7 +113,7 @@ class Result(object):
                 continue
             else:
                 setattr(self, member_name, 'error')
-                
+
     def value_list(self):
         '''This returns a list of a ProxyResult's values.'''
         # Order dependent on getmembers
@@ -129,6 +127,6 @@ class Result(object):
             if inspect.ismethod(member_obj):
                 continue
             else:
-                value_list.append(str(member_obj)) 
+                value_list.append(str(member_obj))
         return value_list
 
