@@ -1,5 +1,5 @@
 ###############################################################################
-Background
+Background (links valid as of 10/1/2014)
 ###############################################################################
 
 On September 18, 2014, the Consumer Financial Protection Bureau (CFPB) 
@@ -55,33 +55,16 @@ Where u(i,j,k) = p(i|j) * r(k|i):
 q(i|j,k) = ---------------------------------------------------------------
            u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
 
-
-
-
-
 Geocode data comes from racial proportions in SF1 file.
 
 ###############################################################################
 Surname Data
 ###############################################################################
 
+# TODO
+
 Listed surnames come from file giving proportions for all names (count >= 100)
-Unlisted surnames are given calues consistent with the percentages below.
-
-Unlisted name popuation breakdown according to Jirousek and Preucil
-On the effective implementation of the iterative proportional fitting procedure.
-Comput. Stat. Data Anal. 19(2), 177–189 (1995):
-
-70.5% White
-11.1% Hispanic
-11.3% Black
-7.0% API
-0.8% multiracial
-0.9% AI/AN
-
-###############################################################################
-Surname Data: Database fields for names occuring more than 100 times
-###############################################################################
+Unlisted surnames are excluded.
 
 Surname file:
 http://www.census.gov/genealogy/www/freqnames2k.html
@@ -106,58 +89,64 @@ pctaian         Percent Non-Hispanic American Indian and Alaskan Native Only
 pct2prace       Percent Non-Hispanic of Two or More Races
 pcthispanic     Percent Hispanic Origin
 
+
+# TODO ... iterative fitting not used for this.
+Unlisted name popuation breakdown according to Jirousek and Preucil
+On the effective implementation of the iterative proportional fitting procedure.
+Comput. Stat. Data Anal. 19(2), 177–189 (1995):
+
+70.5% White
+11.1% Hispanic
+11.3% Black
+7.0% API
+0.8% multiracial
+0.9% AI/AN
+
 ###############################################################################
 Block Race Data
 ###############################################################################
 
 Census file 1, data components (need all 50 states):
-http://www2.census.gov/census_2000/datasets/Summary_File_1/
+ftp://ftp.census.gov/census_2010/04-Summary_File_1/
 
 Census SF1 Technical doc
-http://www.census.gov/prod/cen2000/doc/sf1.pdf
+http://www.census.gov/prod/cen2010/doc/sf1.pdf
 
 File names (where __ is the 2 letter state code:
-__geo.uf1
-__00001.uf1
-__00002.uf1
+__geo2010.sf1
+__000012010.sf1
+__000022010.sf1
 
-State file 01 contains tables P1-P5 (5 meta, 222 data items).
+Header
+State 7 2
+Summary level 9 3
+Geographic 12 2
+Logical 19 7
+ZCTA 172 5
+
+File 3
+Pop18
+P10
+
+
+Zcta 871 881
+
+
+State file 04 contains table P10 (5 meta, 240 data items).
 ----If split by ',':
-------P1 = line[5:6] (Total population)
-------P2 = line[6:12] (Urban and rural)
-------P3 = line[12:83] (Race)
-------P4 = line[83:156] (Hispanic and latino and not hisp or latino by race)
-------P5 = line[156:227] (Race for population 18 and older)
+------Table P10 = line[5:76] 
     
-State file 02 contains tables P6-P18 (5 meta, 238 data items)
-------P6 = line[5:78] (Hispanic or latino & not H&L by race for 18 and over)
-------P7 = line[78:86] (Race)
-------P8 = line[86:103] (Hispanic or Latino by Race)
-------P9 = line[103:110] (Race)
-------P10 = line[110:125] (Hispanic or Latino by Race Total Races Tallied)
-------P11 = line[125:126] (Hispanic or Latino)
+Geo file
+----If split by ',':
+------P10 = line[5:76]  
 
 Note: Hispanic or latino is defined as an ethnicity, rather than a race. An 
 individual can therefore be "White" or "Hispanic or Latino White" for example.
 Since we are incuding hispanic as a race, we define the races as following:
 
-P8[0] = Total
-P8[1] = Not H&L Total
-P8[2] = Not H&L White (Used for White)
-P8[3] = Not H&L Black (Used for Black)
-P8[4] = Not H&L AI (Used for AI)
-P8[5] = Not H&L Asian (Used for Asian)
-P8[6] = Not H&L PI (Used for PI)
-P8[7] = Not H&L Other
-P8[8] = Not H&L 2 or more races
-P8[9] = H&L Total (used for Hispanic)
-P8[10] = H&L White 
-P8[11] = H&L Black
-P8[12] = H&L AI
-P8[13] = H&L Asian
-P8[14] = H&L PI
-P8[15] = H&L Other
-P8[16] = H&L 2 or more races
+Table P10 (all data, 71 items in length).
+----If split by ',':
+------P10 = line[5:76]  
 
 State Geo file ties census blocks to zip codes
 --Hierarchy: state > county > census tract > block group > block

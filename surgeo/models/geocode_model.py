@@ -91,7 +91,7 @@ class GeocodeModel(BaseModel):
                                            ftp.size(item),
                                            file_path,
                                            ftp)
-######## Unzip files
+######## Unzip files # TODO # BOOKMARK
         for zipfile_path in zip_files_downloaded:
             # Name of XXgeo_uf1.zip --> XXgeo.uf1
             # Name of XX00002_uf1.zip --> XX0000.uf1
