@@ -99,7 +99,7 @@ class GeocodeModel(BaseModel):
                         for name_item in f.namelist():
                             # __000042010.sf1
                             # __geo2010.sf1
-                            if '42010.sf1' or 'geo2010.sf1' in name_item:
+                            if '32010.sf1' or 'geo2010.sf1' in name_item:
                                 with f.open(name_item, 'r') as f2:
                                     with open(os.path.join(
                                               self.temp_folder_path,
@@ -151,55 +151,66 @@ class GeocodeModel(BaseModel):
                                                 summary_level,
                                                 logical_record,
                                                 zcta))
-                    # BOOKMARK TODO
                     for index, filename in enumerate(list_of_filenames):
                         # First the geographic header file
-                        if '42010.sf1' in filename:
+                        if '32010.sf1' in filename:
                             file_path = os.path.join(self.temp_folder_path,
                                                      filename)
                             with open(file_path, 'r' as f5:
                                 for line in f5:
-                                    state = line[5:7]
-                                    logical_record = line[15:22]
-                                    table_p10 = line.split(',')[5:76]
+                                    split_line = line.split(',')
+                                    state = split_line[1]
+                                    logical_record = split_line[4]
+                                    table_p5 = split_line[16:33]
                                     # Breaking up table p10
-                             
-                            total_pop = table_p8[0]
-                            total_not_hispanic = table_p8[1]
-                            num_white = table_p8[2]
-                            num_black = table_p8[3]
-                            num_ai = table_p8[4]
-                            num_asian = table_p8[5]
-                            num_pacisland = table_p8[6]
-                            num_api = str(int(num_asian) + int(num_pacisland))
-                            num_other = table_p8[7]
-                            num_multi = table_p8[8]
-                            num_hispanic = table_p8[9]
-                            cursor.execute('''INSERT INTO geocode_race(
-                                              id, state, logical_record,
-                                              num_white, num_black,
-                                              num_ai, num_api,
-                                              num_hispanic, num_multi) VALUES(
-                                              NULL, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                                           (state,
-                                            logical_record,
-                                            num_white,
-                                            num_black,
-                                            num_ai,
-                                            num_api,
-                                            num_multi,
-                                            num_hispanic))
-            cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index ON
-                              geocode_logical(zcta)''')
-            cursor.execute('''CREATE INDEX IF NOT EXISTS logical_record_index
-                              ON geocode_race(logical_record)''')
-            # Now commit
-            connection.commit()
-            connection.close()
-        except sqlite3.Error as e:
-            connection.rollback()
-            connection.close()
-            raise e
+                                    total_pop = table_p5[0]
+                                    total_not_hispanic = table_p5[1]
+                                    num_white = table_p5[2]
+                                    num_black = table_p5[3]
+                                    num_ai = table_p5[4]
+                                    num_asian = table_p5[5]
+                                    num_pacisland = table_p5[6]
+                                    num_other = table_p5[7]
+                                    num_api = str((int(num_asian) +
+                                                   int(num_pacisland)))
+                                    num_multi = table_p5[8]
+                                    num_hispanic = table_p5[9]
+                                    cursor.execute('''INSERT INTO geocode_race(
+                                                      id, state, 
+                                                      logical_record,
+                                                      num_white, num_black,
+                                                      num_ai, num_api,
+                                                      num_hispanic, num_multi) 
+                                                      VALUES(NULL, ?, ?, ?, ?,
+                                                      ?, ?, ?, ?)''',
+                                                   (state,
+                                                    logical_record,
+                                                    num_white,
+                                                    num_black,
+                                                    num_ai,
+                                                    num_api,
+                                                    num_multi,
+                                                    num_hispanic))
+                            # Now commit
+                    connection.commit()
+                    connection.close()
+                except
+                    connection.rollback()
+                    connection.close()
+                    raise e
+        # Delete temp files.
+        for directory_item in os.listdir(self.temp_folder_path):
+            os.remove(os.path.join(self.temp_folder_path, directory_item)
+        # Create indicies
+        connection = sqlite3.connect(self.db_path)
+        cursor = connection.cursor()
+        cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index ON
+                          geocode_logical(zcta)''')
+        cursor.execute('''CREATE INDEX IF NOT EXISTS logical_record_index
+                          ON geocode_race(logical_record)''')
+        connection.commit()
+        connection.close()
+
 
     def get_result_object(self, zip_code):
         '''Takes zip code, returns race object.
