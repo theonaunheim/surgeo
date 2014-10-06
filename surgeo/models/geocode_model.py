@@ -77,90 +77,93 @@ class GeocodeModel(BaseModel):
         ftp.cwd('census_2010/04-Summary_File_1')
         # Drop all elements prior to states
         zip_files_downloaded = []
+######## Major loop
         for state in self.census_states:
             ftp.cwd('/')
             ftp.cwd(''.join(['census_2010/04-Summary_File_1',
                              '/',
                              state]))
             files_for_individual_state = ftp.nlst()
-            for item in files_for_individual_state:
+            for state_item in files_for_individual_state:
                 if '2010.sf1.zip' in item:
-                    file_path = os.path.join(self.temp_folder_path, item)
+                    file_path = os.path.join(self.temp_folder_path, state_item)
+                    # 'downloaded' is a counter at zero. It is accessed 
+                    # via a global in graphical_ftp_download . TODO fix this.
                     downloaded = 0
                     graphical_ftp_download(item,
                                            ftp.size(item),
                                            file_path,
                                            ftp)
-######## Unzip files # TODO # BOOKMARK
-        for zipfile_path in zip_files_downloaded:
-            # Name of XXgeo_uf1.zip --> XXgeo.uf1
-            # Name of XX00002_uf1.zip --> XX0000.uf1
-            file_component = os.path.basename(zipfile_path).replace('.zip',
-                                                                    '')
-            file_component = file_component.replace('_', '.')
-            dir_component = os.path.dirname(zipfile_path)
-            # Zip file is now and iterator to save on ram.
-            with zipfile.ZipFile(zipfile_path, 'r') as f:
-                with f.open(file_component, 'r') as f2:
-                    with open(os.path.join(dir_component,
-                              file_component),
-                              'w+b') as f3:
-                        for line in f2:
-                            f3.write(line)
+######## Unzip files as iterator
+                    with zipfile.ZipFile(file_path, 'r') as f:
+                        for name_item in f.namelist():
+                            # __000042010.sf1
+                            # __geo2010.sf1
+                            if '42010.sf1' or 'geo2010.sf1' in name_item:
+                                with f.open(name_item, 'r') as f2:
+                                    with open(os.path.join(
+                                              self.temp_folder_path,
+                                              name_item),
+                                              'w+b') as f3:
+                                        for line in f2:
+                                            f3.write(line)
 ######## Commit to db
-        try:
-            connection = sqlite3.connect(self.db_path)
-            cursor = connection.cursor()
-            cursor.execute('''CREATE TABLE IF NOT EXISTS
-                              geocode_logical(id INTEGER PRIMARY KEY,
-                              state TEXT, summary_level TEXT,
-                              logical_record TEXT, zcta TEXT)''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_race(id
-                              INTEGER PRIMARY KEY, state TEXT,
-                              logical_record TEXT, num_white REAL,
-                              num_black REAL, num_ai REAL, num_api REAL,
-                              num_hispanic REAL, num_multi REAL)''')
-            # now start loading to db
-            list_of_filenames = os.listdir(self.temp_folder_path)
-            number_of_filenames = len(list_of_filenames)
-            for index, filename in enumerate(list_of_filenames):
-                # First the geographic header file
-                if 'geo.uf1' in filename:
-                    file_path = os.path.join(self.temp_folder_path,
-                                             filename)
-                    DESIRED_SUMMARY_LEVEL = '871'
-                    # Only latin1 appears to work, even thoug site says ascii
-                    with open(file_path, 'r', encoding='latin-1') as f3:
-                        for line in f3:
-                            state = line[6:8]
-                            summary_level = line[8:11]
-                            logical_record = line[18:25]
-                            zcta = line[160:165]
-                            # Only ZCTA wide numbers considered
-                            if not summary_level == DESIRED_SUMMARY_LEVEL:
-                                continue
-                            # Remove 'XX' large / 'HH' hydrological prefixes
-                            if 'XX' or 'HH' in zcta:
-                                continue
-                            cursor.execute('''INSERT INTO geocode_logical(id,
-                                              state, summary_level,
-                                              logical_record, zcta)
-                                              VALUES(NULL, ?, ?, ?, ?)''',
-                                           (state,
-                                            summary_level,
-                                            logical_record,
-                                            zcta))
-            for index, filename in enumerate(list_of_filenames):
-                # First the geographic header file
-                if '00002.uf1' in filename:
-                    file_path = os.path.join(self.temp_folder_path,
-                                             filename)
-                    with open(file_path, 'r', encoding='latin-1') as f4:
-                        for line in f4:
-                            state = line[5:7]
-                            logical_record = line[15:22]
-                            table_p8 = line.split(',')[86:103]
-                            # Breaking up table p8
+                try:
+                    connection = sqlite3.connect(self.db_path)
+                    cursor = connection.cursor()
+                    cursor.execute('''CREATE TABLE IF NOT EXISTS
+                                      geocode_logical(id INTEGER PRIMARY KEY,
+                                      state TEXT, summary_level TEXT,
+                                      logical_record TEXT, zcta TEXT)''')
+                    cursor.execute('''CREATE TABLE IF NOT EXISTS
+                                      geocode_race(id
+                                      INTEGER PRIMARY KEY, state TEXT,
+                                      logical_record TEXT, num_white REAL,
+                                      num_black REAL, num_ai REAL,
+                                      num_api REAL,
+                                      num_hispanic REAL, num_multi REAL)''')
+                    # now start loading to db
+                    list_of_filenames = os.listdir(self.temp_folder_path)
+                    number_of_filenames = len(list_of_filenames)
+                    for index, filename in enumerate(list_of_filenames):
+                        # First the geographic header file
+                        if 'geo.sf1' in filename:
+                        file_path = os.path.join(self.temp_folder_path,
+                                                 filename)
+                        DESIRED_SUMMARY_LEVEL = '871'
+                        with open(file_path, 'r') as f4:
+                            for line in f3:
+                                state = line[6:8]
+                                summary_level = line[8:11]
+                                logical_record = line[18:25]
+                                zcta = line[171:176]
+                                # Only ZCTA wide numbers considered
+                                if not summary_level == DESIRED_SUMMARY_LEVEL:
+                                    continue
+                                # Remove 'XX' large / 'HH' hydrological prefixes
+                                if 'XX' or 'HH' in zcta:
+                                    continue
+                                cursor.execute('''INSERT INTO geocode_logical(
+                                               id, state, summary_level,
+                                               logical_record, zcta)
+                                               VALUES(NULL, ?, ?, ?, ?)''',
+                                               (state,
+                                                summary_level,
+                                                logical_record,
+                                                zcta))
+                    # BOOKMARK TODO
+                    for index, filename in enumerate(list_of_filenames):
+                        # First the geographic header file
+                        if '42010.sf1' in filename:
+                            file_path = os.path.join(self.temp_folder_path,
+                                                     filename)
+                            with open(file_path, 'r' as f5:
+                                for line in f5:
+                                    state = line[5:7]
+                                    logical_record = line[15:22]
+                                    table_p10 = line.split(',')[5:76]
+                                    # Breaking up table p10
+                             
                             total_pop = table_p8[0]
                             total_not_hispanic = table_p8[1]
                             num_white = table_p8[2]
