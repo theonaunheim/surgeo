@@ -4,6 +4,8 @@ import sys
 if sys.hexversion < 34014960:
     raise ImportError('Python version of 3.4 or higher required.')
 
+import importlib
+import inspect
 import logging
 import os
 
@@ -11,7 +13,6 @@ import surgeo.models
 import surgeo.utilities
 
 from surgeo.utilities.redirector_class import Redirector
-from surgeo.utilities.download_bar import graphical_download
 
 
 def autoload_default_modules():

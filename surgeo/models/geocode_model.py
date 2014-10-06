@@ -1,15 +1,10 @@
 
 import atexit
-import collections
-import decimal
 import ftplib
-import itertools
 import os
 import sqlite3
-import sys
 import zipfile
 
-import surgeo
 
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
@@ -85,13 +80,13 @@ class GeocodeModel(BaseModel):
                              state]))
             files_for_individual_state = ftp.nlst()
             for state_item in files_for_individual_state:
-                if '2010.sf1.zip' in item:
+                if '2010.sf1.zip' in state_item:
                     file_path = os.path.join(self.temp_folder_path, state_item)
-                    # 'downloaded' is a counter at zero. It is accessed 
+                    # 'downloaded' is a counter at zero. It is accessed
                     # via a global in graphical_ftp_download . TODO fix this.
                     downloaded = 0
-                    graphical_ftp_download(item,
-                                           ftp.size(item),
+                    graphical_ftp_download(state_item,
+                                           ftp.size(state_item),
                                            file_path,
                                            ftp)
 ######## Unzip files as iterator
@@ -128,35 +123,37 @@ class GeocodeModel(BaseModel):
                     for index, filename in enumerate(list_of_filenames):
                         # First the geographic header file
                         if 'geo.sf1' in filename:
-                        file_path = os.path.join(self.temp_folder_path,
-                                                 filename)
-                        DESIRED_SUMMARY_LEVEL = '871'
-                        with open(file_path, 'r') as f4:
-                            for line in f3:
-                                state = line[6:8]
-                                summary_level = line[8:11]
-                                logical_record = line[18:25]
-                                zcta = line[171:176]
-                                # Only ZCTA wide numbers considered
-                                if not summary_level == DESIRED_SUMMARY_LEVEL:
-                                    continue
-                                # Remove 'XX' large / 'HH' hydrological prefixes
-                                if 'XX' or 'HH' in zcta:
-                                    continue
-                                cursor.execute('''INSERT INTO geocode_logical(
-                                               id, state, summary_level,
-                                               logical_record, zcta)
-                                               VALUES(NULL, ?, ?, ?, ?)''',
-                                               (state,
-                                                summary_level,
-                                                logical_record,
-                                                zcta))
+                            file_path = os.path.join(self.temp_folder_path,
+                                                     filename)
+                            DESIRED_SUMMARY_LEVEL = '871'
+                            with open(file_path, 'r') as f4:
+                                for line in f3:
+                                    state = line[6:8]
+                                    summary_level = line[8:11]
+                                    logical_record = line[18:25]
+                                    zcta = line[171:176]
+                                    # Only ZCTA wide numbers considered
+                                    if not summary_level == '871':
+                                        continue
+                                    # Remove 'XX' large / 'HH' hydro prefixes
+                                    if 'XX' or 'HH' in zcta:
+                                        continue
+                                    cursor.execute('''INSERT INTO
+                                                      geocode_logical(
+                                                      id, state, summary_level,
+                                                      logical_record, zcta)
+                                                      VALUES(NULL, ?, ?, ?,
+                                                      ?)''',
+                                                   (state,
+                                                    summary_level,
+                                                    logical_record,
+                                                    zcta))
                     for index, filename in enumerate(list_of_filenames):
                         # First the geographic header file
                         if '32010.sf1' in filename:
                             file_path = os.path.join(self.temp_folder_path,
                                                      filename)
-                            with open(file_path, 'r' as f5:
+                            with open(file_path, 'r') as f5:
                                 for line in f5:
                                     split_line = line.split(',')
                                     state = split_line[1]
@@ -176,11 +173,11 @@ class GeocodeModel(BaseModel):
                                     num_multi = table_p5[8]
                                     num_hispanic = table_p5[9]
                                     cursor.execute('''INSERT INTO geocode_race(
-                                                      id, state, 
+                                                      id, state,
                                                       logical_record,
                                                       num_white, num_black,
                                                       num_ai, num_api,
-                                                      num_hispanic, num_multi) 
+                                                      num_hispanic, num_multi)
                                                       VALUES(NULL, ?, ?, ?, ?,
                                                       ?, ?, ?, ?)''',
                                                    (state,
@@ -194,13 +191,13 @@ class GeocodeModel(BaseModel):
                             # Now commit
                     connection.commit()
                     connection.close()
-                except
+                except sqlite3.Error as e:
                     connection.rollback()
                     connection.close()
                     raise e
         # Delete temp files.
         for directory_item in os.listdir(self.temp_folder_path):
-            os.remove(os.path.join(self.temp_folder_path, directory_item)
+            os.remove(os.path.join(self.temp_folder_path, directory_item))
         # Create indicies
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
@@ -210,7 +207,6 @@ class GeocodeModel(BaseModel):
                           ON geocode_race(logical_record)''')
         connection.commit()
         connection.close()
-
 
     def get_result_object(self, zip_code):
         '''Takes zip code, returns race object.
