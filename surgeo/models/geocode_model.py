@@ -82,9 +82,6 @@ class GeocodeModel(BaseModel):
             for state_item in files_for_individual_state:
                 if '2010.sf1.zip' in state_item:
                     file_path = os.path.join(self.temp_folder_path, state_item)
-                    # 'downloaded' is a counter at zero. It is accessed
-                    # via a global in graphical_ftp_download . TODO fix this.
-                    downloaded = 0
                     graphical_ftp_download(state_item,
                                            ftp.size(state_item),
                                            file_path,
@@ -125,7 +122,7 @@ class GeocodeModel(BaseModel):
                         if 'geo.sf1' in filename:
                             file_path = os.path.join(self.temp_folder_path,
                                                      filename)
-                            DESIRED_SUMMARY_LEVEL = '871'
+                            # DESIRED_SUMMARY_LEVEL = '871'
                             with open(file_path, 'r') as f4:
                                 for line in f3:
                                     state = line[6:8]
@@ -278,4 +275,24 @@ class GeocodeModel(BaseModel):
                          'multi': round((count_multi/total), 5)}
         result = Result(**argument_dict)
         return result
+
+    def get_summary_data(self):
+        '''Takes zip code, returns race object.
+
+           Args:
+            zip_code: 5 digit zip code
+        Returns:
+            Result object with attributes:
+                zcta string
+                hispanic float
+                white float
+                black float
+                api float
+                ai float
+                multi float
+        Raises:
+            None
+
+        '''
+        pass
 

@@ -12,6 +12,7 @@ class Redirector(multiprocessing.Process):
         super().__init__()
         self.queue = queue.Queue()
         self.running = True
+        self.daemon = True
 
     def add(self, item):
         self.queue.put(item)

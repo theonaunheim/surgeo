@@ -40,11 +40,13 @@ def graphical_ftp_download(ftp_item,
     # TODO ... this is awful code wrapped around retrbinary. Write ground up.
     # First open file
     write_file = open(destination_path, 'wb+')
-
+    global downloaded
+    downloaded = 0
     def callback(block,
                  ftp_item,
                  ftp_size,
-                 destination_path):
+                 destination_path,
+                 download):
         global downloaded
         percentage = int(decimal.Decimal(downloaded) /
                          decimal.Decimal(ftp_size) * 100)
@@ -65,6 +67,7 @@ def graphical_ftp_download(ftp_item,
                             lambda block: callback(block,
                                                    ftp_item,
                                                    ftp_size,
-                                                   destination_path))
+                                                   destination_path,
+                                                   downloaded))
     write_file.close()
 

@@ -1,5 +1,7 @@
 import abc
 import csv
+import io
+import itertools
 import logging
 import os
 import shutil
@@ -110,10 +112,10 @@ class BaseModel(metaclass=abc.ABCMeta):
             SurgeoError
 
         '''
-        if not len(header_tuple) == len(attribute_tuple):
+        if not len(header_tuple) == len(argument_tuple):
             raise SurgeoError('{} header elements and {} attribute elements. '
                               'These should be equal.'
-                              .format(len(header_tuple), len(attribute_tuple)))
+                              .format(len(header_tuple), len(argument_tuple)))
         number_arguments_for_model = self.get_result_object
         # Open file, determine if zip and name in header
         tempfile = open(filepath_in, 'rU')
@@ -130,9 +132,9 @@ class BaseModel(metaclass=abc.ABCMeta):
                 for row_index, row_item in enumerate(row_1):
                     if tuple_item.lower() == row_item.lower():
                         # header tuple and arugment tuple index are same
-                        combined_tuples.append(tuple([tuple_index,
-                                                      tuple_index,
-                                                      row_index]))
+                        tuple_keys.append(tuple([tuple_index,
+                                                 tuple_index,
+                                                 row_index]))
             if len(tuple_keys) != len(header_tuple):
                 raise SurgeoError('Number of csv matches inconsistent with '
                                   'number of arguments.')
@@ -154,7 +156,7 @@ class BaseModel(metaclass=abc.ABCMeta):
             attribute_list = result.attribute_list()
             len_attribute_list = len(attribute_list)
             # Write header row first by splicing together
-            chopped_header_row = row_1[:number_of_columns]
+            chopped_header_row = row_1[:number_of_columns_base]
             header_row = [item for item in itertools.chain(chopped_header_row,
                                                            attribute_list)]
             csv_writer.writerow(header_row)
