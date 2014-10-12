@@ -17,7 +17,7 @@ class RedirectorAdapter(object):
     def write(self, item):
         self.remote.push(item)
         if self.mode == 'queue' and self.redirect_queue is not None:
-            threading.Timer(1, self.queue_transfer).start()
+            threading.Timer(.01, self.queue_transfer).start()
 
     def direct_to_null(self):
         self.remote.direct_to_null()

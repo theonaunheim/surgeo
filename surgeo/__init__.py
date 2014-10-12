@@ -12,7 +12,7 @@ import os
 import surgeo.models
 import surgeo.utilities
 
-from surgeo.utilities.redirector_class import Redirector
+import surgeo.utilities.error_class.SurgeoError as SurgeoError
 
 
 def autoload_default_modules():
@@ -37,16 +37,16 @@ def autoload_default_modules():
 def construct_db(verbose=True):
     '''Does not run automatically. Creates database.'''
     if verbose is False:
-        surgeo.redirector.direct_to_null()
+        surgeo.adapter.direct_to_null()
     db_path = os.path.join(os.path.expanduser('~'),
                            '.surgeo',
                            'surgeo.sqlite')
     if not os.path.exists(db_path):
         try:
-            surgeo.redirector.add('Trying prefab database ...')
+            surgeo.adapter.write('Trying prefab database ...\n')
             pass  # Download dropbox link here
         except:
-            surgeo.redirector.add('No prefab database availible ...')
+            surgeo.adapter.write('No prefab database availible ...\n')
             # Import all model object from modules with '_model.py'
             # TODO, does parent directory point us to the right spot
             parent_directory = os.path.dirname(os.path.abspath(__file__))
@@ -87,9 +87,7 @@ def setup_logger():
 
 def setup_functions():
     '''Runs automatically and consolidates the necessary functions to run.'''
-    surgeo.redirector = Redirector()
-    surgeo.redirector.start()
-    print('ha')
+    surgeo.adapter = surgeo.utilities.redirector_adapter.RedirectorAdapter()
     setup_directories()
     setup_logger()
     autoload_default_modules()

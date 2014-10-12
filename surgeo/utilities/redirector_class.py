@@ -65,7 +65,7 @@ class Redirector(multiprocessing.Process):
         if self.destination_type == 'TextIOWrapper':
             # If stdout, print
             if self.destination.name == '<stdout>':
-                print(str(item))
+                sys.stdout.write(str(item))
             # If file, write to file
             else:
                 with open(self.destination, 'a+') as target:

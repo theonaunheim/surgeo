@@ -4,7 +4,7 @@ import inspect
 import os
 import sys
 
-from surgeo.utilities.error_class import SurgeoError
+import surgeo.models.model_base
 
 
 def load_model(model_module_name):
@@ -25,5 +25,5 @@ def load_model(model_module_name):
                     if member_object.db_check() is False:
                         member_object.db_create()
         else:
-            raise SurgeoError('No module availible by that name.')
+            raise surgeo.SurgeoError('No module availible by that name.')
 
