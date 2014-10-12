@@ -1,3 +1,4 @@
+'''Redirects data as necessary.'''
 import multiprocessing
 import sys
 
