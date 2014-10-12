@@ -68,6 +68,7 @@ def setup_directories():
     '''Runs automatically and sets up the directories to run Surgeo.'''
     for path in [os.path.join(os.path.expanduser('~'), '.surgeo'),
                  os.path.join(os.path.expanduser('~'), '.surgeo', 'models'),
+                 os.path.join(os.path.expanduser('~'), '.surgeo', 'db'),
                  os.path.join(os.path.expanduser('~'), '.surgeo', 'temp')]:
         if not os.path.exists(path):
             os.mkdir(path)
@@ -88,6 +89,7 @@ def setup_functions():
     '''Runs automatically and consolidates the necessary functions to run.'''
     surgeo.redirector = Redirector()
     surgeo.redirector.start()
+    print('ha')
     setup_directories()
     setup_logger()
     autoload_default_modules()
