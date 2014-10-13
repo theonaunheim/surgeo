@@ -66,6 +66,7 @@ class Redirector(multiprocessing.Process):
             # If stdout, print
             if self.destination.name == '<stdout>':
                 sys.stdout.write(str(item))
+                sys.stdout.flush()
             # If file, write to file
             else:
                 with open(self.destination, 'a+') as target:

@@ -1,5 +1,4 @@
 import multiprocessing
-import threading
 import xmlrpc.client
 
 from surgeo.utilities.redirector_class import Redirector
@@ -17,7 +16,11 @@ class RedirectorAdapter(object):
     def write(self, item):
         self.remote.push(item)
         if self.mode == 'queue' and self.redirect_queue is not None:
-            threading.Timer(.01, self.queue_transfer).start()
+            self.queue_transfer()
+
+    def adaprint(self, item):
+        item = ''.join([item, '\n'])
+        self.write(item)
 
     def direct_to_null(self):
         self.remote.direct_to_null()

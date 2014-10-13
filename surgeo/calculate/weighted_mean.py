@@ -1,4 +1,5 @@
 import csv
+import math
 import itertools
 import io
 import statistics
@@ -54,9 +55,13 @@ def get_weighted_mean(percentage_index_numbers,
 ######### Calculate weighted mean for each analyzed subject matter
     summary_text = io.StringIO('')
     for subject_index_number in analyzed_subject_index_numbers:
+        # Setup numbers
         weighted_mean = {item: float(0) for item in
                          percentage_index_numbers}
+        weighted_stdev = {item: float(0) for item in
+                          percentage_index_numbers}
         list_of_subject_values = []
+        # Accumulate weighted mean
         for row in validated_data_rows:
             for key in weighted_mean.keys():
                 # row[key] is percentage
@@ -66,6 +71,18 @@ def get_weighted_mean(percentage_index_numbers,
                                        float(summed_percentages[key]) *
                                        float(row[subject_index_number]))
             list_of_subject_values.append(float(row[subject_index_number]))
+        # Accumulate weighted stdev
+        for row in validated_data_rows:
+            for key in weighted_mean.keys():
+                # row[key] is percentage
+                # summed_percentages[key] is aggregate percentage
+                # row[subject_index_number] is subject (e.g. balance, APR)
+                difference = (float(row[subject_index_number]) -
+                              float(weighted_mean[key]))
+                difference_squared = math.pow(float(difference), 2)
+                weighted_stdev[key] += math.sqrt((float(row[key]) /
+                                                 float(summed_percentages[key])
+                                                 * difference_squared))
         sample_mean = statistics.mean(list_of_subject_values)
         sample_std_dev = statistics.stdev(list_of_subject_values)
         summary_text.write(''.join(['\n##########\n',
@@ -81,6 +98,8 @@ def get_weighted_mean(percentage_index_numbers,
             summary_text.write(str(name_column_index[key]))
             summary_text.write(' weighted mean: ')
             summary_text.write(str(weighted_mean[key]))
+            summary_text.write(' weighted stdev: ')
+            summary_text.write(str(weighted_stdev[key]))
             summary_text.write('\n')
     text_output = summary_text.getvalue()
     summary_text.close()

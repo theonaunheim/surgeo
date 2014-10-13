@@ -1,73 +1,108 @@
 import decimal
+import sys
 import urllib.request
 
-# Relies heavily on surgeo, but this added for modularity
-try:
-    import surgeo
-except ImportError:
-    pass
+import surgeo
 
 
-def graphical_http_download(url, destination, title='data'):
-    if not 'http://' in url:
-        ''.join(['http://', url])
-    # Subfunction
-    def download_bar(block_count, block_size, total_size):
+class PercentageHTTP(object):
+    '''This presents a percentage while downloading data.
+
+       PercentageHTTP(url,
+                      destination_path,
+                      title).start()
+
+    '''
+
+    def __init__(self,
+                 url,
+                 destination_path,
+                 title):
+        self.url = url
+        self.destination_path = destination_path
+        self.title = title
+        self.last_written_percentage = 0
+
+    def start(self):
+        if not 'http://' in self.url:
+            self.url = ''.join(['http://', self.url])
+        urllib.request.urlretrieve(self.url,
+                                   self.destination_path,
+                                   self.graphical_http_func)
+        surgeo.adapter.write('\n')
+
+    def graphical_http_func(self,
+                            block_count,
+                            block_size,
+                            total_size):
         percentage = int((decimal.Decimal(block_count) *
                           decimal.Decimal(block_size) /
                           decimal.Decimal(total_size) * 100))
-        try:
-            last_written_percentage
-        except NameError:
-            last_written_percentage = 0
-        if percentage > last_written_percentage:
-            try:
-                surgeo.redirector.add('\rDownloading {}: {}%'.format(title,
-                                      str(percentage)))
-            # Relies heavily on surgeo, but this added for modularity
-            except (NameError, AttributeError):
-                print('\rDownloading {}: {}%'.format(title, str(percentage)))
-    urllib.request.urlretrieve(url,
-                               destination,
-                               download_bar)
+        if percentage > self.last_written_percentage:
+            self.last_written_percentage = percentage
+            # Kludgy fix to rewrite same line.
+            sys.stdout.write('\rDownloading {}: {}%'.format(
+                             self.title, self.last_written_percentage))
 
 
-def graphical_ftp_download(ftp_item,
-                           ftp_size,
-                           destination_path,
-                           ftp_instance):
-    '''Needs to be cwd'd into the correct directory.'''
-    # TODO ... this is awful code wrapped around retrbinary. Write ground up.
-    # First open file
-    write_file = open(destination_path, 'wb+')
-    global downloaded
-    downloaded = 0
-    def callback(block,
-                 ftp_item,
-                 ftp_size,
+class PercentageFTP(object):
+    '''This should be used when logged into the FTP directory:
+
+       PercentageFTP(ftp_filename,
+                     destination_path,
+                     ftplib_FTP_instance).start()
+
+
+    '''
+
+    def __init__(self,
+                 ftp_filename,
                  destination_path,
-                 download):
-        global downloaded
-        percentage = int(decimal.Decimal(downloaded) /
-                         decimal.Decimal(ftp_size) * 100)
+                 ftplib_FTP_instance):
+        self.filename = ftp_filename
+        self.destination_path = destination_path
+        self.ftp_instance = ftplib_FTP_instance
+        self.file_size = self.ftp_instance.size(self.filename)
+
+    def start(self):
+        '''Run loop. Majority of work done in iterator.'''
         try:
-            last_written_percentage
-        except NameError:
+            ftp_generator = self.graphical_ftp_gen(self.filename,
+                                                   self.file_size,
+                                                   self.destination_path,
+                                                   self.ftp_instance)
+            ftp_generator.send(None)
+            self.ftp_instance.retrbinary('RETR ' + self.destination_path,
+                                         lambda block:
+                                         ftp_generator.send(block))
+        except StopIteration:
+            pass
+
+    def graphical_ftp_gen(self,
+                          ftp_item,
+                          ftp_size,
+                          destination_path,
+                          ftp_instance):
+        '''This iterator does the majority of the work.'''
+        with open(destination_path, 'wb+') as f:
+            downloaded_data = 0
             last_written_percentage = 0
-        if percentage > last_written_percentage:
-            try:
-                surgeo.redirector.add('\rDownloading {}: {}%'.format(ftp_item,
-                                      str(percentage)))
-            # Relies heavily on surgeo, but this added for modularity
-            except (NameError, AttributeError):
-                print('\rDownloading {}: {}%'.format(ftp_item,
-                                                     str(percentage)))
-        write_file.write(block)
-    ftp_instance.retrbinary('RETR ' + ftp_item,
-                            lambda block: callback(block,
-                                                   ftp_item,
-                                                   ftp_size,
-                                                   destination_path,
-                                                   downloaded))
-    write_file.close()
+            surgeo.adapter.write('\rDownloading {}: {}%'.format(ftp_item,
+                                                                str(0)))
+            while downloaded_data < ftp_size:
+                block = yield
+                downloaded_data += len(block)
+                percentage = int((float(downloaded_data) /
+                                 float(ftp_size)
+                                 * 100))
+                if percentage > last_written_percentage:
+                    try:
+                        surgeo.adapter.write('\rDownloading {}: {}%'.format(
+                                             ftp_item, str(percentage)))
+                    except (NameError, AttributeError):
+                        surgeo.adapter.write('\rDownloading {}: {}%'.format(
+                                             ftp_item, str(percentage)))
+                f.write(block)
+            surgeo.adapter.write('\rDownloading {}: {}%\n'.format(
+                                 ftp_item, str(100)))
 

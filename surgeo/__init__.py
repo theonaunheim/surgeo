@@ -12,8 +12,8 @@ import os
 import surgeo.models
 import surgeo.utilities
 
-import surgeo.utilities.error_class.SurgeoError as SurgeoError
-
+from surgeo.utilities.error_class import SurgeoError
+from surgeo.utilities.redirector_adapter import RedirectorAdapter
 
 def autoload_default_modules():
     '''Runs automatically. Loads modules in default and sets up databases'''
@@ -87,7 +87,8 @@ def setup_logger():
 
 def setup_functions():
     '''Runs automatically and consolidates the necessary functions to run.'''
-    surgeo.adapter = surgeo.utilities.redirector_adapter.RedirectorAdapter()
+    global adapter
+    adapter = RedirectorAdapter()
     setup_directories()
     setup_logger()
     autoload_default_modules()

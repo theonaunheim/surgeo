@@ -4,7 +4,6 @@ import io
 import itertools
 import logging
 import os
-import shutil
 import sqlite3
 
 from surgeo.utilities.error_class import SurgeoError
@@ -198,8 +197,9 @@ class BaseModel(metaclass=abc.ABCMeta):
     def temp_cleanup(self):
         '''This function is used with atexit to ensure cleanup.'''
         try:
-            shutil.rmtree(self.temp_folder_path)
-            os.mkdir(self.temp_folder_path)
+            for item in os.listdir(self.temp_folder_path):
+                full_path = os.path.join(self.temp_folder_path, item)
+                os.remove(path)
         # BAD, BAD PYTHON.
         except:
             pass
