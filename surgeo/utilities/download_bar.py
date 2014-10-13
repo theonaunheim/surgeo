@@ -54,7 +54,7 @@ class PercentageFTP(object):
 
 
     '''
-
+    
     def __init__(self,
                  ftp_filename,
                  destination_path,
@@ -63,21 +63,21 @@ class PercentageFTP(object):
         self.destination_path = destination_path
         self.ftp_instance = ftplib_FTP_instance
         self.file_size = self.ftp_instance.size(self.filename)
-
+        
     def start(self):
         '''Run loop. Majority of work done in iterator.'''
-        try:
+        try:      
             ftp_generator = self.graphical_ftp_gen(self.filename,
                                                    self.file_size,
                                                    self.destination_path,
                                                    self.ftp_instance)
             ftp_generator.send(None)
-            self.ftp_instance.retrbinary('RETR ' + self.destination_path,
+            self.ftp_instance.retrbinary('RETR ' + self.filename,
                                          lambda block:
                                          ftp_generator.send(block))
         except StopIteration:
             pass
-
+                
     def graphical_ftp_gen(self,
                           ftp_item,
                           ftp_size,
@@ -87,8 +87,7 @@ class PercentageFTP(object):
         with open(destination_path, 'wb+') as f:
             downloaded_data = 0
             last_written_percentage = 0
-            surgeo.adapter.write('\rDownloading {}: {}%'.format(ftp_item,
-                                                                str(0)))
+            sys.stdout.write('\rDownloading {}: {}%'.format(ftp_item, str(0)))
             while downloaded_data < ftp_size:
                 block = yield
                 downloaded_data += len(block)
@@ -97,12 +96,11 @@ class PercentageFTP(object):
                                  * 100))
                 if percentage > last_written_percentage:
                     try:
-                        surgeo.adapter.write('\rDownloading {}: {}%'.format(
-                                             ftp_item, str(percentage)))
+                        sys.stdout.write('\rDownloading {}: {}%'.format(
+                                     ftp_item, str(percentage)))
                     except (NameError, AttributeError):
-                        surgeo.adapter.write('\rDownloading {}: {}%'.format(
-                                             ftp_item, str(percentage)))
+                        sys.stdout.write('\rDownloading {}: {}%'.format(
+                                         ftp_item, str(percentage)))
                 f.write(block)
-            surgeo.adapter.write('\rDownloading {}: {}%\n'.format(
-                                 ftp_item, str(100)))
-
+            sys.stdout.write('\rDownloading {}: {}%\n'.format(
+                             ftp_item, str(100)))

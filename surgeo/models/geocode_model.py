@@ -72,22 +72,17 @@ class GeocodeModel(BaseModel):
         zip_files_downloaded = []
 ######## Major loop
         for state in self.census_states:
-            surgeo.adapter.adaprint(state + ' ...')
+            print(state + ' ...')
             ftp = ftplib.FTP('ftp.census.gov')
             ftp.login()
+            ftp.cwd('census_2010/04-Summary_File_1')
             ftp.cwd('/')
-            ftp.cwd(''.join(['census_2010/04-Summary_File_1',
-                             '/',
-                             state]))
+            ftp.cwd(''.join(['census_2010/04-Summary_File_1', '/', state]))
             callback_pool = []
             ftp.retrlines('NLST', callback=callback_pool.append)
-            target_file = [name for name in callback_pool
-                           if 'sf1.zip' in name][0]
-            surgeo.adapter.adaprint('Getting {} ...'.format(state))
-            file_path = os.path.join(self.temp_folder_path, target_file)
-            PercentageFTP(target_file,
-                          file_path,
-                          ftp).start()
+            target_file = [name for name in callback_pool if 'sf1.zip' 
+                           in name][0]
+            PercentageFTP(target_file, '/home/theo/file.zip', ftp).start()
 ######## Unzip files as iterator
             with zipfile.ZipFile(file_path, 'r') as f:
                 for name_item in f.namelist():
