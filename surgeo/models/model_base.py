@@ -33,13 +33,21 @@ class BaseModel(metaclass=abc.ABCMeta):
 
     '''
     def __init__(self):
-        surgeo_folder_path = os.path.join(os.path.expanduser('~'), '.surgeo')
+        self.surgeo_folder_path = os.path.join(os.path.expanduser('~'),
+                                               '.surgeo')
         self.temp_folder_path = os.path.join(os.path.expanduser('~'),
                                              '.surgeo',
                                              'temp')
-        self.db_path = os.path.join(surgeo_folder_path, 'surgeo.sqlite')
+        self.db_path = os.path.join(self.surgeo_folder_path,
+                                    'surgeo.sqlite')
         self.logger = logging.getLogger(__class__.__name__)
         self.build_up()
+
+    @property
+    def db_path(self):
+        return os.path.join(self.surgeo_folder_path,
+                            'db',
+                            ''.join(__class__.__name__, '.sqlite'))
 
     def build_up(self):
         '''Does setup for model.'''
@@ -199,7 +207,7 @@ class BaseModel(metaclass=abc.ABCMeta):
         try:
             for item in os.listdir(self.temp_folder_path):
                 full_path = os.path.join(self.temp_folder_path, item)
-                os.remove(path)
+                os.remove(full_path)
         # BAD, BAD PYTHON.
         except:
             pass
