@@ -69,7 +69,6 @@ class GeocodeModel(BaseModel):
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
         surgeo.adapter.adaprint('Signing in to ftp.census.gov ...')
-        zip_files_downloaded = []
 ######## Major loop
         for state in self.census_states:
             print(state + ' ...')
@@ -80,22 +79,23 @@ class GeocodeModel(BaseModel):
             ftp.cwd(''.join(['census_2010/04-Summary_File_1', '/', state]))
             callback_pool = []
             ftp.retrlines('NLST', callback=callback_pool.append)
-            target_file = [name for name in callback_pool if 'sf1.zip' 
+            target_file = [name for name in callback_pool if 'sf1.zip'
                            in name][0]
-            PercentageFTP(target_file, '/home/theo/file.zip', ftp).start()
-######## Unzip files as iterator
-            with zipfile.ZipFile(file_path, 'r') as f:
-                for name_item in f.namelist():
-                    # __000042010.sf1
-                    # __geo2010.sf1
-                    if '32010.sf1' or 'geo2010.sf1' in name_item:
-                        with f.open(name_item, 'r') as f2:
-                            with open(os.path.join(
-                                      self.temp_folder_path,
-                                      name_item),
-                                      'w+b') as f3:
-                                    for line in f2:
-                                        f3.write(line)
+            destination_zip = os.path.join(self.temp_folder_path,
+                                           str(target_file))
+            PercentageFTP(target_file,
+                          destination_zip,
+                          ftp).start()
+######## Unzip files
+            with zipfile.ZipFile(destination_zip) as zip_file:
+                # __000042010.sf1
+                # __geo2010.sf1
+                for zip_name in zip_file.namelist():
+                    if '032010.sf1' in zip_name or 'geo2010.sf1' in zip_name:
+                        with open(os.path.join('/home/theo/.surgeo/temp',
+                                               zip_name), 'wb+') as dest_file:
+                            zip_data = zip_file.read(zip_name)
+                            dest_file.write(zip_data)
 ######## Commit to db
             try:
                 connection = sqlite3.connect(self.db_path)
@@ -113,15 +113,14 @@ class GeocodeModel(BaseModel):
                                   num_hispanic REAL, num_multi REAL)''')
                 # now start loading to db
                 list_of_filenames = os.listdir(self.temp_folder_path)
-                number_of_filenames = len(list_of_filenames)
                 for index, filename in enumerate(list_of_filenames):
                     # First the geographic header file
                     if 'geo.sf1' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
                         # DESIRED_SUMMARY_LEVEL = '871'
-                        with open(file_path, 'r') as f4:
-                            for line in f3:
+                        with open(file_path, 'r') as csv_file:
+                            for line in csv_file:
                                 state = line[6:8]
                                 summary_level = line[8:11]
                                 logical_record = line[18:25]
@@ -144,7 +143,7 @@ class GeocodeModel(BaseModel):
                                                 zcta))
                 for index, filename in enumerate(list_of_filenames):
                     # First the geographic header file
-                    if '32010.sf1' in filename:
+                    if '2010.sf1' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
                         with open(file_path, 'r') as f5:
