@@ -122,8 +122,8 @@ class GeocodeModel(BaseModel):
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
                         # DESIRED_SUMMARY_LEVEL = '871'
-                        with open(file_path, 'r') as csv_file:
-                            for line in csv_file:
+                        with open(file_path, 'r', encoding='latin-1') as csv1:
+                            for line in csv1:
                                 state = line[6:8]
                                 summary_level = line[8:11]
                                 logical_record = line[18:25]
@@ -149,8 +149,8 @@ class GeocodeModel(BaseModel):
                     if '32010.sf1' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
-                        with open(file_path, 'r') as csv_file2:
-                            for line in csv_file2:
+                        with open(file_path, 'r', encoding='latin-1') as csv2:
+                            for line in csv2:
                                 split_line = line.split(',')
                                 state = split_line[1]
                                 logical_record = split_line[4]
