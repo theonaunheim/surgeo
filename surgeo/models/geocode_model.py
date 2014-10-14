@@ -72,7 +72,7 @@ class GeocodeModel(BaseModel):
         surgeo.adapter.adaprint('Signing in to ftp.census.gov ...')
 ######## Major loop
         for state in self.census_states:
-            print('Getting ' + state + ' data' + ' ...')
+            surgeo.adapter.adaprint('Getting ' + state + ' data' + ' ...')
             ftp = ftplib.FTP('ftp.census.gov')
             ftp.login()
             ftp.cwd('census_2010/04-Summary_File_1')
@@ -88,6 +88,7 @@ class GeocodeModel(BaseModel):
                           destination_zip,
                           ftp).start()
 ######## Unzip files
+            surgeo.adapter.adaprint('Unzipping files ...')
             with zipfile.ZipFile(destination_zip) as zip_file:
                 # __000042010.sf1
                 # __geo2010.sf1
@@ -99,6 +100,7 @@ class GeocodeModel(BaseModel):
                             dest_file.write(zip_data)
 ######## Commit to db
             try:
+                surgeo.adapter.adaprint('Writing to database ...')
                 connection = sqlite3.connect(self.db_path)
                 cursor = connection.cursor()
                 cursor.execute('''CREATE TABLE IF NOT EXISTS
@@ -116,7 +118,7 @@ class GeocodeModel(BaseModel):
                 list_of_filenames = os.listdir(self.temp_folder_path)
                 for index, filename in enumerate(list_of_filenames):
                     # First the geographic header file
-                    if 'geo.sf1' in filename:
+                    if 'geo2010.sf1' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
                         # DESIRED_SUMMARY_LEVEL = '871'
@@ -144,7 +146,7 @@ class GeocodeModel(BaseModel):
                                                 zcta))
                 for index, filename in enumerate(list_of_filenames):
                     # First the geographic header file
-                    if '2010.sf1' in filename:
+                    if '32010.sf1' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
                         with open(file_path, 'r') as csv_file2:
@@ -190,9 +192,11 @@ class GeocodeModel(BaseModel):
                 connection.close()
                 raise e
             # Delete temp files for this state because DB data gathered.
+            surgeo.adapter.adaprint('Cleaning up unused files ...')
             for directory_item in os.listdir(self.temp_folder_path):
                 os.remove(os.path.join(self.temp_folder_path, directory_item))
-            # Create indicies
+        # Create indicies
+        surgeo.adapter.adaprint('Creating database index ...')
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
         cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index ON
