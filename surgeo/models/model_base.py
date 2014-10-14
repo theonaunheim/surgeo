@@ -43,12 +43,6 @@ class BaseModel(metaclass=abc.ABCMeta):
         self.logger = logging.getLogger(__class__.__name__)
         self.build_up()
 
-    @property
-    def db_path(self):
-        return os.path.join(self.surgeo_folder_path,
-                            'db',
-                            ''.join(__class__.__name__, '.sqlite'))
-
     def build_up(self):
         '''Does setup for model.'''
         pass

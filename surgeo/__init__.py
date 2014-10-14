@@ -15,6 +15,7 @@ import surgeo.utilities
 from surgeo.utilities.error_class import SurgeoError
 from surgeo.utilities.redirector_adapter import RedirectorAdapter
 
+
 def autoload_default_modules():
     '''Runs automatically. Loads modules in default and sets up databases'''
     # Import all model object from modules with '_model.py'
@@ -68,7 +69,6 @@ def setup_directories():
     '''Runs automatically and sets up the directories to run Surgeo.'''
     for path in [os.path.join(os.path.expanduser('~'), '.surgeo'),
                  os.path.join(os.path.expanduser('~'), '.surgeo', 'models'),
-                 os.path.join(os.path.expanduser('~'), '.surgeo', 'db'),
                  os.path.join(os.path.expanduser('~'), '.surgeo', 'temp')]:
         if not os.path.exists(path):
             os.mkdir(path)
@@ -80,7 +80,7 @@ def setup_logger():
                         datefmt='%m/%d/%Y %I:%M:%S %p',
                         filename=(os.path.join(os.path.expanduser('~'),
                                                '.surgeo',
-                                               'surgeo_log.txt')),
+                                               'log.txt')),
                         filemode='w',
                         level=logging.DEBUG)
 

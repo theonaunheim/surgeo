@@ -66,12 +66,13 @@ class GeocodeModel(BaseModel):
     def db_create(self):
         '''Creates geocode database based on Census 2010 data.'''
 ######## FTP
+        surgeo.adapter.adaprint('Creating GeocodeModel database ...')
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
         surgeo.adapter.adaprint('Signing in to ftp.census.gov ...')
 ######## Major loop
         for state in self.census_states:
-            print(state + ' ...')
+            print('Getting ' + state + ' data' + ' ...')
             ftp = ftplib.FTP('ftp.census.gov')
             ftp.login()
             ftp.cwd('census_2010/04-Summary_File_1')
@@ -146,8 +147,8 @@ class GeocodeModel(BaseModel):
                     if '2010.sf1' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
-                        with open(file_path, 'r') as f5:
-                            for line in f5:
+                        with open(file_path, 'r') as csv_file2:
+                            for line in csv_file2:
                                 split_line = line.split(',')
                                 state = split_line[1]
                                 logical_record = split_line[4]
