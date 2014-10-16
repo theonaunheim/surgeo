@@ -2,7 +2,6 @@ import csv
 import math
 import itertools
 import io
-import statistics
 
 
 def get_weighted_mean(percentage_index_numbers,
@@ -83,8 +82,11 @@ def get_weighted_mean(percentage_index_numbers,
                 weighted_stdev[key] += math.sqrt((float(row[key]) /
                                                  float(summed_percentages[key])
                                                  * difference_squared))
-        sample_mean = statistics.mean(list_of_subject_values)
-        sample_std_dev = statistics.stdev(list_of_subject_values)
+        sample_mean = sum(list_of_subject_values) / len(list_of_subject_values)
+        distance_from_mean = [ math.pow((value - sample_mean), 2) for value in
+                               list_of_of_values ]
+        variance = sum(distance_from_mean) / len(list_of_subject_values)
+        sample_std_dev = math.sqrt(variance)
         summary_text.write(''.join(['\n##########\n',
                                     name_column_index[subject_index_number],
                                     '\n##########\n',

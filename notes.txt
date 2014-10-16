@@ -1,0 +1,33 @@
+
+
+INSERT INTO joint_table
+SELECT L.id, L.zcta, R.num_white, R.num_black, R.num_ai,
+R.num_api, R.multi, R.num_hispanic
+FROM geocode_logical as L
+LEFT JOIN geocode_race as R
+ON L.logical_record=R.logical_record;
+
+white black ai api multi hispanic
+
+
+DO ITERATIVE FITTING HERE
+
+  with open(file_path, 'r', encoding='latin-1') as csv2:
+                            for line in csv2:
+                                split_line = line.split(',')
+                                state = split_line[1]
+                                logical_record = split_line[4]
+                                table_p5 = split_line[16:33]
+                                # Breaking up table p10
+                                total_pop = table_p5[0]
+                                total_not_hispanic = table_p5[1]
+                                num_white = table_p5[2]
+                                num_black = table_p5[3]
+                                num_ai = table_p5[4]
+                                num_asian = table_p5[5]
+                                num_pacisland = table_p5[6]
+                                num_other = table_p5[7]
+                                num_api = str((int(num_asian) +
+                                               int(num_pacisland)))
+                                num_multi = table_p5[8]
+                                num_hispanic = table_p5[9]

@@ -105,25 +105,31 @@ class GeocodeModel(BaseModel):
                 cursor = connection.cursor()
                 cursor.execute('''CREATE TABLE IF NOT EXISTS
                                   geocode_logical(id INTEGER PRIMARY KEY,
-                                  state TEXT, summary_level TEXT,
-                                  logical_record TEXT, zcta TEXT)''')
+                                  state TEXT,
+                                  summary_level TEXT,
+                                  logical_record TEXT,
+                                  zcta TEXT)''')
                 cursor.execute('''CREATE TABLE IF NOT EXISTS
-                                  geocode_race(id
-                                  INTEGER PRIMARY KEY, state TEXT,
-                                  logical_record TEXT, num_white REAL,
-                                  num_black REAL, num_ai REAL,
+                                  geocode_race(id INTEGER PRIMARY KEY,
+                                  state TEXT,
+                                  logical_record TEXT,
+                                  num_white REAL,
+                                  num_black REAL,
+                                  num_ai REAL,
                                   num_api REAL,
-                                  num_hispanic REAL, num_multi REAL)''')
+                                  num_hispanic REAL,
+                                  num_multi REAL)''')
                 # now start loading to db
                 list_of_filenames = os.listdir(self.temp_folder_path)
                 for index, filename in enumerate(list_of_filenames):
                     # First the geographic header file
-                    if 'geo2010.sf1' in filename:
+                    if 'geo' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
                         # DESIRED_SUMMARY_LEVEL = '871'
                         with open(file_path, 'r', encoding='latin-1') as csv1:
                             for line in csv1:
+                                line = str(line)
                                 state = line[6:8]
                                 summary_level = line[8:11]
                                 logical_record = line[18:25]
@@ -134,12 +140,15 @@ class GeocodeModel(BaseModel):
                                 # Remove 'XX' large / 'HH' hydro prefixes
                                 if 'XX' or 'HH' in zcta:
                                     continue
+                                print(summary_level)
                                 cursor.execute('''INSERT INTO
                                                   geocode_logical(
-                                                  id, state, summary_level,
-                                                  logical_record, zcta)
-                                                  VALUES(NULL, ?, ?, ?,
-                                                  ?)''',
+                                                  id,
+                                                  state,
+                                                  summary_level,
+                                                  logical_record,
+                                                  zcta)
+                                                  VALUES(NULL, ?, ?, ?, ?)''',
                                                (state,
                                                 summary_level,
                                                 logical_record,
@@ -169,11 +178,15 @@ class GeocodeModel(BaseModel):
                                 num_multi = table_p5[8]
                                 num_hispanic = table_p5[9]
                                 cursor.execute('''INSERT INTO geocode_race(
-                                                  id, state,
+                                                  id,
+                                                  state,
                                                   logical_record,
-                                                  num_white, num_black,
-                                                  num_ai, num_api,
-                                                  num_hispanic, num_multi)
+                                                  num_white,
+                                                  num_black,
+                                                  num_ai,
+                                                  num_api,
+                                                  num_hispanic,
+                                                  num_multi)
                                                   VALUES(NULL, ?, ?, ?, ?,
                                                   ?, ?, ?, ?)''',
                                                (state,
@@ -196,7 +209,7 @@ class GeocodeModel(BaseModel):
             for directory_item in os.listdir(self.temp_folder_path):
                 os.remove(os.path.join(self.temp_folder_path, directory_item))
         # Create indicies
-        surgeo.adapter.adaprint('Creating database index ...')
+        surgeo.adapter.adaprint('Indexing ...')
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
         cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index ON
