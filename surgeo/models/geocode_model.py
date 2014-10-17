@@ -65,8 +65,16 @@ class GeocodeModel(BaseModel):
 
     def db_create(self):
         '''Creates geocode database based on Census 2010 data.'''
+######## First try prefab database
+        surgeo.adapter.adaprint('Trying to download prefabricated db ...')
+        try:
+            pass # Try to download here
+            # return 0
+        except:
+            pass
+        surgeo.adapter.adaprint('Unable to find premade database ...')
 ######## FTP
-        surgeo.adapter.adaprint('Creating GeocodeModel database ...')
+        surgeo.adapter.adaprint('Creating GeocodeModel database manually...')
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
         surgeo.adapter.adaprint('Signing in to ftp.census.gov ...')
@@ -103,16 +111,25 @@ class GeocodeModel(BaseModel):
                 surgeo.adapter.adaprint('Writing to database ...')
                 connection = sqlite3.connect(self.db_path)
                 cursor = connection.cursor()
-                cursor.execute('''CREATE TABLE IF NOT EXISTS
-                                  geocode_logical(id INTEGER PRIMARY KEY,
+                cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_logical(
+                                  id INTEGER PRIMARY KEY,
                                   state TEXT,
                                   summary_level TEXT,
                                   logical_record TEXT,
                                   zcta TEXT)''')
-                cursor.execute('''CREATE TABLE IF NOT EXISTS
-                                  geocode_race(id INTEGER PRIMARY KEY,
+                cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_race(
+                                  id INTEGER PRIMARY KEY,
                                   state TEXT,
                                   logical_record TEXT,
+                                  num_white REAL,
+                                  num_black REAL,
+                                  num_ai REAL,
+                                  num_api REAL,
+                                  num_hispanic REAL,
+                                  num_multi REAL)''')
+                cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_joint(
+                                  id INTEGER PRIMARY KEY,
+                                  zcta TEXT,
                                   num_white REAL,
                                   num_black REAL,
                                   num_ai REAL,
@@ -126,23 +143,23 @@ class GeocodeModel(BaseModel):
                     if 'geo' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
-                        # DESIRED_SUMMARY_LEVEL = '871'
                         with open(file_path, 'r', encoding='latin-1') as csv1:
                             for line in csv1:
-                                line = str(line)
                                 state = line[6:8]
                                 summary_level = line[8:11]
                                 logical_record = line[18:25]
                                 zcta = line[171:176]
+                                print(state, summary_level, logical_record,
+                                      zcta)
                                 # Only ZCTA wide numbers considered
-                                if not summary_level == '871':
+                                # DESIRED_SUMMARY_LEVEL = '871'
+                                if not int(summary_level) == 871:
                                     continue
+                                #
                                 # Remove 'XX' large / 'HH' hydro prefixes
                                 if 'XX' or 'HH' in zcta:
                                     continue
-                                print(summary_level)
-                                cursor.execute('''INSERT INTO
-                                                  geocode_logical(
+                                cursor.execute('''INSERT INTO geocode_logical(
                                                   id,
                                                   state,
                                                   summary_level,
@@ -209,13 +226,24 @@ class GeocodeModel(BaseModel):
             for directory_item in os.listdir(self.temp_folder_path):
                 os.remove(os.path.join(self.temp_folder_path, directory_item))
         # Create indicies
-        surgeo.adapter.adaprint('Indexing ...')
+        surgeo.adapter.adaprint('Joining tables and indexing ...')
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index ON
-                          geocode_logical(zcta)''')
-        cursor.execute('''CREATE INDEX IF NOT EXISTS logical_record_index
-                          ON geocode_race(logical_record)''')
+        cursor.execute('''INSERT INTO joint_table
+                          SELECT L.id,
+                                 L.zcta,
+                                 R.num_white,
+                                 R.num_black,
+                                 R.num_ai,
+                                 R.num_api,
+                                 R.multi,
+                                 R.num_hispanic
+                          FROM geocode_logical as L
+                          LEFT JOIN geocode_race as R
+                          ON L.logical_record=R.logical_record''')
+        # cursor.execute('''DROP TABLE IF EXISTS geocode_race, geocode_logical''')
+        cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index
+                          ON geocode_joint(zcta)''')        
         connection.commit()
         connection.close()
 
