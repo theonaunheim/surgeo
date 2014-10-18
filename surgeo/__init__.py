@@ -1,8 +1,11 @@
 import sys
 
+
 # Version check before imports. If not Python3, kill import
-if sys.hexversion < 34014960:
-    raise ImportError('Python version of 3.4 or higher required.')
+# python 34 = 50594032; python 30 = 0x03000000
+if sys.hexversion < 0x03000000:
+    raise ImportError('Python version of 3.0 or higher required.')
+
 
 import importlib
 import inspect
@@ -93,6 +96,6 @@ def setup_functions():
     setup_logger()
     autoload_default_modules()
 
-# Bad, bad Python to run on import, but oh so convenient.
+# Bad, bad Python to run on import, but oh so convenient. TODO TAKE OUT WHEN CLI AND GUI ARE IN PLACE
 setup_functions()
 

@@ -49,13 +49,9 @@ class GeocodeModel(BaseModel):
         cursor = connection.cursor()
         try:
             # geocode_logical
-            cursor.execute('''SELECT COUNT(*) FROM geocode_logical''')
+            cursor.execute('''SELECT COUNT(*) FROM geocode_joint''')
             geocode_logical_count = int(cursor.fetchone()[0])
             assert(geocode_logical_count == 33233)
-            # geocode_data
-            cursor.execute('''SELECT COUNT(*) FROM geocode_race''')
-            geocode_data_count = int(cursor.fetchone()[0])
-            assert(geocode_data_count == 9541315)
             return True
         except (sqlite3.Error, AssertionError) as e:
             self.logger.exception(''.join([e.__class__.__name__,
@@ -72,7 +68,7 @@ class GeocodeModel(BaseModel):
             # return 0
         except:
             pass
-        surgeo.adapter.adaprint('Unable to find premade database ...')
+        surgeo.adapter.adaprint('Unable to find prefab database ...')
 ######## FTP
         surgeo.adapter.adaprint('Creating GeocodeModel database manually...')
         # Remove downloaded files in event of a hangup.
@@ -145,7 +141,7 @@ class GeocodeModel(BaseModel):
                     if 'geo' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
-                        with open(file_path, 'Ur', encoding='ascii') as csv1:
+                        with open(file_path, 'Ur', encoding='latin-1') as csv1:
                             for line in csv1:
                                 state = line[6:8]
                                 summary_level = line[8:11]
@@ -175,7 +171,7 @@ class GeocodeModel(BaseModel):
                     if '32010.sf1' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
-                        with open(file_path, 'Ur', encoding='ascii') as csv2:
+                        with open(file_path, 'Ur', encoding='latin-1') as csv2:
                             for line in csv2:
                                 split_line = line.split(',')
                                 state = split_line[1]
