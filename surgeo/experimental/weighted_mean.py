@@ -72,16 +72,16 @@ def get_weighted_mean(percentage_index_numbers,
             list_of_subject_values.append(float(row[subject_index_number]))
         # Accumulate weighted stdev
         for row in validated_data_rows:
-            for key in weighted_mean.keys():
+            for key in weighted_stdev.keys():
                 # row[key] is percentage
                 # summed_percentages[key] is aggregate percentage
                 # row[subject_index_number] is subject (e.g. balance, APR)
-                difference = (float(row[subject_index_number]) -
-                              float(weighted_mean[key]))
-                difference_squared = math.pow(float(difference), 2)
-                weighted_stdev[key] += math.sqrt((float(row[key]) /
-                                                 float(summed_percentages[key])
-                                                 * difference_squared))
+                # Subtract the entry minus weighted mean
+                distance = abs(float(row[subject_index_number]) -
+                               weighted_mean[key])
+                weighted_stdev[key] += (float(row[key]) /
+                                        float(summed_percentages[key]) * 
+                                        distance)
         sample_mean = sum(list_of_subject_values) / len(list_of_subject_values)
         distance_from_mean = [math.pow((value - sample_mean), 2) for value in
                               list_of_subject_values]
@@ -102,7 +102,7 @@ def get_weighted_mean(percentage_index_numbers,
             summary_text.write(str(weighted_mean[key]))
             summary_text.write(str('\n'))
             summary_text.write(str(name_column_index[key]))
-            summary_text.write(' weighted stdev: ')
+            summary_text.write(' weighted sdev: ')
             summary_text.write(str(weighted_stdev[key]))
             summary_text.write('\n')
     text_output = summary_text.getvalue()

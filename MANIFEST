@@ -7,6 +7,8 @@ surgeo/db/__init__.py
 surgeo/db/db_setup_geocode.py
 surgeo/db/db_setup_surname.py
 surgeo/db/unsupress.py
+surgeo/experimental/__init__.py
+surgeo/experimental/weighted_mean.py
 surgeo/model/__init__.py
 surgeo/model/model1.py
 surgeo/utilities/__init__.py

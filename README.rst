@@ -14,8 +14,7 @@ Please note that your shortcut to Python may be 'python' or 'python3'
 depending on how it is installed. Command line utility only as of August 2014 
 (run through cmd.exe). GUI later.
 
-Version v0.6.9:
-
+Version v0.7.0:
 1) more closely mimics the CFPB model by only providing valid results where 
 both name and zip are availible.
 2) fixes a misapplication of iterative proportional fitting.
@@ -170,19 +169,17 @@ Weighted Arithmetic Mean (experimental)
 
     # And outputs text
     
-    Sample mean: 5.571428571428571
-    Sample standard deviation: 3.3903547741358127
-
     ##########
-    examined_subject
+     examined_subject
     ##########
     sample mean: 6.25
     sample standard deviation: 3.5619517121937516
 
-       white weighted mean: 9.082089552238807
-       white weighted stdev: 7.8459448538288745
-    hispanic weighted mean: 4.69921875
-    hispanic weighted stdev: 11.709068022835547
+        white % weighted mean: 9.082089552238807
+        white % weighted stdev: 1.6618400534640232
+     hispanic % weighted mean: 4.69921875
+     hispanic % weighted stdev: 2.8194427490234375
+
 
 
 Prefab files
