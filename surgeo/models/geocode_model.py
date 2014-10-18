@@ -65,7 +65,7 @@ class GeocodeModel(BaseModel):
         surgeo.adapter.adaprint('Trying to download prefabricated db ...')
         try:
             pass# Try to download here
-            # return 0
+            #  https://dl.dropboxusercontent.com/u/26853373/geocode.sqlite
         except:
             pass
         surgeo.adapter.adaprint('Unable to find prefab database ...')
@@ -225,24 +225,29 @@ class GeocodeModel(BaseModel):
         surgeo.adapter.adaprint('Joining tables and indexing ...')
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''INSERT INTO geocode_joint
-                          SELECT NULL,
-                                 L.zcta,
-                                 R.num_white,
-                                 R.num_black,
-                                 R.num_ai,
-                                 R.num_api,
-                                 R.num_multi,
-                                 R.num_hispanic
-                          FROM geocode_logical as L
-                          JOIN geocode_race as R
-                          ON L.logical_record=R.logical_record''')
-        cursor.execute('''DROP TABLE IF EXISTS geocode_race,
-                                               geocode_logical''')
-        cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index
-                          ON geocode_joint(zcta)''')
-        connection.commit()
-        connection.close()
+        try:
+            cursor.execute('''INSERT INTO geocode_joint
+                              SELECT NULL,
+                                     L.zcta,
+                                     R.num_white,
+                                     R.num_black,
+                                     R.num_ai,
+                                     R.num_api,
+                                     R.num_multi,
+                                     R.num_hispanic
+                              FROM geocode_logical as L
+                              JOIN geocode_race as R
+                              ON L.logical_record=R.logical_record''')
+            cursor.execute('''DROP TABLE IF EXISTS geocode_race''')
+            cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
+            cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index
+                              ON geocode_joint(zcta)''')
+            connection.commit()
+            connection.close()
+        except sqlite3.Error as e:
+            connection.rollback()
+            connection.close()
+            raise e
 
     def get_result_object(self, zip_code):
         '''Takes zip code, returns race object.
