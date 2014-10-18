@@ -68,7 +68,7 @@ class GeocodeModel(BaseModel):
 ######## First try prefab database
         surgeo.adapter.adaprint('Trying to download prefabricated db ...')
         try:
-            pass # Try to download here
+            pass# Try to download here
             # return 0
         except:
             pass
@@ -111,6 +111,7 @@ class GeocodeModel(BaseModel):
                 surgeo.adapter.adaprint('Writing to database ...')
                 connection = sqlite3.connect(self.db_path)
                 cursor = connection.cursor()
+                cursor.execute('''DROP TABLE IF EXISTS geocode_joint''')
                 cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_logical(
                                   id INTEGER PRIMARY KEY,
                                   state TEXT,
@@ -136,6 +137,7 @@ class GeocodeModel(BaseModel):
                                   num_api REAL,
                                   num_hispanic REAL,
                                   num_multi REAL)''')
+                connection.commit()
                 # now start loading to db
                 list_of_filenames = os.listdir(self.temp_folder_path)
                 for index, filename in enumerate(list_of_filenames):
@@ -143,39 +145,37 @@ class GeocodeModel(BaseModel):
                     if 'geo' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
-                        with open(file_path, 'r', encoding='latin-1') as csv1:
+                        with open(file_path, 'Ur', encoding='ascii') as csv1:
                             for line in csv1:
                                 state = line[6:8]
                                 summary_level = line[8:11]
                                 logical_record = line[18:25]
                                 zcta = line[171:176]
-                                print(state, summary_level, logical_record,
-                                      zcta)
                                 # Only ZCTA wide numbers considered
                                 # DESIRED_SUMMARY_LEVEL = '871'
-                                if not int(summary_level) == 871:
-                                    continue
-                                #
-                                # Remove 'XX' large / 'HH' hydro prefixes
-                                if 'XX' or 'HH' in zcta:
-                                    continue
-                                cursor.execute('''INSERT INTO geocode_logical(
-                                                  id,
-                                                  state,
-                                                  summary_level,
-                                                  logical_record,
-                                                  zcta)
-                                                  VALUES(NULL, ?, ?, ?, ?)''',
-                                               (state,
-                                                summary_level,
-                                                logical_record,
-                                                zcta))
+                                if '871' in summary_level:
+                                    cursor.execute('''INSERT INTO
+                                                      geocode_logical(
+                                                      id,
+                                                      state,
+                                                      summary_level,
+                                                      logical_record,
+                                                      zcta)
+                                                      VALUES(NULL,
+                                                             ?,
+                                                             ?,
+                                                             ?,
+                                                             ?)''',
+                                                   (state,
+                                                    summary_level,
+                                                    logical_record,
+                                                    zcta))
                 for index, filename in enumerate(list_of_filenames):
                     # First the geographic header file
                     if '32010.sf1' in filename:
                         file_path = os.path.join(self.temp_folder_path,
                                                  filename)
-                        with open(file_path, 'r', encoding='latin-1') as csv2:
+                        with open(file_path, 'Ur', encoding='ascii') as csv2:
                             for line in csv2:
                                 split_line = line.split(',')
                                 state = split_line[1]
@@ -229,21 +229,22 @@ class GeocodeModel(BaseModel):
         surgeo.adapter.adaprint('Joining tables and indexing ...')
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''INSERT INTO joint_table
-                          SELECT L.id,
+        cursor.execute('''INSERT INTO geocode_joint
+                          SELECT NULL,
                                  L.zcta,
                                  R.num_white,
                                  R.num_black,
                                  R.num_ai,
                                  R.num_api,
-                                 R.multi,
+                                 R.num_multi,
                                  R.num_hispanic
                           FROM geocode_logical as L
-                          LEFT JOIN geocode_race as R
+                          JOIN geocode_race as R
                           ON L.logical_record=R.logical_record''')
-        # cursor.execute('''DROP TABLE IF EXISTS geocode_race, geocode_logical''')
+        cursor.execute('''DROP TABLE IF EXISTS geocode_race,
+                                               geocode_logical''')
         cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index
-                          ON geocode_joint(zcta)''')        
+                          ON geocode_joint(zcta)''')
         connection.commit()
         connection.close()
 
