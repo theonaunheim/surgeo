@@ -175,10 +175,10 @@ Weighted Arithmetic Mean (experimental)
     sample mean: 6.25
     sample standard deviation: 3.5619517121937516
 
-        white % weighted mean: 9.082089552238807
-        white % weighted stdev: 1.6618400534640232
-     hispanic % weighted mean: 4.69921875
-     hispanic % weighted stdev: 2.8194427490234375
+        white weighted mean: 9.082089552238807
+        white weighted stdv: 1.6618400534640232
+     hispanic weighted mean: 4.69921875
+     hispanic weighted stdv: 2.8194427490234375
 
 
 
