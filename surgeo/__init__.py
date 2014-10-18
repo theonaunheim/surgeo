@@ -49,6 +49,7 @@ import surgeo
 import surgeo.db
 import surgeo.model
 import surgeo.utilities
+import surgeo.experimental
 
 from surgeo.utilities.error_class import SurgeoError
 

@@ -1,0 +1,9 @@
+v0.6.8:
+=======
+-Changelog started
+-Experimental weighted mean added.
+
+v.0.6.9:
+========
+-Weighted mean pushed to PyPi and installer.
+

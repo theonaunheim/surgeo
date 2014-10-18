@@ -138,39 +138,50 @@ Weighted Arithmetic Mean (Not in PyPI or .exe; requires Python 3.4)
     import surgeo
     from surgeo.experimental.weighted_mean import get_weighted_mean
     
-    get_weighted_mean('/path/input.csv', '/path/output.csv')
+    get_weighted_mean((percent_tuple),
+                      (examined_tuple),
+                      '/path/input.csv',
+                      '/path/output.csv')
 
     # Takes csv in the following format
     
-    surname         zip         examined_subject
-    Hernandez       93040       1
-    Molina          93040       1
-    Martinez        93040       1
-    Garcia          93040       2
-    Jackson         63110       4
-    Rice            63110       5
-    Smith           63110       4
-    Uncommon        63144       8
-    Smith           0           8
-    Johnson         63144       8
-    Davidson        63144       8
-    Brown           63144       8
-    White           63144       10
-    Green           63144       10
-    Blue            63144       8
-    Black           63144       8
+    white, hispanic, examined_subject
+    .05, .95, 1
+    .05, .95, 1
+    .05, .95, 1
+    .05, .95, 2
+    .05, .95, 4
+    .05, .95, 5
+    .05, .95, 4
+    .85, .15, 8
+    .85, .15, 12
+    .70, .30, 10
+    .55, .25, 8
+    .55, .25, 8
+    .75, .25, 10
+    .70, .30, 10
+    .01, .99, 8
+    .05, .95, 8
 
-    # And outputs csv
+    # With the following command (remember: all tuples need at least one comma)
+    
+    get_weighted_mean((0, 1), (2,), '/path/input.csv', '/path/output.csv')
+
+    # And outputs text
     
     Sample mean: 5.571428571428571
     Sample standard deviation: 3.3903547741358127
 
-    Average Hispanic: 1.255362810425815
-    Average White: 6.519340790629925
-    Average Black: 4.514216991667383
-    Average API: 1.9147187362174731
-    Average AI: 1.3957282520704903
-    Average Multi: 1.3318490666947582
+    ##########
+    examined_subject
+    ##########
+    sample mean: 6.25
+    sample standard deviation: 3.5619517121937516
+
+       white weighted mean: 9.082089552238807
+       white weighted stdev: 7.8459448538288745
+    hispanic weighted mean: 4.69921875
+    hispanic weighted stdev: 11.709068022835547
 
 
 Prefab files
