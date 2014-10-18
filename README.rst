@@ -14,12 +14,13 @@ Please note that your shortcut to Python may be 'python' or 'python3'
 depending on how it is installed. Command line utility only as of August 2014 
 (run through cmd.exe). GUI later.
 
-Version v0.6.8:
+Version v0.6.9:
 
 1) more closely mimics the CFPB model by only providing valid results where 
 both name and zip are availible.
 2) fixes a misapplication of iterative proportional fitting.
 3) Still uses 2000 census data (see 'dev' branch for rewrite)
+4) Python 3.4 no longer required for weighted arithmetic mean
 
 
 Installing
@@ -130,7 +131,7 @@ If using as a Python module in your program
     model.process_csv(csv_path, new_csv_path) 
  
 
-Weighted Arithmetic Mean (Not in PyPI or .exe; requires Python 3.4)
+Weighted Arithmetic Mean (experimental)
 --------------
 
 ::
