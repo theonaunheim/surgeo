@@ -60,6 +60,7 @@ class GeocodeModel(BaseModel):
 
     def db_create(self):
         '''Creates geocode database based on Census 2010 data.'''
+
 ######## First try prefab database
         surgeo.adapter.adaprint('Trying to download prefabricated db ...')
         try:
@@ -76,17 +77,20 @@ class GeocodeModel(BaseModel):
             cursor.execute('''DROP TABLE IF EXISTS geocode_joint''')
             cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_joint(
                                   id INTEGER PRIMARY KEY,
-                                  state TEXT,
-                                  summary_level TEXT,
-                                  logical_record TEXT,
-                                  zcta TEXT)''')
+                                  zcta TEXT,
+                                  num_white REAL,
+                                  num_black REAL,
+                                  num_ai REAL,
+                                  num_api REAL,
+                                  num_hispanic REAL,
+                                  num_multi REAL)''')
             cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
-            cursor.execute('''INSERT INTO downloaded_db.geocode_joint(*) 
-                              SELECT * FROM surgeo.sqlite''')
+            cursor.execute('''INSERT INTO geocode_joint 
+                              SELECT * FROM downloaded_db.geocode_joint''')
             connection.commit()
             return
         # Fix naked except.
-        except:
+        except NameError:
             surgeo.adapter.adaprint('Unable to find prefab database ...')
             surgeo.adapter.adaprint('Time-consuming rebuild starting ...')
 ######## FTP
@@ -277,35 +281,21 @@ class GeocodeModel(BaseModel):
         Returns:
             Result object with attributes:
                 zcta string
-                hispanic float
-                white float
-                black float
-                api float
-                ai float
-                multi float
+                hispanic int
+                white int
+                black int
+                api int
+                ai int
+                multi int
         Raises:
             None
 
         '''
+
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''SELECT state, logical_record FROM geocode_logical
+        cursor.execute('''SELECT * FROM geocode_joint
                           WHERE zcta=?''', (zip_code,))
-        try:
-            state, logical_record = cursor.fetchone()
-        except TypeError:
-            error_result = Result({'zcta': 0,
-                                   'hispanic': 0,
-                                   'white': 0,
-                                   'black': 0,
-                                   'api': 0,
-                                   'ai': 0,
-                                   'multi': 0}).errorify()
-            return error_result
-        cursor.execute('''SELECT num_hispanic, num_white, num_black,
-                          num_api, num_ai, num_multi FROM geocode_race
-                          WHERE logical_record=? AND state=?''',
-                       (logical_record, state))
         try:
             row = cursor.fetchone()
         except TypeError:
@@ -317,12 +307,13 @@ class GeocodeModel(BaseModel):
                                    'ai': 0,
                                    'multi': 0}).errorify()
             return error_result
-        count_hispanic = row[0]
-        count_white = row[1]
-        count_black = row[2]
-        count_api = row[3]
-        count_ai = row[4]
-        count_multi = row[5]
+        zcta = 0,
+        count_hispanic = 0
+        count_white = 0
+        count_black = 0
+        count_api = 0
+        count_ai = 0
+        count_multi = 0
         # Float because dividing later
         total = float(count_hispanic +
                       count_white +
@@ -330,7 +321,7 @@ class GeocodeModel(BaseModel):
                       count_api +
                       count_ai +
                       count_multi)
-        argument_dict = {'zcta': zip_code,
+        argument_dict = {'zcta': zcta,
                          'hispanic': round((count_hispanic/total), 5),
                          'white': round((count_white/total), 5),
                          'black': round((count_black/total), 5),
