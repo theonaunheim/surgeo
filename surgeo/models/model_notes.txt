@@ -1,0 +1,77 @@
+class BaseModel(metaclass=abc.ABCMeta):
+
+    def __init__(self):
+        self.surgeo_folder_path = os.path.join(os.path.expanduser('~'),
+                                               '.surgeo')
+        self.temp_folder_path = os.path.join(os.path.expanduser('~'),
+                                             '.surgeo',
+                                             'temp')
+        self.db_path = os.path.join(self.surgeo_folder_path,
+                                    'surgeo.sqlite')
+        self.logger = logging.getLogger(__class__.__name__)
+        self.build_up()
+
+    def build_up(self):
+        '''Does setup for model.'''
+        pass
+
+    @classmethod
+    @abc.abstractmethod
+    def db_check(self):
+        '''Checks whether the proper db tables exist.'''
+        raise NotImplementedError
+
+    @classmethod
+    @abc.abstractmethod
+    def db_create(self):
+        '''Downloads information from public sources and creates tables.'''
+        raise NotImplementedError
+
+    @classmethod
+    def db_destroy(self):
+        '''Destroys tables prefixed with classname.'''
+
+    @abc.abstractmethod
+    def get_result_object(self,
+                          **kwargs):
+        '''Takes arguments and generates result object.'''
+        raise NotImplementedError
+
+    def get_result_string(self,
+                          **kwargs):
+        '''Takes arguments, gets result as string.'''
+
+    @abc.abstractmethod
+    def get_summary_data(self,
+                         **kwargs):
+        '''Takes csv and returns a csv with summary data.'''
+        raise NotImplementedError
+
+    def process_csv(self,
+                    filepath_in,
+                    filepath_out,
+                    header_tuple,
+                    argument_tuple,
+                    continue_on_model_fail=True):
+        '''This this the public facing csv processing function.
+
+        Args:
+            filepath_in: file path of csv from which data is read
+            filepath_out: file path of csv where data is written
+            header_tuple: takes string args to search for in csv header
+            argument_tuple: takes string arguments being put in to model
+            continue_on_model_fail: takes boolean
+        Returns:
+            None
+        Raises:
+            SurgeoError
+
+        '''
+        
+    def summary_of_csv(self,
+                       **kwargs):
+        '''Takes csv and returns summary data.'''
+
+    def temp_cleanup(self):
+        '''This function is used with atexit to ensure cleanup.'''
+

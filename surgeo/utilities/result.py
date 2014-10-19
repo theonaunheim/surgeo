@@ -30,6 +30,9 @@ class Result(object):
         except:
             pass
 
+    def __str__(self):
+        return self.as_string()
+
     def absorb(self, other_result):
         '''Get another result's data. If already has that attribute, skip.'''
         members_self = inspect.getmembers(self)

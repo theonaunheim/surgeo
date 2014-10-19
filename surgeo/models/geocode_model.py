@@ -40,8 +40,7 @@ class GeocodeModel(BaseModel):
            If valid, returns True.
            If invalid, returns False.
 
-           Count geocode_logical is 33233
-           Count geocode_data is 9541315
+           Count geocode_data is 581233
 
         '''
 
@@ -50,8 +49,8 @@ class GeocodeModel(BaseModel):
         try:
             # geocode_logical
             cursor.execute('''SELECT COUNT(*) FROM geocode_joint''')
-            geocode_logical_count = int(cursor.fetchone()[0])
-            assert(geocode_logical_count == 33233)
+            geocode_joint_count = int(cursor.fetchone()[0])
+            assert(geocode_joint_count == 581233)
             return True
         except (sqlite3.Error, AssertionError) as e:
             self.logger.exception(''.join([e.__class__.__name__,
@@ -64,13 +63,34 @@ class GeocodeModel(BaseModel):
 ######## First try prefab database
         surgeo.adapter.adaprint('Trying to download prefabricated db ...')
         try:
-            pass# Try to download here
-            #  https://dl.dropboxusercontent.com/u/26853373/geocode.sqlite
+            destination = os.path.join(self.temp_folder_path,
+                                       'geocode.sqlite')
+            ftp_for_prefab = ftplib.FTP('ftp.theonaunheim.com')
+            ftp_for_prefab.login()
+            PercentageFTP('geocode.sqlite',
+                          destination,
+                          ftp_for_prefab).start()
+            surgeo.adapter.adaprint('Copying data to local table ...')
+            connection = sqlite3.connect(self.db_path)
+            cursor = connection.cursor()
+            cursor.execute('''DROP TABLE IF EXISTS geocode_joint''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_joint(
+                                  id INTEGER PRIMARY KEY,
+                                  state TEXT,
+                                  summary_level TEXT,
+                                  logical_record TEXT,
+                                  zcta TEXT)''')
+            cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
+            cursor.execute('''INSERT INTO downloaded_db.geocode_joint(*) 
+                              SELECT * FROM surgeo.sqlite''')
+            connection.commit()
+            return
+        # Fix naked except.
         except:
-            pass
-        surgeo.adapter.adaprint('Unable to find prefab database ...')
+            surgeo.adapter.adaprint('Unable to find prefab database ...')
+            surgeo.adapter.adaprint('Time-consuming rebuild starting ...')
 ######## FTP
-        surgeo.adapter.adaprint('Creating GeocodeModel database manually...')
+        surgeo.adapter.adaprint('Creating GeocodeModel database manually ...')
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
         surgeo.adapter.adaprint('Signing in to ftp.census.gov ...')
