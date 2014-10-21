@@ -85,12 +85,11 @@ class GeocodeModel(BaseModel):
                                   num_hispanic REAL,
                                   num_multi REAL)''')
             cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
-            cursor.execute('''INSERT INTO geocode_joint 
+            cursor.execute('''INSERT INTO geocode_joint
                               SELECT * FROM downloaded_db.geocode_joint''')
             connection.commit()
-            return
         # Fix naked except.
-        except NameError:
+        except:
             surgeo.adapter.adaprint('Unable to find prefab database ...')
             surgeo.adapter.adaprint('Time-consuming rebuild starting ...')
 ######## FTP
@@ -173,7 +172,7 @@ class GeocodeModel(BaseModel):
                                 zcta = line[171:176]
                                 # Only ZCTA wide numbers considered
                                 # DESIRED_SUMMARY_LEVEL = '871'
-                                if '871' in summary_level:
+                                if summary_level == '871':
                                     cursor.execute('''INSERT INTO
                                                       geocode_logical(
                                                       id,
@@ -261,7 +260,8 @@ class GeocodeModel(BaseModel):
                                      R.num_hispanic
                               FROM geocode_logical as L
                               JOIN geocode_race as R
-                              ON L.logical_record=R.logical_record''')
+                              ON L.logical_record=R.logical_record
+                              WHERE L.state=R.state''')
             cursor.execute('''DROP TABLE IF EXISTS geocode_race''')
             cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
             cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index
@@ -331,23 +331,18 @@ class GeocodeModel(BaseModel):
         result = Result(**argument_dict)
         return result
 
-    def get_summary_data(self):
-        '''Takes zip code, returns race object.
-
-           Args:
-            zip_code: 5 digit zip code
-        Returns:
-            Result object with attributes:
-                zcta string
-                hispanic float
-                white float
-                black float
-                api float
-                ai float
-                multi float
-        Raises:
-            None
-
-        '''
+    def db_destroy(self):
+        '''Destroy database.'''
+        connection = sqlite3.connect(self.db_path)
+        cursor = connection.cursor()
+        cursor.execute('''DROP TABLE IF EXISTS geocode_race''')
+        cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
+        cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
+        connection.commit()
+        connection.close()
+        
+    def process_csv(self):
         pass
 
+    def summary_of_csv(self):
+        pass

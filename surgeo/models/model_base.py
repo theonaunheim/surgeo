@@ -7,6 +7,7 @@ import os
 import sqlite3
 
 from surgeo.utilities.error_class import SurgeoError
+from surgeo.calculation.weighted_mean import get_weighted_mean
 
 ###############################################################################
 
@@ -47,32 +48,20 @@ class BaseModel(metaclass=abc.ABCMeta):
         '''Does setup for model.'''
         pass
 
-    @classmethod
     @abc.abstractmethod
     def db_check(self):
         '''Checks whether the proper db tables exist.'''
         raise NotImplementedError
 
-    @classmethod
     @abc.abstractmethod
     def db_create(self):
         '''Downloads information from public sources and creates tables.'''
         raise NotImplementedError
 
-    @classmethod
+    @abc.abstractmethod
     def db_destroy(self):
         '''Destroys tables prefixed with classname.'''
-        connection = sqlite3.connect(self.db_path)
-        cursor = connection.cursor()
-        for row in cursor.execute('''SELECT name FROM sqlite_master WHERE
-                                     type=\'table\''''):
-            table_name = row[0]
-            table_prefix = row[0].partition('_')[0].lower()
-            class_name = self.__class__.__name__.lower()
-            if class_name.rstrip('model') == table_prefix:
-                cursor.execute('''DROP TABLE {}'''.format(table_name))
-        connection.commit()
-        connection.close()
+        raise NotImplementedError
 
     @abc.abstractmethod
     def get_result_object(self,
@@ -83,8 +72,8 @@ class BaseModel(metaclass=abc.ABCMeta):
     def get_result_string(self,
                           **kwargs):
         '''Takes arguments, gets result as string.'''
-        proxy_result = self.get_result_object(**kwargs)
-        result_string = proxy_result.as_string()
+        result = self.get_result_object(**kwargs)
+        result_string = result.as_string()
         return result_string
 
     @abc.abstractmethod
