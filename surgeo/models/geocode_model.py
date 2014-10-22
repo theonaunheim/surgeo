@@ -342,11 +342,29 @@ class GeocodeModel(BaseModel):
         connection.close()
 
     def csv_summary(self):
-        '''Wrap.'''
-        get_weighted_mean((0, 1), (2,), '/path/input.csv', '/path/output.csv')
-        super.()
+        '''Wraps get_weighted_mean()'''
+        #get_weighted_mean((0, 1), (2,), '/path/input.csv', '/path/output.csv')
         #Bookmark TODO
 
-    def csv_process(self):
-        pass
+    def csv_process(self,
+                    filepath_in,
+                    filepath_out):
+        '''Thin wrapper around the BaseModel's csv_process method.
         
+        This looks for the keyword 'zip'.
+
+        Args:
+            filepath_in: file path of csv from which data is read
+            filepath_out: file path of csv where data is written
+        Returns:
+            None
+        Raises:
+            SurgeoError
+
+        '''
+        super().csv_process(filepath_in,
+                            filepath_out,
+                            ('zip',),
+                            (zip_code,),
+                            continue_on_model_fail=True)
+

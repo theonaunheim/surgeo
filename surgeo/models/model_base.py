@@ -81,6 +81,7 @@ class BaseModel(metaclass=abc.ABCMeta):
         '''Takes csv and returns a csv with summary data.'''
         raise NotImplementedError
 
+    @classmethod
     def csv_process(self,
                     filepath_in,
                     filepath_out,
