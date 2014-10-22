@@ -340,9 +340,13 @@ class GeocodeModel(BaseModel):
         cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
         connection.commit()
         connection.close()
-        
-    def process_csv(self):
-        pass
 
-    def summary_of_csv(self):
+    def csv_summary(self):
+        '''Wrap.'''
+        get_weighted_mean((0, 1), (2,), '/path/input.csv', '/path/output.csv')
+        super.()
+        #Bookmark TODO
+
+    def csv_process(self):
         pass
+        

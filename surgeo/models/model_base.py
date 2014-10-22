@@ -7,7 +7,7 @@ import os
 import sqlite3
 
 from surgeo.utilities.error_class import SurgeoError
-from surgeo.calculation.weighted_mean import get_weighted_mean
+from surgeo.calculate.weighted_mean import get_weighted_mean
 
 ###############################################################################
 
@@ -27,9 +27,8 @@ class BaseModel(metaclass=abc.ABCMeta):
         db_create(): creates db tables if necessary
         db_destroy(): removes database tables associated with this class.
         get_result_object(): take parameters return result ProxyResult object.
-        get_result_string(): takes parameters and returns result as string.
-        get_summary_data(): takes csv, returns summary statistic csv.
-        process_csv(): takes two paths. Reads one, writes to another.
+        csv_summary(): takes csv, returns summary statistic csv.
+        csv_process(): takes two paths. Reads one, writes to another.
         temp_cleanup(): this function is used with atexit for cleanup.
 
     '''
@@ -77,12 +76,12 @@ class BaseModel(metaclass=abc.ABCMeta):
         return result_string
 
     @abc.abstractmethod
-    def get_summary_data(self,
-                         **kwargs):
+    def csv_summary(self,
+                    **kwargs):
         '''Takes csv and returns a csv with summary data.'''
         raise NotImplementedError
 
-    def process_csv(self,
+    def csv_process(self,
                     filepath_in,
                     filepath_out,
                     header_tuple,
@@ -179,11 +178,6 @@ class BaseModel(metaclass=abc.ABCMeta):
             with open(filepath_out, 'w+') as f:
                 f.write(line_buffer.getvalue())
             line_buffer.close()
-
-    def summary_of_csv(self,
-                       **kwargs):
-        '''Takes csv and returns summary data.'''
-        raise NotImplementedError  # TODO
 
     def temp_cleanup(self):
         '''This function is used with atexit to ensure cleanup.'''
