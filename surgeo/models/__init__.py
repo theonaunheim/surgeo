@@ -4,7 +4,8 @@ import inspect
 import os
 import sys
 
-import surgeo.models.model_base
+from surgeo.models.model_base import BaseModel
+from surgeo.models.geocode_model import GeocodeModel
 
 
 def load_model(model_module_name):

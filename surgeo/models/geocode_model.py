@@ -5,6 +5,8 @@ import os
 import sqlite3
 import zipfile
 
+import surgeo
+
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
 from surgeo.utilities.download_bar import PercentageFTP
@@ -42,16 +44,17 @@ class GeocodeModel(BaseModel):
         Count geocode_data is 581233
 
         '''
-
-        connection = sqlite3.connect(self.db_path)
-        cursor = connection.cursor()
         try:
+            connection = sqlite3.connect(self.db_path)
+            cursor = connection.cursor()
             # geocode_logical
             cursor.execute('''SELECT COUNT(*) FROM geocode_joint''')
             geocode_joint_count = int(cursor.fetchone()[0])
             assert(geocode_joint_count == 581233)
             return True
-        except (sqlite3.Error, AssertionError) as e:
+        except (sqlite3.Error,
+                AssertionError,
+                sqlite3.OperationalError) as e:
             self.logger.exception(''.join([e.__class__.__name__,
                                            ': ',
                                            e.__str__()]))
@@ -87,6 +90,8 @@ class GeocodeModel(BaseModel):
             cursor.execute('''INSERT INTO geocode_joint
                               SELECT * FROM downloaded_db.geocode_joint''')
             connection.commit()
+            surgeo.adapter.adaprint('Successfully written ...')
+            return
         # Fix naked except.
         except:
             surgeo.adapter.adaprint('Unable to find prefab database ...')
