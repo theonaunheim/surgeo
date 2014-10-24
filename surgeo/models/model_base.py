@@ -70,13 +70,6 @@ class BaseModel(metaclass=abc.ABCMeta):
         '''Takes arguments and generates result object.'''
         raise NotImplementedError
 
-    def get_result_string(self,
-                          **kwargs):
-        '''Takes arguments, gets result as string.'''
-        result = self.get_result_object(**kwargs)
-        result_string = result.as_string()
-        return result_string
-
     @abc.abstractmethod
     def csv_summary(self,
                     **kwargs):

@@ -50,7 +50,7 @@ class GeocodeModel(BaseModel):
             # geocode_logical
             cursor.execute('''SELECT COUNT(*) FROM geocode_joint''')
             geocode_joint_count = int(cursor.fetchone()[0])
-            assert(geocode_joint_count == 581233)
+            assert(geocode_joint_count == 33223)
             return True
         except (sqlite3.Error,
                 AssertionError,
@@ -311,13 +311,13 @@ class GeocodeModel(BaseModel):
                                    'ai': 0,
                                    'multi': 0}).errorify()
             return error_result
-        zcta = 0,
-        count_hispanic = 0
-        count_white = 0
-        count_black = 0
-        count_api = 0
-        count_ai = 0
-        count_multi = 0
+        zcta = row[1]
+        count_hispanic = row[6]
+        count_white = row[2]
+        count_black = row[3]
+        count_api = row[5]
+        count_ai = row[4]
+        count_multi = row[7]
         # Float because dividing later
         total = float(count_hispanic +
                       count_white +
