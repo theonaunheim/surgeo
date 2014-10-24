@@ -5,11 +5,10 @@ import os
 import sqlite3
 import zipfile
 
-import surgeo
-
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
 from surgeo.utilities.download_bar import PercentageFTP
+from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
 class GeocodeModel(BaseModel):
@@ -37,10 +36,10 @@ class GeocodeModel(BaseModel):
     def db_check(self):
         '''This checks accuracy of database.
 
-           If valid, returns True.
-           If invalid, returns False.
+        If valid, returns True.
+        If invalid, returns False.
 
-           Count geocode_data is 581233
+        Count geocode_data is 581233
 
         '''
 
@@ -276,17 +275,17 @@ class GeocodeModel(BaseModel):
     def get_result_object(self, zip_code):
         '''Takes zip code, returns race object.
 
-           Args:
+        Args:
             zip_code: 5 digit zip code
         Returns:
             Result object with attributes:
                 zcta string
-                hispanic int
-                white int
-                black int
-                api int
-                ai int
-                multi int
+                hispanic float
+                white float
+                black float
+                api float
+                ai float
+                multi float
         Raises:
             None
 
@@ -341,17 +340,53 @@ class GeocodeModel(BaseModel):
         connection.commit()
         connection.close()
 
-    def csv_summary(self):
+    def csv_summary(self,
+                    csv_path_in,
+                    summary_path_out):
         '''Wraps get_weighted_mean()'''
-        #get_weighted_mean((0, 1), (2,), '/path/input.csv', '/path/output.csv')
-        #Bookmark TODO
+        for index, line in enumerate(open(csv_path_in, 'r')):
+            if index > 1:
+                break
+            if index == 0:
+                first_line = line.split(',')
+            if index == 2:
+                second_line = line.split(',')
+        # List of lines
+        line_list_1 = [item.replace('\"','').replace('\'','').strip()
+                       for item in first_line]
+        line_list_2 = [item.replace('\"','').replace('\'','').strip()
+                       for item in first_line]
+        # Indices to become tuples
+        percent_index = []
+        subject_index = []
+        # Create percent index
+        for row_index, row_item in enumerate(line_list_1):
+            if any ['hispanic',
+                    'white',
+                    'black',
+                    'api',
+                    'ai',
+                    'multi'] in row_item:
+                percent_index.append(row_index)
+        # Create subject index
+        for row_index, row_item in enumerate(line_list_2):
+            try:
+                int(row_item)
+                # It's an integer. Add to the index.
+                subject_index.append(row_index)
+            except ValueError:
+                continue
+        get_weighted_mean(tuple(percent_index),
+                          tuple(subject_index),
+                          csv_path_in,
+                          summary_path_out)
 
     def csv_process(self,
                     filepath_in,
                     filepath_out):
         '''Thin wrapper around the BaseModel's csv_process method.
         
-        This looks for the keyword 'zip'.
+        This looks for the 'zip'-related items.
 
         Args:
             filepath_in: file path of csv from which data is read
@@ -362,9 +397,20 @@ class GeocodeModel(BaseModel):
             SurgeoError
 
         '''
-        super().csv_process(filepath_in,
-                            filepath_out,
-                            ('zip',),
-                            (zip_code,),
-                            continue_on_model_fail=True)
-
+        # TODO: Make so all subclassed or all imported as functions.
+        for index, line in enumerate(open(filepath_in, 'r')):
+            if index > 0:
+                break
+            first_line = line.split(',')
+        # Separate
+        line_list = [item.replace('\"','').replace('\'','').strip()
+                     for item in first_line]
+        for item in line_list:
+            if item.lower() in ['zip', 'zcta', 'zip code', 'zip_code']:
+                super().csv_process(filepath_in,
+                                    filepath_out,
+                                    (item,),
+                                    (zip_code,),
+                                    continue_on_model_fail=True)
+            # Prevent multiple hits
+            return

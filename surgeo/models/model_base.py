@@ -103,9 +103,10 @@ class BaseModel(metaclass=abc.ABCMeta):
 
         '''
         if not len(header_tuple) == len(argument_tuple):
-            raise SurgeoError('{} header elements and {} attribute elements. '
-                              'These should be equal.'
-                              .format(len(header_tuple), len(argument_tuple)))
+            raise surgeo.SurgeoError('{} header elements and {} attribute '
+                                     'elements. These should be equal.'
+                                     .format(len(header_tuple),
+                                             len(argument_tuple)))
         number_arguments_for_model = self.get_result_object
         # Open file, determine if zip and name in header
         tempfile = open(filepath_in, 'rU')
@@ -126,8 +127,8 @@ class BaseModel(metaclass=abc.ABCMeta):
                                                  tuple_index,
                                                  row_index]))
             if len(tuple_keys) != len(header_tuple):
-                raise SurgeoError('Number of csv matches inconsistent with '
-                                  'number of arguments.')
+                raise surgeo.SurgeoError('Number of csv matches inconsistent '
+                                         'with number of arguments.')
             # Go through all lines, amended lines with new data, and stage.
             # Writing to string buffer rather than file.
             line_buffer = io.StringIO()
