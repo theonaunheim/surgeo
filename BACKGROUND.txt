@@ -87,10 +87,11 @@ pctaian         Percent Non-Hispanic American Indian and Alaskan Native Only
 pct2prace       Percent Non-Hispanic of Two or More Races
 pcthispanic     Percent Hispanic Origin
 
-De-anonymize data.
+Certain information is scrubbed to help anonymize the data. This data is
+reconstituted by getting a total, and dividing it by the scrubbed number of
+entries.
 
-For other race:
-Unlisted name popuation breakdown according to Jirousek and Preucil
+For "other race" the popuation is allocated according to Jirousek and Preucil
 On the effective implementation of the iterative proportional fitting procedure.
 Comput. Stat. Data Anal. 19(2), 177–189 (1995):
 
@@ -113,52 +114,41 @@ http://www.census.gov/prod/cen2010/doc/sf1.pdf
 
 File names (where __ is the 2 letter state code:
 __geo2010.sf1
-__000012010.sf1
-__000022010.sf1
+__000032010.sf1
 
-Header
-State 7 2
-Summary level 9 3
-Geographic 12 2
-Logical 19 7
-ZCTA 172 5
+For Geo File
+------------
+Desired summary level (zip code) is 871.
 
-File 3
-Pop18
-P10
+Line indexed as a whole:
+    state = line[6:8]
+    summary_level = line[8:11]
+    logical_record = line[18:25]
+    zcta = line[171:176]
 
+For State File 3
+----------------
 
-Zcta 871 881
-
-
-State file 04 contains table P10 (5 meta, 240 data items).
-----If split by ',':
-------Table P10 = line[5:76] 
+Line split before indexing because of varying lengths:
+split_line = line.split(',')
+    state = split_line[1]
+    logical_record = split_line[4]
+    table_p5 = split_line[16:33]
     
-Geo file
-----If split by ',':
-------P10 = line[5:76]  
+table_P5 (split_line[16:33]) is further subdivided/reindexed into:
+    total_pop = table_p5[0]
+    total_not_hispanic = table_p5[1]
+    num_white = table_p5[2]
+    num_black = table_p5[3]
+    num_ai = table_p5[4]
+    num_asian = table_p5[5]
+    num_pacisland = table_p5[6]
+    num_other = table_p5[7]
+    num_api = str((int(num_asian) +
+                   int(num_pacisland)))
+    num_multi = table_p5[8]
+    num_hispanic = table_p5[9]
 
 Note: Hispanic or latino is defined as an ethnicity, rather than a race. An 
 individual can therefore be "White" or "Hispanic or Latino White" for example.
-Since we are incuding hispanic as a race, we define the races as following:
-
-Table P10 (all data, 71 items in length).
-----If split by ',':
-------P10 = line[5:76]  
-
-State Geo file ties census blocks to zip codes
---Hierarchy: state > county > census tract > block group > block
---state = line[6:8]
---summary level (zip is '871') = line[8:11]
---logical record number = line[18:25]
---census tract = line[55:59]
---block group = line[61]
---block = line[62:66]
---ZCTA (approximation for ZIP) = line[160:165]
-
-
-
-
-
 

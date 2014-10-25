@@ -123,12 +123,13 @@ class SurnameModel(BaseModel):
             cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
                               id INTEGER PRIMARY KEY,
                               name TEXT,
-                              pctwhite REAL,
-                              pctblack REAL,
-                              pctapi REAL,
-                              pctaian REAL,
-                              pct2prace REAL,
-                              pcthispanic REAL)''')
+                              pct_white REAL,
+                              pct_black REAL,
+                              pct_api REAL,
+                              pct_ai_an REAL,
+                              pct_2_or_more REAL,
+                              pct_hispanic REAL)''')
+            # Copy foreign db into local db
             cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
             cursor.execute('''INSERT INTO surname_joint
                               SELECT * FROM downloaded_db.surname_joint''')
@@ -159,48 +160,83 @@ class SurnameModel(BaseModel):
                                 'app_c.csv'])
         with open(new_csv_path, 'wb+') as f:
             f.write(data)
-        
-# TODO
-
-
-            cursor.execute('''CREATE INDEX IF NOT EXISTS name_index ON
-                              surname_data(name)''')
-                              
-                              
-                              
-            # Strip csv header.
-            for line in csv_lines[1:]:
-                time.sleep(0)
-                cursor.execute('''INSERT into surname_data VALUES (NULL, ?, ?,
-                                  ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-                               (line.split(',')))
-                line_count += 1
-                percent = int(decimal.Decimal(line_count) /
-                              decimal.Decimal(csv_length) * 100)
-                if verbose is True:
-                    try:
-                        last_written_percent
-                    except NameError:
-                        last_written_percent = 0
-                    # Prevent flicker. Only update when percentage changes
-                    if percent > last_written_percent:
-                        sys.stdout.write('\rItems written: {}%'.
-                                         format(percent))
-                        last_written_percent = percent
-            if verbose is True:
-                sys.stdout.write('\rItems written: 100%')
-                sys.stdout.write('\n')
-                sys.stdout.write('Db write cleanup ... \t\t\t\t')
-            connection.commit()
-            connection.close()
-            if verbose is True:
-                sys.stdout.write('OK\n')
-        except sqlite3.Error as e:
-            traceback.print_exc()
-            connection.rollback()
-            connection.close()
-            raise e
-            
+######## Write to db
+        surgeo.adapter.adaprint('Writing to database ...')
+        try:
+            connection = sqlite3.connect(self.db_path)
+            cursor = connection.cursor()
+            with open(file_csv_path, 'Ur', encoding='latin-1') as csv:
+                for line in csv1:
+                    name = line[0]
+                    rank = line[1]
+                    count = line[2]
+                    prop1000k = line[3]
+                    cum_prop1000k = line[4]
+                    pct_white = line[5]
+                    pct_black = line[6]
+                    pct_api = line[7]
+                    pct_ai_an = line[8]
+                    pct_2_or_more = line[9]
+                    pct_hispanic = line[10].replace('\n', '')
+                    # Reconstitute data (missing represented by '(S)')
+                    if '(S)' in line:
+                        percentage_dict = {'pct_white': pct_white,
+                                           'pct_black': pct_black,
+                                           'pct_api': pct_api,
+                                           'pct_ai_an': pct_ai_an,
+                                           'pct_2_or_more': pct_2_or_more,
+                                           'pct_hispanic': pct_hispanic}
+                        redacted_pers = {key, value
+                                         for key, value in 
+                                         percentage_dict.items()
+                                         if value == '(S)'}
+                        non_redacted_pers = {key, float(value) 
+                                             for key, value in 
+                                             percentage_dict.items()
+                                             if value != '(S)'}
+                        # Sum non redacted (should be floats)
+                        non_redacted_sum = sum([non_redacted_pers.values()])
+                        redacted_sum = float(100 - non_redacted_sum)
+                        len_redacted_per = len(redacted_percentages)
+                        average_redacted_percentage = (redacted_sum / 
+                                                       len_redacted_per)
+                        percentage_dict = {key, average_redacted_percentage
+                                           for key, value
+                                           in percentage_dict.items()
+                                           if value == '(S)'
+                                           else key, value}
+                    # If no reconstitution required
+                    else:
+                        percentage_dict = {'pct_white': pct_white,
+                                           'pct_black': pct_black,
+                                           'pct_api': pct_api,
+                                           'pct_ai_an': pct_ai_an,
+                                           'pct_2_or_more': pct_2_or_more,
+                                           'pct_hispanic': pct_hispanic}
+                    # Create tuple for insertion
+                    formatted_percentage_dict = {key, value for key, value
+                                                 in percentage_dict.items()
+                                                 
+                    insertion_tuple = tuple(percentage_dict[
+                    cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
+                              id INTEGER PRIMARY KEY,
+                              name TEXT,
+                              pct_white REAL,
+                              pct_black REAL,
+                              pct_api REAL,
+                              pct_ai_an REAL,
+                              pct_2_or_more REAL,
+                              pct_hispanic REAL)''')
+                    
+                    [round(float(item)/100, 5)
+                                                for item in 
+                                                non_redacted_percentages]
+                    summed_percentages = sum(non_redacted_percentages)
+                    summed_redacted = 1 - summed_percentages
+                    length_redacted_percentages = len(redacted_percentages)
+                    
+                    
+  
     try:
         cursor = redacted_db.cursor()
         altered_rows = []
