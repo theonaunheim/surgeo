@@ -1,4 +1,3 @@
-
 import atexit
 import ftplib
 import os
@@ -13,23 +12,19 @@ from surgeo.utilities.download_bar import PercentageFTP
 from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
-class GeocodeModel(BaseModel):
-    '''Contains data references and methods for running a Geocode model.
+class SurnameModel(BaseModel):
+    '''Contains data references and methods for running a Surname model.
 
     Attributes
     ----------
     surgeo_folder_path : string
         Path to a shared sqlite3 database connection.
-
     temp_folder_path : string
         Path to a folder used as a temporary holding area.
-
     model_folder_path : string
         Path to folder that contains models.
-
     logger : logging.Logger or logging.RootLogger
         Logger for the individual model.
-
     db_path : string
         Path to sqlite3 database.
 
@@ -37,28 +32,21 @@ class GeocodeModel(BaseModel):
     -------
     build_up()
         setups up data as necessary
-
     db_check()
         checks db for proper table
-
     db_create()
         creates db tables if necessary
-
     db_destroy()
         removes database tables associated with this class.
-
     get_result_object()
         take parameters return result ProxyResult object.
-
     csv_summary()
         takes csv, returns summary statistic csv.
-
     csv_process()
         takes two paths. Reads one, writes to another.
-
     temp_cleanup()
         this function is used with atexit for cleanup.
-    
+
     '''
 
     def __init__(self):
@@ -66,19 +54,23 @@ class GeocodeModel(BaseModel):
         super().__init__()
 
     def db_check(self):
-        '''This checks accuracy of database.
+        '''Checks db accuracy. Valid returns True, else False.
 
-        If valid, returns True, else False. Count geocode_data is 581233
+        Returns
+        -------
+        Boolean
+            If the database is good, returns True. Otherwise returns false.
 
         '''
 
         try:
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
-            # geocode_logical
-            cursor.execute('''SELECT COUNT(*) FROM geocode_joint''')
-            geocode_joint_count = int(cursor.fetchone()[0])
-            assert(geocode_joint_count == 33223)
+            # Use row count to determine db validity.
+            cursor.execute('''SELECT COUNT(*) FROM surname_main''')
+            surname_main_count = int(cursor.fetchone()[0])
+            # If passes assertion, return True
+            assert(surname_main == XXXXX)
             return True
         except (sqlite3.Error,
                 AssertionError,
@@ -86,37 +78,60 @@ class GeocodeModel(BaseModel):
             self.logger.exception(''.join([e.__class__.__name__,
                                            ': ',
                                            e.__str__()]))
+            # If doesn't pass assertion test, log and return False.
             return False
 
     def db_create(self):
-        '''Creates geocode database based on Census 2010 data.'''
+        '''Creates surname database based on Census 2000 data.
+
+        This downloads a single census data file which gives the relative
+        ethnic makeup for each individual name. It only includes names with
+        over 100 instances. Certain elements are scrubbed for anonymity's sake
+        from the original database. The anonymized entries are summed and
+        divided among the applicable entries.
+
+        Where entries are catagorized as "other race", they are allocated in
+        accordance with Jirousek and Preucil's article "On the effective
+        implementation of the iterative proportional fitting procedure" in
+        Comput. Stat. Data Anal. 19(2), 177–189 (1995). The proportions are:
+        70.5% White, 11.1% Hispanic, 11.3% Black, 7.0% API, 0.8% multiracial,
+        and 0.9% AI/AN.
+
+        Raises
+        ------
+        sqlite3.Error
+            Can occur for any number of database-related reasons. Upon error,
+            automatic rollback occurs, but the error is raised because it's
+            probably symptomatic of a bigger problem.
+
+        '''
 
 ######## First try prefab database
         surgeo.adapter.adaprint('Trying to download prefabricated db ...')
         try:
             destination = os.path.join(self.temp_folder_path,
-                                       'geocode.sqlite')
+                                       'surname.sqlite')
             ftp_for_prefab = ftplib.FTP('ftp.theonaunheim.com')
             ftp_for_prefab.login()
-            PercentageFTP('geocode.sqlite',
+            PercentageFTP('surname.sqlite',
                           destination,
                           ftp_for_prefab).start()
             surgeo.adapter.adaprint('Copying data to local table ...')
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
-            cursor.execute('''DROP TABLE IF EXISTS geocode_joint''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_joint(
-                                  id INTEGER PRIMARY KEY,
-                                  zcta TEXT,
-                                  num_white REAL,
-                                  num_black REAL,
-                                  num_ai REAL,
-                                  num_api REAL,
-                                  num_hispanic REAL,
-                                  num_multi REAL)''')
+            cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
+                              id INTEGER PRIMARY KEY,
+                              name TEXT,
+                              pctwhite REAL,
+                              pctblack REAL,
+                              pctapi REAL,
+                              pctaian REAL,
+                              pct2prace REAL,
+                              pcthispanic REAL)''')
             cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
-            cursor.execute('''INSERT INTO geocode_joint
-                              SELECT * FROM downloaded_db.geocode_joint''')
+            cursor.execute('''INSERT INTO surname_joint
+                              SELECT * FROM downloaded_db.surname_joint''')
             connection.commit()
             surgeo.adapter.adaprint('Successfully written ...')
             return
@@ -124,186 +139,144 @@ class GeocodeModel(BaseModel):
         except:
             surgeo.adapter.adaprint('Unable to find prefab database ...')
             surgeo.adapter.adaprint('Time-consuming rebuild starting ...')
-######## FTP
-        surgeo.adapter.adaprint('Creating GeocodeModel database manually ...')
+######## Downloads
+        surgeo.adapter.adaprint('Creating SurnameModel database manually ...')
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
-        surgeo.adapter.adaprint('Signing in to ftp.census.gov ...')
-######## Major loop
-        for state in self.census_states:
-            surgeo.adapter.adaprint('Getting ' + state + ' data' + ' ...')
-            ftp = ftplib.FTP('ftp.census.gov')
-            ftp.login()
-            ftp.cwd('census_2010/04-Summary_File_1')
-            ftp.cwd('/')
-            ftp.cwd(''.join(['census_2010/04-Summary_File_1', '/', state]))
-            callback_pool = []
-            ftp.retrlines('NLST', callback=callback_pool.append)
-            target_file = [name for name in callback_pool if 'sf1.zip'
-                           in name][0]
-            destination_zip = os.path.join(self.temp_folder_path,
-                                           str(target_file))
-            PercentageFTP(target_file,
-                          destination_zip,
-                          ftp).start()
+        surgeo.adapter.adaprint('Downloading files ...')
+        url = 'http://www.census.gov/genealogy/www/data/2000surnames/names.zip'
+        title = 'names.zip'
+        destination_path = ''.join([self.temp_folder_path,
+                                    title])
+        PercentageHTTP(url,
+                       destination_path,
+                       title).start()
 ######## Unzip files
-            surgeo.adapter.adaprint('Unzipping files ...')
-            with zipfile.ZipFile(destination_zip) as zip_file:
-                # __000042010.sf1
-                # __geo2010.sf1
-                for zip_name in zip_file.namelist():
-                    if '032010.sf1' in zip_name or 'geo2010.sf1' in zip_name:
-                        with open(os.path.join('/home/theo/.surgeo/temp',
-                                               zip_name), 'wb+') as dest_file:
-                            zip_data = zip_file.read(zip_name)
-                            dest_file.write(zip_data)
-######## Commit to db
-            try:
-                surgeo.adapter.adaprint('Writing to database ...')
-                connection = sqlite3.connect(self.db_path)
-                cursor = connection.cursor()
-                cursor.execute('''DROP TABLE IF EXISTS geocode_joint''')
-                cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_logical(
-                                  id INTEGER PRIMARY KEY,
-                                  state TEXT,
-                                  summary_level TEXT,
-                                  logical_record TEXT,
-                                  zcta TEXT)''')
-                cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_race(
-                                  id INTEGER PRIMARY KEY,
-                                  state TEXT,
-                                  logical_record TEXT,
-                                  num_white REAL,
-                                  num_black REAL,
-                                  num_ai REAL,
-                                  num_api REAL,
-                                  num_hispanic REAL,
-                                  num_multi REAL)''')
-                cursor.execute('''CREATE TABLE IF NOT EXISTS geocode_joint(
-                                  id INTEGER PRIMARY KEY,
-                                  zcta TEXT,
-                                  num_white REAL,
-                                  num_black REAL,
-                                  num_ai REAL,
-                                  num_api REAL,
-                                  num_hispanic REAL,
-                                  num_multi REAL)''')
-                connection.commit()
-                # now start loading to db
-                list_of_filenames = os.listdir(self.temp_folder_path)
-                for index, filename in enumerate(list_of_filenames):
-                    # First the geographic header file
-                    if 'geo' in filename:
-                        file_path = os.path.join(self.temp_folder_path,
-                                                 filename)
-                        with open(file_path, 'Ur', encoding='latin-1') as csv1:
-                            for line in csv1:
-                                state = line[6:8]
-                                summary_level = line[8:11]
-                                logical_record = line[18:25]
-                                zcta = line[171:176]
-                                # Only ZCTA wide numbers considered
-                                # DESIRED_SUMMARY_LEVEL = '871'
-                                if summary_level == '871':
-                                    cursor.execute('''INSERT INTO
-                                                      geocode_logical(
-                                                      id,
-                                                      state,
-                                                      summary_level,
-                                                      logical_record,
-                                                      zcta)
-                                                      VALUES(NULL,
-                                                             ?,
-                                                             ?,
-                                                             ?,
-                                                             ?)''',
-                                                   (state,
-                                                    summary_level,
-                                                    logical_record,
-                                                    zcta))
-                for index, filename in enumerate(list_of_filenames):
-                    # First the geographic header file
-                    if '32010.sf1' in filename:
-                        file_path = os.path.join(self.temp_folder_path,
-                                                 filename)
-                        with open(file_path, 'Ur', encoding='latin-1') as csv2:
-                            for line in csv2:
-                                split_line = line.split(',')
-                                state = split_line[1]
-                                logical_record = split_line[4]
-                                table_p5 = split_line[16:33]
-                                # Breaking up table p10
-                                total_pop = table_p5[0]
-                                total_not_hispanic = table_p5[1]
-                                num_white = table_p5[2]
-                                num_black = table_p5[3]
-                                num_ai = table_p5[4]
-                                num_asian = table_p5[5]
-                                num_pacisland = table_p5[6]
-                                num_other = table_p5[7]
-                                num_api = str((int(num_asian) +
-                                               int(num_pacisland)))
-                                num_multi = table_p5[8]
-                                num_hispanic = table_p5[9]
-                                cursor.execute('''INSERT INTO geocode_race(
-                                                  id,
-                                                  state,
-                                                  logical_record,
-                                                  num_white,
-                                                  num_black,
-                                                  num_ai,
-                                                  num_api,
-                                                  num_hispanic,
-                                                  num_multi)
-                                                  VALUES(NULL, ?, ?, ?, ?,
-                                                  ?, ?, ?, ?)''',
-                                               (state,
-                                                logical_record,
-                                                num_white,
-                                                num_black,
-                                                num_ai,
-                                                num_api,
-                                                num_multi,
-                                                num_hispanic))
-                # Now commit
-                connection.commit()
-                connection.close()
-            except sqlite3.Error as e:
-                connection.rollback()
-                connection.close()
-                raise e
-            # Delete temp files for this state because DB data gathered.
-            surgeo.adapter.adaprint('Cleaning up unused files ...')
-            for directory_item in os.listdir(self.temp_folder_path):
-                os.remove(os.path.join(self.temp_folder_path, directory_item))
-        # Create indicies
-        surgeo.adapter.adaprint('Joining tables and indexing ...')
-        connection = sqlite3.connect(self.db_path)
-        cursor = connection.cursor()
-        try:
-            cursor.execute('''INSERT INTO geocode_joint
-                              SELECT NULL,
-                                     L.zcta,
-                                     R.num_white,
-                                     R.num_black,
-                                     R.num_ai,
-                                     R.num_api,
-                                     R.num_multi,
-                                     R.num_hispanic
-                              FROM geocode_logical as L
-                              JOIN geocode_race as R
-                              ON L.logical_record=R.logical_record
-                              WHERE L.state=R.state''')
-            cursor.execute('''DROP TABLE IF EXISTS geocode_race''')
-            cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
-            cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index
-                              ON geocode_joint(zcta)''')
+        surgeo.adapter.adaprint('Unzipping files ...')
+        with zipfile.ZipFile(destination_path) as zip_file:
+            data = f.read('app_c.csv')
+        new_csv_path = ''.join([self.temp_folder_path,
+                                'app_c.csv'])
+        with open(new_csv_path, 'wb+') as f:
+            f.write(data)
+        
+# TODO
+
+
+            cursor.execute('''CREATE INDEX IF NOT EXISTS name_index ON
+                              surname_data(name)''')
+                              
+                              
+                              
+            # Strip csv header.
+            for line in csv_lines[1:]:
+                time.sleep(0)
+                cursor.execute('''INSERT into surname_data VALUES (NULL, ?, ?,
+                                  ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                               (line.split(',')))
+                line_count += 1
+                percent = int(decimal.Decimal(line_count) /
+                              decimal.Decimal(csv_length) * 100)
+                if verbose is True:
+                    try:
+                        last_written_percent
+                    except NameError:
+                        last_written_percent = 0
+                    # Prevent flicker. Only update when percentage changes
+                    if percent > last_written_percent:
+                        sys.stdout.write('\rItems written: {}%'.
+                                         format(percent))
+                        last_written_percent = percent
+            if verbose is True:
+                sys.stdout.write('\rItems written: 100%')
+                sys.stdout.write('\n')
+                sys.stdout.write('Db write cleanup ... \t\t\t\t')
             connection.commit()
             connection.close()
+            if verbose is True:
+                sys.stdout.write('OK\n')
         except sqlite3.Error as e:
+            traceback.print_exc()
             connection.rollback()
             connection.close()
             raise e
+            
+    try:
+        cursor = redacted_db.cursor()
+        altered_rows = []
+        for row in cursor.execute('''SELECT * FROM surname_data'''):
+            time.sleep(0)
+            primary_key = row[0]
+            surname = row[1]
+            rank = row[2]
+            count = row[3]
+            prop1000k = row[4]
+            cum_prop1000k = row[5]
+            pctwhite = row[6]
+            pctblack = row[7]
+            pctapi = row[8]
+            pctaian = row[9]
+            pct2prace = row[10]
+            # For some reason the last elemet often has a newline
+            if type(row[11]) is str:
+                pcthispanic = row[11].replace('\n', '')
+            else:
+                pcthispanic = row[11]
+            # Per the study, the total number of redacted names is divided
+            # by the number of redacted entries yielding an approximation.
+            percentages = [pctwhite,
+                           pctblack,
+                           pctapi,
+                           pctaian,
+                           pct2prace,
+                           pcthispanic]
+            # Do not alter row unless it contains '(S)', which denotes redacted
+            if not '(S)' in row:
+                continue
+            non_redacted = [x for x in percentages if not x == '(S)']
+            redacted = [x for x in percentages if x == '(S)']
+            non_redacted_percentage = sum(non_redacted)
+            redacted_percentage = float(100) - (non_redacted_percentage)
+            count_redacted_total = float(count) * redacted_percentage / 100
+            count_per_redacted_item = round(count_redacted_total /
+                                            len(redacted))
+            # All redacted items set the same and added to list of altered rows
+            for redacted_item in redacted:
+                redacted_item = count_per_redacted_item
+            # Add altered row to altered_rows
+            altered_rows.append(row)
+        for row in altered_rows:
+            time.sleep(0)
+            primary_key = row[0]
+            cursor.execute('''DELETE FROM surname_data WHERE id=?''',
+                           (primary_key,))
+            cursor.execute('''INSERT INTO surname_data VALUES
+                              (?,?,?,?,?,?,?,?,?,?,?,?)''', row)
+        # Index via name to speed up searches
+    except sqlite3.Error as e:
+        traceback.print_exc()
+        redacted_db.rollback()
+        redacted_db.commit()
+        raise e
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##############################################
+               
+
+
+
 
     def get_result_object(self, zip_code):
         '''Takes zip code, returns race object.
@@ -385,21 +358,21 @@ class GeocodeModel(BaseModel):
             if index == 2:
                 second_line = line.split(',')
         # List of lines
-        line_list_1 = [item.replace('\"','').replace('\'','').strip()
+        line_list_1 = [item.replace('\"', '').replace('\'', '').strip()
                        for item in first_line]
-        line_list_2 = [item.replace('\"','').replace('\'','').strip()
+        line_list_2 = [item.replace('\"', '').replace('\'', '').strip()
                        for item in first_line]
         # Indices to become tuples
         percent_index = []
         subject_index = []
         # Create percent index
         for row_index, row_item in enumerate(line_list_1):
-            if any ['hispanic',
+            if any(['hispanic',
                     'white',
                     'black',
                     'api',
                     'ai',
-                    'multi'] in row_item:
+                    'multi']) in row_item:
                 percent_index.append(row_index)
         # Create subject index
         for row_index, row_item in enumerate(line_list_2):
@@ -418,7 +391,7 @@ class GeocodeModel(BaseModel):
                     filepath_in,
                     filepath_out):
         '''Thin wrapper around the BaseModel's csv_process method.
-        
+
         This looks for the 'zip'-related items.
 
         Args:
@@ -436,7 +409,7 @@ class GeocodeModel(BaseModel):
                 break
             first_line = line.split(',')
         # Separate
-        line_list = [item.replace('\"','').replace('\'','').strip()
+        line_list = [item.replace('\"', '').replace('\'', '').strip()
                      for item in first_line]
         for item in line_list:
             if item.lower() in ['zip', 'zcta', 'zip code', 'zip_code']:
@@ -447,3 +420,4 @@ class GeocodeModel(BaseModel):
                                     continue_on_model_fail=True)
             # Prevent multiple hits
             return
+

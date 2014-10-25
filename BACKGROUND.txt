@@ -61,8 +61,6 @@ Geocode data comes from racial proportions in SF1 file.
 Surname Data
 ###############################################################################
 
-# TODO
-
 Listed surnames come from file giving proportions for all names (count >= 100)
 Unlisted surnames are excluded.
 
@@ -89,8 +87,9 @@ pctaian         Percent Non-Hispanic American Indian and Alaskan Native Only
 pct2prace       Percent Non-Hispanic of Two or More Races
 pcthispanic     Percent Hispanic Origin
 
+De-anonymize data.
 
-# TODO ... iterative fitting not used for this.
+For other race:
 Unlisted name popuation breakdown according to Jirousek and Preucil
 On the effective implementation of the iterative proportional fitting procedure.
 Comput. Stat. Data Anal. 19(2), 177–189 (1995):
