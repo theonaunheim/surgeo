@@ -209,16 +209,35 @@ class GeocodeModel(BaseModel):
                                 # Breaking up table p10
                                 total_pop = table_p5[0]
                                 total_not_hispanic = table_p5[1]
-                                num_white = table_p5[2]
-                                num_black = table_p5[3]
-                                num_ai = table_p5[4]
+                                num_other = int(table_p5[7])
+                                # Other goes into categories in the following
+                                # proportions (iternative fitting) white 70.5%
+                                # black 11.3%, hispanic 11.1% api 7.0%
+                                # multi .8%, ai_an .9%
+                                # Note that Asian and pacific islanders are
+                                # lumped together also Alaskan Native/Native Am
+                                white_partial = num_other * float(.705)
+                                black_partial = num_other * float(.113)
+                                hispanic_partial = num_other * float(.111)
+                                api_partial = num_other * float(.070)
+                                multi_partial = num_other * float(.008)
+                                ai_an_partial = num_other * float(.009)
+                                num_white = (int(table_p5[2]) +
+                                             int(white_partial))
+                                num_black = (int(table_p5[3]) +
+                                             int(black_partial))
+                                num_ai = (int(table_p5[4]) +
+                                          int(ai_an_partial))
                                 num_asian = table_p5[5]
                                 num_pacisland = table_p5[6]
                                 num_other = table_p5[7]
                                 num_api = str((int(num_asian) +
-                                               int(num_pacisland)))
-                                num_multi = table_p5[8]
-                                num_hispanic = table_p5[9]
+                                               int(num_pacisland) +
+                                               int(api_partial)))
+                                num_multi = (int(table_p5[8]) +
+                                             int(multi_partial))
+                                num_hispanic = (int(table_p5[9]) +
+                                                int(hispanic_partial))
                                 cursor.execute('''INSERT INTO geocode_race(
                                                   id,
                                                   state,
@@ -359,21 +378,21 @@ class GeocodeModel(BaseModel):
             if index == 2:
                 second_line = line.split(',')
         # List of lines
-        line_list_1 = [item.replace('\"','').replace('\'','').strip()
+        line_list_1 = [item.replace('\"', '').replace('\'', '').strip()
                        for item in first_line]
-        line_list_2 = [item.replace('\"','').replace('\'','').strip()
+        line_list_2 = [item.replace('\"', '').replace('\'', '').strip()
                        for item in first_line]
         # Indices to become tuples
         percent_index = []
         subject_index = []
         # Create percent index
         for row_index, row_item in enumerate(line_list_1):
-            if any ['hispanic',
+            if any(['hispanic',
                     'white',
                     'black',
                     'api',
                     'ai',
-                    'multi'] in row_item:
+                    'multi']) in row_item:
                 percent_index.append(row_index)
         # Create subject index
         for row_index, row_item in enumerate(line_list_2):
@@ -392,7 +411,7 @@ class GeocodeModel(BaseModel):
                     filepath_in,
                     filepath_out):
         '''Thin wrapper around the BaseModel's csv_process method.
-        
+
         This looks for the 'zip'-related items.
 
         Args:
@@ -410,14 +429,15 @@ class GeocodeModel(BaseModel):
                 break
             first_line = line.split(',')
         # Separate
-        line_list = [item.replace('\"','').replace('\'','').strip()
+        line_list = [item.replace('\"', '').replace('\'', '').strip()
                      for item in first_line]
-        for item in line_list:
+        for index, item in enumerate(line_list):
             if item.lower() in ['zip', 'zcta', 'zip code', 'zip_code']:
                 super().csv_process(filepath_in,
                                     filepath_out,
-                                    (item,),
-                                    (zip_code,),
+                                    (index,),
+                                    ('zip_code',),
                                     continue_on_model_fail=True)
             # Prevent multiple hits
             return
+

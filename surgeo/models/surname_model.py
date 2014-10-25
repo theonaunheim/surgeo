@@ -63,6 +63,7 @@ class SurnameModel(BaseModel):
             If the database is good, returns True. Otherwise returns false.
 
         '''
+
         PROPER_COUNT = 151671
         try:
             connection = sqlite3.connect(self.db_path)
@@ -114,6 +115,7 @@ class SurnameModel(BaseModel):
                                        'surname.sqlite')
             ftp_for_prefab = ftplib.FTP('ftp.theonaunheim.com')
             ftp_for_prefab.login()
+            # Custom function for graphical ftp
             PercentageFTP('surname.sqlite',
                           destination,
                           ftp_for_prefab).start()
@@ -178,6 +180,7 @@ class SurnameModel(BaseModel):
                               pct_ai_an REAL,
                               pct_2_or_more REAL,
                               pct_hispanic REAL)''')
+            # Open csv file.
             with open(new_csv_path, 'Ur', encoding='latin-1') as csv:
                 for index, line in enumerate(csv):
                     # Skip row 0

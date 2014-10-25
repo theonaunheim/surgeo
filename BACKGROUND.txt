@@ -91,17 +91,6 @@ Certain information is scrubbed to help anonymize the data. This data is
 reconstituted by getting a total, and dividing it by the scrubbed number of
 entries.
 
-For "other race" the popuation is allocated according to Jirousek and Preucil
-On the effective implementation of the iterative proportional fitting procedure.
-Comput. Stat. Data Anal. 19(2), 177–189 (1995):
-
-70.5% White
-11.1% Hispanic
-11.3% Black
-7.0% API
-0.8% multiracial
-0.9% AI/AN
-
 ###############################################################################
 Block Race Data
 ###############################################################################
@@ -151,4 +140,15 @@ table_P5 (split_line[16:33]) is further subdivided/reindexed into:
 
 Note: Hispanic or latino is defined as an ethnicity, rather than a race. An 
 individual can therefore be "White" or "Hispanic or Latino White" for example.
+
+For "other race" the popuation is allocated according to Jirousek and Preucil
+On the effective implementation of the iterative proportional fitting procedure.
+Comput. Stat. Data Anal. 19(2), 177–189 (1995):
+
+70.5% White
+11.1% Hispanic
+11.3% Black
+7.0% API
+0.8% multiracial
+0.9% AI/AN
 
