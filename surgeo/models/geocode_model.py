@@ -41,7 +41,7 @@ class GeocodeModel(BaseModel):
         If valid, returns True.
         If invalid, returns False.
 
-        Count geocode_data is 581233
+        Count geocode_data is 33223
 
         '''
         try:
