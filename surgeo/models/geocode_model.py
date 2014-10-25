@@ -89,6 +89,8 @@ class GeocodeModel(BaseModel):
             cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
             cursor.execute('''INSERT INTO geocode_joint
                               SELECT * FROM downloaded_db.geocode_joint''')
+            cursor.execute('''CREATE INDEX IF NOT EXISTS zcta_index
+                              ON geocode_joint(zcta)''')
             connection.commit()
             surgeo.adapter.adaprint('Successfully written ...')
             return
@@ -341,7 +343,7 @@ class GeocodeModel(BaseModel):
         cursor = connection.cursor()
         cursor.execute('''DROP TABLE IF EXISTS geocode_race''')
         cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
-        cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
+        cursor.execute('''DROP TABLE IF EXISTS geocode_joint''')
         connection.commit()
         connection.close()
 

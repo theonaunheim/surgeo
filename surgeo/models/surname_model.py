@@ -9,6 +9,7 @@ import surgeo
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
 from surgeo.utilities.download_bar import PercentageFTP
+from surgeo.utilities.download_bar import PercentageHTTP
 from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
@@ -62,15 +63,15 @@ class SurnameModel(BaseModel):
             If the database is good, returns True. Otherwise returns false.
 
         '''
-
+        PROPER_COUNT = 151671
         try:
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
             # Use row count to determine db validity.
-            cursor.execute('''SELECT COUNT(*) FROM surname_main''')
-            surname_main_count = int(cursor.fetchone()[0])
+            cursor.execute('''SELECT COUNT(*) FROM surname_joint''')
+            surname_joint_count = int(cursor.fetchone()[0])
             # If passes assertion, return True
-            assert(surname_main == XXXXX)
+            assert(surname_joint_count == PROPER_COUNT)
             return True
         except (sqlite3.Error,
                 AssertionError,
@@ -133,6 +134,8 @@ class SurnameModel(BaseModel):
             cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
             cursor.execute('''INSERT INTO surname_joint
                               SELECT * FROM downloaded_db.surname_joint''')
+            cursor.execute('''CREATE INDEX IF NOT EXISTS surname_index
+                              ON surname_joint(name)''')
             connection.commit()
             surgeo.adapter.adaprint('Successfully written ...')
             return
@@ -145,19 +148,19 @@ class SurnameModel(BaseModel):
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
         surgeo.adapter.adaprint('Downloading files ...')
-        url = 'http://www.census.gov/genealogy/www/data/2000surnames/names.zip'
+        url = 'http://www2.census.gov/topics/genealogy/2000surnames/names.zip'
         title = 'names.zip'
-        destination_path = ''.join([self.temp_folder_path,
-                                    title])
+        destination_path = os.path.join(self.temp_folder_path,
+                                        title)
         PercentageHTTP(url,
                        destination_path,
                        title).start()
 ######## Unzip files
         surgeo.adapter.adaprint('Unzipping files ...')
         with zipfile.ZipFile(destination_path) as zip_file:
-            data = f.read('app_c.csv')
-        new_csv_path = ''.join([self.temp_folder_path,
-                                'app_c.csv'])
+            data = zip_file.read('app_c.csv')
+        new_csv_path = os.path.join(self.temp_folder_path,
+                                    'app_c.csv')
         with open(new_csv_path, 'wb+') as f:
             f.write(data)
 ######## Write to db
@@ -165,8 +168,22 @@ class SurnameModel(BaseModel):
         try:
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
-            with open(file_csv_path, 'Ur', encoding='latin-1') as csv:
-                for line in csv1:
+            cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
+                              id INTEGER PRIMARY KEY,
+                              name TEXT,
+                              pct_white REAL,
+                              pct_black REAL,
+                              pct_api REAL,
+                              pct_ai_an REAL,
+                              pct_2_or_more REAL,
+                              pct_hispanic REAL)''')
+            with open(new_csv_path, 'Ur', encoding='latin-1') as csv:
+                for index, line in enumerate(csv):
+                    # Skip row 0
+                    if index == 0:
+                        continue
+                    line = line.split(',')
                     name = line[0]
                     rank = line[1]
                     count = line[2]
@@ -186,133 +203,59 @@ class SurnameModel(BaseModel):
                                            'pct_ai_an': pct_ai_an,
                                            'pct_2_or_more': pct_2_or_more,
                                            'pct_hispanic': pct_hispanic}
-                        redacted_pers = {key, value
-                                         for key, value in 
+                        redacted_pers = {key: value
+                                         for key, value in
                                          percentage_dict.items()
                                          if value == '(S)'}
-                        non_redacted_pers = {key, float(value) 
-                                             for key, value in 
+                        non_redacted_pers = {key: float(value)
+                                             for key, value in
                                              percentage_dict.items()
                                              if value != '(S)'}
-                        # Sum non redacted (should be floats)
-                        non_redacted_sum = sum([non_redacted_pers.values()])
+                        # Sum non redacted (should be floats). dict_values
+                        # requires a list wrapper.
+                        values = list(non_redacted_pers.values())
+                        non_redacted_sum = sum(values)
                         redacted_sum = float(100 - non_redacted_sum)
-                        len_redacted_per = len(redacted_percentages)
-                        average_redacted_percentage = (redacted_sum / 
+                        len_redacted_per = len(redacted_pers)
+                        average_redacted_percentage = (redacted_sum /
                                                        len_redacted_per)
-                        percentage_dict = {key, average_redacted_percentage
+                        percentage_dict = {key:
+                                           (average_redacted_percentage if
+                                            value == '(S)' else value)
                                            for key, value
-                                           in percentage_dict.items()
-                                           if value == '(S)'
-                                           else key, value}
+                                           in percentage_dict.items()}
                     # If no reconstitution required
                     else:
-                        percentage_dict = {'pct_white': pct_white,
-                                           'pct_black': pct_black,
-                                           'pct_api': pct_api,
-                                           'pct_ai_an': pct_ai_an,
-                                           'pct_2_or_more': pct_2_or_more,
-                                           'pct_hispanic': pct_hispanic}
+                        percentage_dict = {'pct_white': float(pct_white),
+                                           'pct_black': float(pct_black),
+                                           'pct_api': float(pct_api),
+                                           'pct_ai_an': float(pct_ai_an),
+                                           'pct_2_or_more':
+                                           float(pct_2_or_more),
+                                           'pct_hispanic': float(pct_hispanic)}
                     # Create tuple for insertion
-                    formatted_percentage_dict = {key, value for key, value
-                                                 in percentage_dict.items()
-                                                 
-                    insertion_tuple = tuple(percentage_dict[
-                    cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
-                              id INTEGER PRIMARY KEY,
-                              name TEXT,
-                              pct_white REAL,
-                              pct_black REAL,
-                              pct_api REAL,
-                              pct_ai_an REAL,
-                              pct_2_or_more REAL,
-                              pct_hispanic REAL)''')
-                    
-                    [round(float(item)/100, 5)
-                                                for item in 
-                                                non_redacted_percentages]
-                    summed_percentages = sum(non_redacted_percentages)
-                    summed_redacted = 1 - summed_percentages
-                    length_redacted_percentages = len(redacted_percentages)
-                    
-                    
-  
-    try:
-        cursor = redacted_db.cursor()
-        altered_rows = []
-        for row in cursor.execute('''SELECT * FROM surname_data'''):
-            time.sleep(0)
-            primary_key = row[0]
-            surname = row[1]
-            rank = row[2]
-            count = row[3]
-            prop1000k = row[4]
-            cum_prop1000k = row[5]
-            pctwhite = row[6]
-            pctblack = row[7]
-            pctapi = row[8]
-            pctaian = row[9]
-            pct2prace = row[10]
-            # For some reason the last elemet often has a newline
-            if type(row[11]) is str:
-                pcthispanic = row[11].replace('\n', '')
-            else:
-                pcthispanic = row[11]
-            # Per the study, the total number of redacted names is divided
-            # by the number of redacted entries yielding an approximation.
-            percentages = [pctwhite,
-                           pctblack,
-                           pctapi,
-                           pctaian,
-                           pct2prace,
-                           pcthispanic]
-            # Do not alter row unless it contains '(S)', which denotes redacted
-            if not '(S)' in row:
-                continue
-            non_redacted = [x for x in percentages if not x == '(S)']
-            redacted = [x for x in percentages if x == '(S)']
-            non_redacted_percentage = sum(non_redacted)
-            redacted_percentage = float(100) - (non_redacted_percentage)
-            count_redacted_total = float(count) * redacted_percentage / 100
-            count_per_redacted_item = round(count_redacted_total /
-                                            len(redacted))
-            # All redacted items set the same and added to list of altered rows
-            for redacted_item in redacted:
-                redacted_item = count_per_redacted_item
-            # Add altered row to altered_rows
-            altered_rows.append(row)
-        for row in altered_rows:
-            time.sleep(0)
-            primary_key = row[0]
-            cursor.execute('''DELETE FROM surname_data WHERE id=?''',
-                           (primary_key,))
-            cursor.execute('''INSERT INTO surname_data VALUES
-                              (?,?,?,?,?,?,?,?,?,?,?,?)''', row)
-        # Index via name to speed up searches
-    except sqlite3.Error as e:
-        traceback.print_exc()
-        redacted_db.rollback()
-        redacted_db.commit()
-        raise e
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##############################################
-               
-
-
-
+                    formatted_dict = {key: round(float(value)/100, 5)
+                                      for key, value
+                                      in percentage_dict.items()}
+                    insertion_tuple = (name,
+                                       formatted_dict['pct_white'],
+                                       formatted_dict['pct_black'],
+                                       formatted_dict['pct_api'],
+                                       formatted_dict['pct_ai_an'],
+                                       formatted_dict['pct_2_or_more'],
+                                       formatted_dict['pct_hispanic'])
+                    cursor.execute('''INSERT INTO surname_joint
+                                      VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)''',
+                                   insertion_tuple)
+                surgeo.adapter.adaprint('Creating index ...')
+                cursor.execute('''CREATE INDEX IF NOT EXISTS surname_index
+                                  ON surname_joint(name)''')
+                connection.commit()
+                connection.close()
+        except sqlite3.Error as e:
+            connection.rollback()
+            connection.commit()
+            raise e
 
     def get_result_object(self, zip_code):
         '''Takes zip code, returns race object.
@@ -376,9 +319,7 @@ class SurnameModel(BaseModel):
         '''Destroy database.'''
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''DROP TABLE IF EXISTS geocode_race''')
-        cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
-        cursor.execute('''DROP TABLE IF EXISTS geocode_logical''')
+        cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
         connection.commit()
         connection.close()
 
@@ -452,7 +393,7 @@ class SurnameModel(BaseModel):
                 super().csv_process(filepath_in,
                                     filepath_out,
                                     (item,),
-                                    (zip_code,),
+                                    (tuple(),),  # TODO
                                     continue_on_model_fail=True)
             # Prevent multiple hits
             return
