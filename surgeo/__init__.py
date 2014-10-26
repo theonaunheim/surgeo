@@ -12,7 +12,10 @@ import inspect
 import logging
 import os
 
+import surgeo.calculate
+import surgeo.gui
 import surgeo.models
+import surgeo.scripts
 import surgeo.utilities
 
 from surgeo.utilities.error_class import SurgeoError

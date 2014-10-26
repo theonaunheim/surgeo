@@ -342,8 +342,11 @@ class SurgeoModel(BaseModel):
 
         '''
 
-        HEADER_LIST = ['name', 'surname', 'last_name', 'last name']
+        SURNAME_HEADERS = ['name', 'surname', 'last_name', 'last name']
+        ZCTA_HEADERS = ['zcta', 'zip', 'zip_code', 'zip_code']
         # TODO: Make so all subclassed or all imported as functions.
+        surname_index = None
+        zcta_index = None
         for index, line in enumerate(open(filepath_in, 'r')):
             if index > 0:
                 break
@@ -351,13 +354,16 @@ class SurgeoModel(BaseModel):
         # Separate
         line_list = [item.replace('\"', '').replace('\'', '').strip()
                      for item in first_line]
-        for item in line_list:
-            if item.lower() in HEADER_LIST:
-                super().csv_process(filepath_in,
-                                    filepath_out,
-                                    (item,),
-                                    (tuple(),),  # TODO
-                                    continue_on_model_fail=True)
+        for index, item in enumerate(line_list):
+            if item.lower() in SURNAME_HEADERS:
+                surname_index = index
+            if item.lower() in ZCTA_HEADERS:
+                zcta_index = index
+        super().csv_process(filepath_in,
+                            filepath_out,
+                            (line_list[zcta_index], line_list[surname_index]),
+                            ('zcta', 'surname'),
+                            continue_on_model_fail=True)
             # Prevent multiple hits
             return
 

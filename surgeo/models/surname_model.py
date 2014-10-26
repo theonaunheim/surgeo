@@ -476,7 +476,7 @@ class SurnameModel(BaseModel):
                 super().csv_process(filepath_in,
                                     filepath_out,
                                     (item,),
-                                    (tuple(),),  # TODO
+                                    ('surname',),  # TODO
                                     continue_on_model_fail=True)
             # Prevent multiple hits
             return

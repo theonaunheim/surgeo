@@ -10,8 +10,10 @@ import sys
 
 import surgeo
 
+from surgeo.scripts import gui_executable
 
-def main(*args):
+
+def cli_main(*args):
     '''This is the main application when running the program from a CLI.
 
     Args:
@@ -75,14 +77,14 @@ def main(*args):
         infile = parsed_args.file[0]
         outfile = parsed_args.file[1]
         model.process_csv(infile, outfile)
+##### If no argument, GUI. Console should remain.
     elif not any([parsed_args.setup,
                   parsed_args.pipe,
                   parsed_args.simple,
                   parsed_args.complex,
                   parsed_args.file]):
-        print('No arguments given. Try \'--help\'?')
-        # GUI code to go here
+        gui_executable()
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(cli_main(sys.argv[1:]))
 

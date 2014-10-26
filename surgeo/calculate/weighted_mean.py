@@ -80,7 +80,7 @@ def get_weighted_mean(percentage_index_numbers,
                 distance = abs(float(row[subject_index_number]) -
                                weighted_mean[key])
                 weighted_stdev[key] += (float(row[key]) /
-                                        float(summed_percentages[key]) * 
+                                        float(summed_percentages[key]) *
                                         distance)
         sample_mean = sum(list_of_subject_values) / len(list_of_subject_values)
         distance_from_mean = [math.pow((value - sample_mean), 2) for value in

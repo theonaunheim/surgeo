@@ -102,7 +102,6 @@ class BaseModel(metaclass=abc.ABCMeta):
                                      'elements. These should be equal.'
                                      .format(len(header_tuple),
                                              len(argument_tuple)))
-        number_arguments_for_model = self.get_result_object
         # Open file, determine if zip and name in header
         tempfile = open(filepath_in, 'rU')
         number_of_rows = len(tempfile.readlines())

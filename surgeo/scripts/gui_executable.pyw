@@ -11,7 +11,7 @@ import sys
 import surgeo
 
 
-def main():
+def gui_main():
     '''This is the main application when running the program from a GUI.
 
     Args:

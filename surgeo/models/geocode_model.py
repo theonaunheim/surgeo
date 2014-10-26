@@ -444,7 +444,7 @@ class GeocodeModel(BaseModel):
             if item.lower() in ['zip', 'zcta', 'zip code', 'zip_code']:
                 super().csv_process(filepath_in,
                                     filepath_out,
-                                    (index,),
+                                    (item,),
                                     ('zip_code',),
                                     continue_on_model_fail=True)
             # Prevent multiple hits
