@@ -1,4 +1,4 @@
-'''This __main__.py file exists solely to allow for module execution.'''
+'''This __main__.py allows for module execution and cx_freeze.'''
 
 from surgeo.executable import main
 

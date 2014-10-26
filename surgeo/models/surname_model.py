@@ -51,16 +51,43 @@ class SurnameModel(BaseModel):
     '''
 
     def __init__(self):
-        '''Uses the base class __init__. build_up() runs at conclusion.'''
+        '''Uses the base class __init__. build_up() runs at conclusion.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        None
+
+        '''
         super().__init__()
 
     def db_check(self):
         '''Checks db accuracy. Valid returns True, else False.
 
+        Parameters
+        ----------
+        None
+
         Returns
         -------
-        Boolean
-            If the database is good, returns True. Otherwise returns false.
+        True: Boolean
+            If the database is good, returns True.
+        False: Boolean
+            If database is deficient, returns False.
+
+        Raises
+        ------
+        sqlite3.Error
+            Can occur for any number of database-related reasons. Upon error,
+            automatic rollback occurs, but the error is raised because it's
+            probably symptomatic of a bigger problem.
 
         '''
 
@@ -92,12 +119,13 @@ class SurnameModel(BaseModel):
         from the original database. The anonymized entries are summed and
         divided among the applicable entries.
 
-        Where entries are catagorized as "other race", they are allocated in
-        accordance with Jirousek and Preucil's article "On the effective
-        implementation of the iterative proportional fitting procedure" in
-        Comput. Stat. Data Anal. 19(2), 177–189 (1995). The proportions are:
-        70.5% White, 11.1% Hispanic, 11.3% Black, 7.0% API, 0.8% multiracial,
-        and 0.9% AI/AN.
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
 
         Raises
         ------
@@ -260,33 +288,46 @@ class SurnameModel(BaseModel):
             connection.commit()
             raise e
 
-    def get_result_object(self, zip_code):
-        '''Takes zip code, returns race object.
+    def get_result_object(self, surname):
+        '''Takes last name, returns race object.
 
-        Args:
-            zip_code: 5 digit zip code
-        Returns:
-            Result object with attributes:
-                zcta string
-                hispanic float
-                white float
-                black float
-                api float
-                ai float
-                multi float
-        Raises:
-            None
+        Parameters
+        ----------
+        surname : string
+            This is the name for which you are getting data.
+
+        Returns
+        -------
+        result : surgeo.Result
+            The return is not an error result, it is a custom object which
+            contains attributes:
+                *surname : string
+                *hispanic : float
+                *white : float
+                *black float
+                *api float
+                *ai float
+                *multi float
+
+        Raises
+        ------
+        sqlite3.Error
+            Can occur for any number of database-related reasons. Upon error,
+            automatic rollback occurs, but the error is raised because it's
+            probably symptomatic of a bigger problem.
 
         '''
 
+        upper_surname = surname.upper()
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''SELECT * FROM geocode_joint
-                          WHERE zcta=?''', (zip_code,))
+        cursor.execute('''SELECT * FROM surname_joint
+                          WHERE name=?''', (upper_surname,))
         try:
             row = cursor.fetchone()
+######## Error result. Terminates with returning error result
         except TypeError:
-            error_result = Result({'zcta': 0,
+            error_result = Result({'name': 0,
                                    'hispanic': 0,
                                    'white': 0,
                                    'black': 0,
@@ -294,13 +335,13 @@ class SurnameModel(BaseModel):
                                    'ai': 0,
                                    'multi': 0}).errorify()
             return error_result
-        zcta = row[1]
-        count_hispanic = row[6]
+        name = row[1]
+        count_hispanic = row[7]
         count_white = row[2]
         count_black = row[3]
-        count_api = row[5]
-        count_ai = row[4]
-        count_multi = row[7]
+        count_api = row[4]
+        count_ai = row[5]
+        count_multi = row[6]
         # Float because dividing later
         total = float(count_hispanic +
                       count_white +
@@ -308,7 +349,7 @@ class SurnameModel(BaseModel):
                       count_api +
                       count_ai +
                       count_multi)
-        argument_dict = {'zcta': zcta,
+        argument_dict = {'name': name,
                          'hispanic': round((count_hispanic/total), 5),
                          'white': round((count_white/total), 5),
                          'black': round((count_black/total), 5),
@@ -319,7 +360,22 @@ class SurnameModel(BaseModel):
         return result
 
     def db_destroy(self):
-        '''Destroy database.'''
+        '''Destroy database.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        sqlite3.Error
+            Can occur if you have not yet created a database.
+
+        '''
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
         cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
@@ -329,7 +385,34 @@ class SurnameModel(BaseModel):
     def csv_summary(self,
                     csv_path_in,
                     summary_path_out):
-        '''Wraps get_weighted_mean()'''
+        '''Wraps get_weighted_mean().
+
+        Parameters
+        ----------
+        csv_path_in : string
+            The csv from which you are gathering your data.
+        summary_path_out : string
+            The location to which you are sending the summary data.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        sqlite3.Error
+            Can occur for any number of database-related reasons. Upon error,
+            automatic rollback occurs, but the error is raised because it's
+            probably symptomatic of a bigger problem.
+
+        '''
+
+        HEADER_LIST = ['hispanic',
+                       'white',
+                       'black',
+                       'api',
+                       'ai',
+                       'multi']
         for index, line in enumerate(open(csv_path_in, 'r')):
             if index > 1:
                 break
@@ -347,12 +430,7 @@ class SurnameModel(BaseModel):
         subject_index = []
         # Create percent index
         for row_index, row_item in enumerate(line_list_1):
-            if any(['hispanic',
-                    'white',
-                    'black',
-                    'api',
-                    'ai',
-                    'multi']) in row_item:
+            if any(HEADER_LIST) in row_item:
                 percent_index.append(row_index)
         # Create subject index
         for row_index, row_item in enumerate(line_list_2):
@@ -372,17 +450,24 @@ class SurnameModel(BaseModel):
                     filepath_out):
         '''Thin wrapper around the BaseModel's csv_process method.
 
-        This looks for the 'zip'-related items.
+        Parameters
+        ----------
+        filepath_in : string
+            File path of csv from which data is read
+        filepath_out : string
+            File path of csv where data is written
 
-        Args:
-            filepath_in: file path of csv from which data is read
-            filepath_out: file path of csv where data is written
-        Returns:
-            None
-        Raises:
-            SurgeoError
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        None
 
         '''
+
+        HEADER_LIST = ['name', 'surname', 'last_name', 'last name']
         # TODO: Make so all subclassed or all imported as functions.
         for index, line in enumerate(open(filepath_in, 'r')):
             if index > 0:
@@ -392,7 +477,7 @@ class SurnameModel(BaseModel):
         line_list = [item.replace('\"', '').replace('\'', '').strip()
                      for item in first_line]
         for item in line_list:
-            if item.lower() in ['zip', 'zcta', 'zip code', 'zip_code']:
+            if item.lower() in HEADER_LIST:
                 super().csv_process(filepath_in,
                                     filepath_out,
                                     (item,),

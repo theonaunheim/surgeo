@@ -61,7 +61,16 @@ class GeocodeModel(BaseModel):
             return False
 
     def db_create(self):
-        '''Creates geocode database based on Census 2010 data.'''
+        '''Creates geocode database based on Census 2010 data.
+
+        Where entries are catagorized as "other race", they are allocated in
+        accordance with Jirousek and Preucil's article "On the effective
+        implementation of the iterative proportional fitting procedure" in
+        Comput. Stat. Data Anal. 19(2), 177–189 (1995). The proportions are:
+        70.5% White, 11.1% Hispanic, 11.3% Black, 7.0% API, 0.8% multiracial,
+        and 0.9% AI/AN.
+
+        '''
 
 ######## First try prefab database
         surgeo.adapter.adaprint('Trying to download prefabricated db ...')

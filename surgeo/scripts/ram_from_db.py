@@ -1,5 +1,7 @@
 '''This loads the database to ram for quick access.'''
 
+#  TODO It would be much easier to INSERT INTO a connect :memory:
+
 import io
 import os
 import sqlite3
