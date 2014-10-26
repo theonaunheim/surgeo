@@ -1,17 +1,7 @@
-import atexit
-import ftplib
-import os
-import sqlite3
-import zipfile
-
-import surgeo
-
 from surgeo.models.geocode_model import GeocodeModel
 from surgeo.models.surname_model import SurnameModel
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
-from surgeo.utilities.download_bar import PercentageFTP
-from surgeo.utilities.download_bar import PercentageHTTP
 from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
@@ -262,15 +252,11 @@ class SurgeoModel(BaseModel):
 
         Raises
         ------
-        sqlite3.Error
-            Can occur if you have not yet created a database.
+        None
 
         '''
-        connection = sqlite3.connect(self.db_path)
-        cursor = connection.cursor()
-        cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
-        connection.commit()
-        connection.close()
+        self.geocode_model.db_destroy()
+        self.surname_model.db_destroy()
 
     def csv_summary(self,
                     csv_path_in,
@@ -296,7 +282,6 @@ class SurgeoModel(BaseModel):
             probably symptomatic of a bigger problem.
 
         '''
-
         HEADER_LIST = ['hispanic',
                        'white',
                        'black',
