@@ -6,6 +6,8 @@ import zipfile
 
 import surgeo
 
+from surgeo.models.geocode_model import GeocodeModel
+from surgeo.models.surname_model import SurnameModel
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
 from surgeo.utilities.download_bar import PercentageFTP
@@ -13,8 +15,8 @@ from surgeo.utilities.download_bar import PercentageHTTP
 from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
-class SurnameModel(BaseModel):
-    '''Contains data references and methods for running a Surname model.
+class SurgeoModel(BaseModel):
+    '''Contains data and methods for Bayesian Improved Surname Geocoding model.
 
     Attributes
     ----------
@@ -28,6 +30,10 @@ class SurnameModel(BaseModel):
         Logger for the individual model.
     db_path : string
         Path to sqlite3 database.
+    geocode_model : GeocodeModel
+        This is a Geocode model object to use.
+    surname_model : SurnameModel
+        Thie is a Surname model object to use.
 
     Methods
     -------
@@ -67,6 +73,8 @@ class SurnameModel(BaseModel):
 
         '''
         super().__init__()
+        self.geocode_model = GeocodeModel()
+        self.surname_model = SurnameModel()
 
     def db_check(self):
         '''Checks db accuracy. Valid returns True, else False.
@@ -84,40 +92,17 @@ class SurnameModel(BaseModel):
 
         Raises
         ------
-        sqlite3.Error
-            Can occur for any number of database-related reasons. Upon error,
-            automatic rollback occurs, but the error is raised because it's
-            probably symptomatic of a bigger problem.
+        None
 
         '''
-
-        PROPER_COUNT = 151671
-        try:
-            connection = sqlite3.connect(self.db_path)
-            cursor = connection.cursor()
-            # Use row count to determine db validity.
-            cursor.execute('''SELECT COUNT(*) FROM surname_joint''')
-            surname_joint_count = int(cursor.fetchone()[0])
-            # If passes assertion, return True
-            assert(surname_joint_count == PROPER_COUNT)
-            return True
-        except (sqlite3.Error,
-                AssertionError,
-                sqlite3.OperationalError) as e:
-            self.logger.exception(''.join([e.__class__.__name__,
-                                           ': ',
-                                           e.__str__()]))
-            # If doesn't pass assertion test, log and return False.
+        if self.geocode_model.db_check() is False:
             return False
+        if self.surname_model.db_check() is False:
+            return False
+        return True
 
     def db_create(self):
-        '''Creates surname database based on Census 2000 data.
-
-        This downloads a single census data file which gives the relative
-        ethnic makeup for each individual name. It only includes names with
-        over 100 instances. Certain elements are scrubbed for anonymity's sake
-        from the original database. The anonymized entries are summed and
-        divided among the applicable entries.
+        '''Creates Surname and Geocode database tables.
 
         Parameters
         ----------
@@ -129,172 +114,32 @@ class SurnameModel(BaseModel):
 
         Raises
         ------
-        sqlite3.Error
-            Can occur for any number of database-related reasons. Upon error,
-            automatic rollback occurs, but the error is raised because it's
-            probably symptomatic of a bigger problem.
+        None
 
         '''
+        # Try geocode and create if necessary
+        if self.geocode_model.db_check() is False:
+            self.geocode_model.db_create()
+        if self.surname_model.db_check() is False:
+            self.surname_model.db_create()
 
-######## First try prefab database
-        surgeo.adapter.adaprint('Trying to download prefabricated db ...')
-        try:
-            destination = os.path.join(self.temp_folder_path,
-                                       'surname.sqlite')
-            ftp_for_prefab = ftplib.FTP('ftp.theonaunheim.com')
-            ftp_for_prefab.login()
-            # Custom function for graphical ftp
-            PercentageFTP('surname.sqlite',
-                          destination,
-                          ftp_for_prefab).start()
-            surgeo.adapter.adaprint('Copying data to local table ...')
-            connection = sqlite3.connect(self.db_path)
-            cursor = connection.cursor()
-            cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
-                              id INTEGER PRIMARY KEY,
-                              name TEXT,
-                              pct_white REAL,
-                              pct_black REAL,
-                              pct_api REAL,
-                              pct_ai_an REAL,
-                              pct_2_or_more REAL,
-                              pct_hispanic REAL)''')
-            # Copy foreign db into local db
-            cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
-            cursor.execute('''INSERT INTO surname_joint
-                              SELECT * FROM downloaded_db.surname_joint''')
-            cursor.execute('''CREATE INDEX IF NOT EXISTS surname_index
-                              ON surname_joint(name)''')
-            connection.commit()
-            surgeo.adapter.adaprint('Successfully written ...')
-            return
-        # Fix naked except.
-        except:
-            surgeo.adapter.adaprint('Unable to find prefab database ...')
-            surgeo.adapter.adaprint('Time-consuming rebuild starting ...')
-######## Downloads
-        surgeo.adapter.adaprint('Creating SurnameModel database manually ...')
-        # Remove downloaded files in event of a hangup.
-        atexit.register(self.temp_cleanup)
-        surgeo.adapter.adaprint('Downloading files ...')
-        url = 'http://www2.census.gov/topics/genealogy/2000surnames/names.zip'
-        title = 'names.zip'
-        destination_path = os.path.join(self.temp_folder_path,
-                                        title)
-        PercentageHTTP(url,
-                       destination_path,
-                       title).start()
-######## Unzip files
-        surgeo.adapter.adaprint('Unzipping files ...')
-        with zipfile.ZipFile(destination_path) as zip_file:
-            data = zip_file.read('app_c.csv')
-        new_csv_path = os.path.join(self.temp_folder_path,
-                                    'app_c.csv')
-        with open(new_csv_path, 'wb+') as f:
-            f.write(data)
-######## Write to db
-        surgeo.adapter.adaprint('Writing to database ...')
-        try:
-            connection = sqlite3.connect(self.db_path)
-            cursor = connection.cursor()
-            cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
-                              id INTEGER PRIMARY KEY,
-                              name TEXT,
-                              pct_white REAL,
-                              pct_black REAL,
-                              pct_api REAL,
-                              pct_ai_an REAL,
-                              pct_2_or_more REAL,
-                              pct_hispanic REAL)''')
-            # Open csv file.
-            with open(new_csv_path, 'Ur', encoding='latin-1') as csv:
-                for index, line in enumerate(csv):
-                    # Skip row 0
-                    if index == 0:
-                        continue
-                    line = line.split(',')
-                    name = line[0]
-                    rank = line[1]
-                    count = line[2]
-                    prop1000k = line[3]
-                    cum_prop1000k = line[4]
-                    pct_white = line[5]
-                    pct_black = line[6]
-                    pct_api = line[7]
-                    pct_ai_an = line[8]
-                    pct_2_or_more = line[9]
-                    pct_hispanic = line[10].replace('\n', '')
-                    # Reconstitute data (missing represented by '(S)')
-                    if '(S)' in line:
-                        percentage_dict = {'pct_white': pct_white,
-                                           'pct_black': pct_black,
-                                           'pct_api': pct_api,
-                                           'pct_ai_an': pct_ai_an,
-                                           'pct_2_or_more': pct_2_or_more,
-                                           'pct_hispanic': pct_hispanic}
-                        redacted_pers = {key: value
-                                         for key, value in
-                                         percentage_dict.items()
-                                         if value == '(S)'}
-                        non_redacted_pers = {key: float(value)
-                                             for key, value in
-                                             percentage_dict.items()
-                                             if value != '(S)'}
-                        # Sum non redacted (should be floats). dict_values
-                        # requires a list wrapper.
-                        values = list(non_redacted_pers.values())
-                        non_redacted_sum = sum(values)
-                        redacted_sum = float(100 - non_redacted_sum)
-                        len_redacted_per = len(redacted_pers)
-                        average_redacted_percentage = (redacted_sum /
-                                                       len_redacted_per)
-                        percentage_dict = {key:
-                                           (average_redacted_percentage if
-                                            value == '(S)' else value)
-                                           for key, value
-                                           in percentage_dict.items()}
-                    # If no reconstitution required
-                    else:
-                        percentage_dict = {'pct_white': float(pct_white),
-                                           'pct_black': float(pct_black),
-                                           'pct_api': float(pct_api),
-                                           'pct_ai_an': float(pct_ai_an),
-                                           'pct_2_or_more':
-                                           float(pct_2_or_more),
-                                           'pct_hispanic': float(pct_hispanic)}
-                    # Create tuple for insertion
-                    formatted_dict = {key: round(float(value)/100, 5)
-                                      for key, value
-                                      in percentage_dict.items()}
-                    insertion_tuple = (name,
-                                       formatted_dict['pct_white'],
-                                       formatted_dict['pct_black'],
-                                       formatted_dict['pct_api'],
-                                       formatted_dict['pct_ai_an'],
-                                       formatted_dict['pct_2_or_more'],
-                                       formatted_dict['pct_hispanic'])
-                    cursor.execute('''INSERT INTO surname_joint
-                                      VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)''',
-                                   insertion_tuple)
-                surgeo.adapter.adaprint('Creating index ...')
-                cursor.execute('''CREATE INDEX IF NOT EXISTS surname_index
-                                  ON surname_joint(name)''')
-                connection.commit()
-                connection.close()
-        except sqlite3.Error as e:
-            connection.rollback()
-            connection.commit()
-            raise e
-
-    def get_result_object(self, surname):
+    def get_result_object(self,
+                          zcta,
+                          surname,
+                          zcta_weight=1.00,
+                          surname_weight=1.00):
         '''Takes last name, returns race object.
 
         Parameters
         ----------
+        zcta : string
+            This is the zip code for which you are getting data.
         surname : string
             This is the name for which you are getting data.
+        zcta_weight : float
+            Weight given to zcta.
+        surname_weight : float
+            Weight given to surname.
 
         Returns
         -------
@@ -302,12 +147,13 @@ class SurnameModel(BaseModel):
             The return is not an error result, it is a custom object which
             contains attributes:
                 *surname : string
-                *hispanic : float
-                *white : float
-                *black float
-                *api float
-                *ai float
-                *multi float
+                *zip : string
+                *hispanic : string
+                *white : string
+                *black : string
+                *api : string
+                *ai : string
+                *multi : string
 
         Raises
         ------
@@ -316,18 +162,38 @@ class SurnameModel(BaseModel):
             automatic rollback occurs, but the error is raised because it's
             probably symptomatic of a bigger problem.
 
-        '''
+        Where k is census block
+        Where j is surname
+        Where i is race (1 = Hispanic,
+                         2 = White,
+                         3 = Black,
+                         4 = Asian or Pacific Islander,
+                         5 = American Indian / Alaska Native,
+                         6 = Multiracial)
 
-        upper_surname = surname.upper()
-        connection = sqlite3.connect(self.db_path)
-        cursor = connection.cursor()
-        cursor.execute('''SELECT * FROM surname_joint
-                          WHERE name=?''', (upper_surname,))
-        try:
-            row = cursor.fetchone()
-######## Error result. Terminates with returning error result
-        except TypeError:
+        Where u(i,j,k) = p(i|j) * r(k|i):
+
+                                          u(i,j,k)
+        q(i|j,k) = ------------------------------------------------------------
+                u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
+
+        See BACKGROUND.txt file for detail.
+        
+        For each (zcta, surname) pair, we must first get the probability for a
+        specific race is based on surname. We must then get get the probability
+        for a specific race based on location. We then take prob_surname for 
+        that race and multiply it by prob_location. We multiply these together
+        to get a unified surname/geocode probability. We divide this 
+        probability by the probability of all the races together to give us our
+        final probability.
+
+        '''
+        geocode_result = self.geocode_model(zcta)
+        surname_result = self.surname_model(surname)
+        # Filter out erroneous results
+        if geocode_result.zcta == 'error' or surname_result.surname == 'error':
             error_result = Result({'name': 0,
+                                   'surname' : 0,
                                    'hispanic': 0,
                                    'white': 0,
                                    'black': 0,
@@ -335,20 +201,23 @@ class SurnameModel(BaseModel):
                                    'ai': 0,
                                    'multi': 0}).errorify()
             return error_result
-        name = row[1]
-        count_hispanic = row[7]
-        count_white = row[2]
-        count_black = row[3]
-        count_api = row[4]
-        count_ai = row[5]
-        count_multi = row[6]
-        # Float because dividing later
-        total = float(count_hispanic +
-                      count_white +
-                      count_black +
-                      count_api +
-                      count_ai +
-                      count_multi)
+        # Hispanic joint u(1,j,k)
+        # White joint u(2,j,k)
+        # Black joint u(3,j,k)
+        # API joint u(4,j,k)
+        # AI_AN joint u(5,j,k)
+        # Multi joint u(6,j,k)
+        # Denom=u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
+
+
+
+
+
+
+
+
+
+
         argument_dict = {'name': name,
                          'hispanic': round((count_hispanic/total), 5),
                          'white': round((count_white/total), 5),

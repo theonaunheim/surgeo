@@ -90,7 +90,6 @@ class SurnameModel(BaseModel):
             probably symptomatic of a bigger problem.
 
         '''
-
         PROPER_COUNT = 151671
         try:
             connection = sqlite3.connect(self.db_path)
@@ -135,7 +134,6 @@ class SurnameModel(BaseModel):
             probably symptomatic of a bigger problem.
 
         '''
-
 ######## First try prefab database
         surgeo.adapter.adaprint('Trying to download prefabricated db ...')
         try:
@@ -302,12 +300,12 @@ class SurnameModel(BaseModel):
             The return is not an error result, it is a custom object which
             contains attributes:
                 *surname : string
-                *hispanic : float
-                *white : float
-                *black float
-                *api float
-                *ai float
-                *multi float
+                *hispanic : string
+                *white : string
+                *black : string
+                *api : string
+                *ai : string
+                *multi : string
 
         Raises
         ------
@@ -317,7 +315,6 @@ class SurnameModel(BaseModel):
             probably symptomatic of a bigger problem.
 
         '''
-
         upper_surname = surname.upper()
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
@@ -406,7 +403,6 @@ class SurnameModel(BaseModel):
             probably symptomatic of a bigger problem.
 
         '''
-
         HEADER_LIST = ['hispanic',
                        'white',
                        'black',
@@ -466,7 +462,6 @@ class SurnameModel(BaseModel):
         None
 
         '''
-
         HEADER_LIST = ['name', 'surname', 'last_name', 'last name']
         # TODO: Make so all subclassed or all imported as functions.
         for index, line in enumerate(open(filepath_in, 'r')):
