@@ -178,12 +178,12 @@ class SurgeoModel(BaseModel):
                 u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
 
         See BACKGROUND.txt file for detail.
-        
+
         For each (zcta, surname) pair, we must first get the probability for a
         specific race is based on surname. We must then get get the probability
-        for a specific race based on location. We then take prob_surname for 
+        for a specific race based on location. We then take prob_surname for
         that race and multiply it by prob_location. We multiply these together
-        to get a unified surname/geocode probability. We divide this 
+        to get a unified surname/geocode probability. We divide this
         probability by the probability of all the races together to give us our
         final probability.
 
@@ -193,7 +193,7 @@ class SurgeoModel(BaseModel):
         # Filter out erroneous results
         if geocode_result.zcta == 'error' or surname_result.surname == 'error':
             error_result = Result({'name': 0,
-                                   'surname' : 0,
+                                   'surname': 0,
                                    'hispanic': 0,
                                    'white': 0,
                                    'black': 0,
@@ -202,29 +202,50 @@ class SurgeoModel(BaseModel):
                                    'multi': 0}).errorify()
             return error_result
         # Hispanic joint u(1,j,k)
+        hispanic_prob = (float(surname_result.hispanic) *
+                         surname_weight *
+                         float(geocode_result.hispanic) *
+                         zcta_weight)
         # White joint u(2,j,k)
+        white_prob = (float(surname_result.white) *
+                      surname_weight *
+                      float(geocode_result.white) *
+                      zcta_weight)
         # Black joint u(3,j,k)
+        black_prob = (float(surname_result.black) *
+                      surname_weight *
+                      float(geocode_result.black) *
+                      zcta_weight)
         # API joint u(4,j,k)
+        api_prob = (float(surname_result.api) *
+                    surname_weight *
+                    float(geocode_result.api) *
+                    zcta_weight)
         # AI_AN joint u(5,j,k)
+        ai_prob = (float(surname_result.ai) *
+                   surname_weight *
+                   float(geocode_result.ai) *
+                   zcta_weight)
         # Multi joint u(6,j,k)
+        multi_prob = (float(surname_result.multi) *
+                      surname_weight *
+                      float(geocode_result.multi) *
+                      zcta_weight)
         # Denom=u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
-
-
-
-
-
-
-
-
-
-
-        argument_dict = {'name': name,
-                         'hispanic': round((count_hispanic/total), 5),
-                         'white': round((count_white/total), 5),
-                         'black': round((count_black/total), 5),
-                         'api': round((count_api/total), 5),
-                         'ai': round((count_ai/total), 5),
-                         'multi': round((count_multi/total), 5)}
+        denominator = (hispanic_prob +
+                       white_prob +
+                       black_prob +
+                       api_prob +
+                       ai_prob +
+                       multi_prob)
+        argument_dict = {'name': surname,
+                         'zcta': zcta,
+                         'hispanic': round(hispanic_prob / denominator, 5),
+                         'white': round(white_prob / denominator, 5),
+                         'black': round(black_prob / denominator, 5),
+                         'api': round(api_prob / denominator, 5),
+                         'ai': round(ai_prob / denominator, 5),
+                         'multi': round(multi_prob / denominator, 5)}
         result = Result(**argument_dict)
         return result
 
