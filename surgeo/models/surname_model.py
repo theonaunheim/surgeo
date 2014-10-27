@@ -321,16 +321,16 @@ class SurnameModel(BaseModel):
         cursor.execute('''SELECT * FROM surname_joint
                           WHERE name=?''', (upper_surname,))
         try:
-            row = cursor.fetchone()
+            row = cursor.fetchone()[:]
 ######## Error result. Terminates with returning error result
         except TypeError:
-            error_result = Result({'name': 0,
-                                   'hispanic': 0,
-                                   'white': 0,
-                                   'black': 0,
-                                   'api': 0,
-                                   'ai': 0,
-                                   'multi': 0}).errorify()
+            error_result = Result(**{'name': 0,
+                                     'hispanic': 0,
+                                     'white': 0,
+                                     'black': 0,
+                                     'api': 0,
+                                     'ai': 0,
+                                     'multi': 0}).errorify()
             return error_result
         name = row[1]
         count_hispanic = row[7]

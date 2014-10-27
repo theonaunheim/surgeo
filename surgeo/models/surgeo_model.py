@@ -180,18 +180,17 @@ class SurgeoModel(BaseModel):
         '''
         geocode_result = self.geocode_model.get_result_object(zcta)
         surname_result = self.surname_model.get_result_object(surname)
-        print(dir(geocode_result))
-        print(dir(surname_result))
         # Filter out erroneous results
-        if geocode_result.zcta == 'error' or surname_result.surname == 'error':
-            error_result = Result({'name': 0,
-                                   'surname': 0,
-                                   'hispanic': 0,
-                                   'white': 0,
-                                   'black': 0,
-                                   'api': 0,
-                                   'ai': 0,
-                                   'multi': 0}).errorify()
+        if any([geocode_result._error_result,
+                surname_result._error_result]) == True:
+            error_result = Result(**{'zcta': 0,
+                                     'surname': 0,
+                                     'hispanic': 0,
+                                     'white': 0,
+                                     'black': 0,
+                                     'api': 0,
+                                     'ai': 0,
+                                     'multi': 0}).errorify()
             return error_result
         # Hispanic joint u(1,j,k)
         hispanic_prob = (float(surname_result.hispanic) *
@@ -230,7 +229,7 @@ class SurgeoModel(BaseModel):
                        api_prob +
                        ai_prob +
                        multi_prob)
-        argument_dict = {'name': surname,
+        argument_dict = {'surname': surname,
                          'zcta': zcta,
                          'hispanic': round(hispanic_prob / denominator, 5),
                          'white': round(white_prob / denominator, 5),

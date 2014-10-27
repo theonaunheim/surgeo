@@ -377,22 +377,20 @@ class GeocodeModel(BaseModel):
             None
 
         '''
-        print(zip_code)
-        print(type(zip_code))
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
         cursor.execute('''SELECT * FROM geocode_joint
                           WHERE zcta=?''', (zip_code,))
         try:
-            row = cursor.fetchone()
+            row = cursor.fetchone()[:]
         except TypeError:
-            error_result = Result({'zcta': 0,
-                                   'hispanic': 0,
-                                   'white': 0,
-                                   'black': 0,
-                                   'api': 0,
-                                   'ai': 0,
-                                   'multi': 0}).errorify()
+            error_result = Result(**{'zcta': 0,
+                                     'hispanic': 0,
+                                     'white': 0,
+                                     'black': 0,
+                                     'api': 0,
+                                     'ai': 0,
+                                     'multi': 0}).errorify()
             return error_result
         zcta = row[1]
         count_hispanic = row[6]

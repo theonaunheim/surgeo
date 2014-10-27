@@ -128,17 +128,13 @@ class BaseModel(metaclass=abc.ABCMeta):
                                      'elements. These should be equal.'
                                      .format(len(header_tuple),
                                              len(argument_tuple)))
-        # Open file, determine if zip and name in header
-        tempfile = open(filepath_in, 'rU')
-        number_of_rows = len(tempfile.readlines())
-        tempfile.close()
-        # Tuple is header index, argument index, csv_index
+        # Tuple key is (header index, argument index, csv_index)
         tuple_keys = []
         with open(filepath_in, 'rU') as input_csv:
             csv_reader = csv.reader(input_csv)
             row_1 = next(csv_reader)
             number_of_columns_base = len(row_1)
-            # Get index for each header
+            # Get index for each header, create tuple 
             for tuple_index, tuple_item in enumerate(header_tuple):
                 for row_index, row_item in enumerate(row_1):
                     if tuple_item.lower() == row_item.lower():
@@ -172,17 +168,22 @@ class BaseModel(metaclass=abc.ABCMeta):
                                                            attribute_list)]
             csv_writer.writerow(header_row)
             # You already did a next() twice on the iterator, line 3
+            input_csv.seek(0)
             argument_dict = {}
-            for index, entry in enumerate(csv_reader, start=2):
+            for index, entry in enumerate(csv_reader, start=0):
+                if index == 0:
+                    continue
                 for tuple_key in tuple_keys:
                     header_index = tuple_key[0]
                     argument_index = tuple_key[1]
                     argument_value = argument_tuple[argument_index]
                     csv_index = tuple_key[2]
-                    row_value = row_2[csv_index]
+                    row_value = entry[csv_index]
                     argument_dict[argument_value] = row_value
                 try:
                     result = self.get_result_object(**argument_dict)
+                    if result._error_result is True:
+                        continue
                 except Exception as e:
                     if continue_on_model_fail is True:
                         raise e
