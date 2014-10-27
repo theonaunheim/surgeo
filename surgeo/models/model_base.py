@@ -17,23 +17,40 @@ from surgeo.calculate.weighted_mean import get_weighted_mean
 class BaseModel(metaclass=abc.ABCMeta):
     '''Base class for creating models.
 
-    Attributes:
-        self.db: an sqlite3 database connection shared for all methods
-        self.surgeo_folder_path: path to surgeo directory
-        self.model_folder_path: path to surgeo model directory
-        self.temp_folder_path: path to temp folder
+    Attributes
+    ----------
+    surgeo_folder_path : string
+        Path to a shared sqlite3 database connection.
+    temp_folder_path : string
+        Path to a folder used as a temporary holding area.
+    model_folder_path : string
+        Path to folder that contains models.
+    logger : logging.Logger or logging.RootLogger
+        Logger for the individual model.
+    db_path : string
+        Path to sqlite3 database.
 
-    Methods:
-        build_up(): setups up data as necessary
-        db_check(): checks db for proper table
-        db_create(): creates db tables if necessary
-        db_destroy(): removes database tables associated with this class.
-        get_result_object(): take parameters return result ProxyResult object.
-        csv_summary(): takes csv, returns summary statistic csv.
-        csv_process(): takes two paths. Reads one, writes to another.
-        temp_cleanup(): this function is used with atexit for cleanup.
+    Methods
+    -------
+    build_up()
+        setups up data as necessary
+    db_check()
+        checks db for proper table
+    db_create()
+        creates db tables if necessary
+    db_destroy()
+        removes database tables associated with this class.
+    get_result_object()
+        take parameters return result ProxyResult object.
+    csv_summary()
+        takes csv, returns summary statistic csv.
+    csv_process()
+        takes two paths. Reads one, writes to another.
+    temp_cleanup()
+        this function is used with atexit for cleanup.
 
     '''
+
     def __init__(self):
         self.surgeo_folder_path = os.path.join(os.path.expanduser('~'),
                                                '.surgeo')
@@ -76,7 +93,6 @@ class BaseModel(metaclass=abc.ABCMeta):
         '''Takes csv and returns a csv with summary data.'''
         raise NotImplementedError
 
-    @classmethod
     def csv_process(self,
                     filepath_in,
                     filepath_out,
@@ -85,16 +101,26 @@ class BaseModel(metaclass=abc.ABCMeta):
                     continue_on_model_fail=True):
         '''This this the public facing csv processing function.
 
-        Args:
-            filepath_in: file path of csv from which data is read
-            filepath_out: file path of csv where data is written
-            header_tuple: takes string args to search for in csv header
-            argument_tuple: takes string arguments being put in to model
-            continue_on_model_fail: takes boolean
-        Returns:
-            None
-        Raises:
-            SurgeoError
+        Parameters
+        ----------
+        filepath_in : string
+            File path of csv from which data is read.
+        filepath_out : string
+            File path of csv where data is written.
+        header_tuple : tuple
+            Takes string args to search for in csv header.
+        argument_tuple : tuple
+            Takes string arguments being put in to model.
+        continue_on_model_fail: boolean
+            Determines with the model dies on bad data.
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        SurgeoError : surgeo.SurgeoError
 
         '''
         if not len(header_tuple) == len(argument_tuple):
@@ -137,7 +163,7 @@ class BaseModel(metaclass=abc.ABCMeta):
                 csv_index = tuple_key[2]
                 row_value = row_2[csv_index]
                 argument_dict[argument_value] = row_value
-            result = self.get_result_object(argument_dict)
+            result = self.get_result_object(**argument_dict)
             attribute_list = result.attribute_list()
             len_attribute_list = len(attribute_list)
             # Write header row first by splicing together
@@ -156,7 +182,7 @@ class BaseModel(metaclass=abc.ABCMeta):
                     row_value = row_2[csv_index]
                     argument_dict[argument_value] = row_value
                 try:
-                    result = self.get_result_object(argument_dict)
+                    result = self.get_result_object(**argument_dict)
                 except Exception as e:
                     if continue_on_model_fail is True:
                         raise e

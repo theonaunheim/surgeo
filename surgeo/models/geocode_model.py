@@ -14,7 +14,43 @@ from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
 class GeocodeModel(BaseModel):
-    '''Contains data references and methods for running a Geocode model.'''
+    '''Contains data references and methods for running a Geocode model.
+
+    Attributes
+    ----------
+    surgeo_folder_path : string
+        Path to a shared sqlite3 database connection.
+    temp_folder_path : string
+        Path to a folder used as a temporary holding area.
+    model_folder_path : string
+        Path to folder that contains models.
+    logger : logging.Logger or logging.RootLogger
+        Logger for the individual model.
+    db_path : string
+        Path to sqlite3 database.
+    census_states : list
+        List of states from which to download FTP data.
+
+    Methods
+    -------
+    build_up()
+        setups up data as necessary
+    db_check()
+        checks db for proper table
+    db_create()
+        creates db tables if necessary
+    db_destroy()
+        removes database tables associated with this class.
+    get_result_object()
+        take parameters return result ProxyResult object.
+    csv_summary()
+        takes csv, returns summary statistic csv.
+    csv_process()
+        takes two paths. Reads one, writes to another.
+    temp_cleanup()
+        this function is used with atexit for cleanup.
+
+    '''
 
     def __init__(self):
         super().__init__()
@@ -36,21 +72,36 @@ class GeocodeModel(BaseModel):
                               'Wyoming']
 
     def db_check(self):
-        '''This checks accuracy of database.
+        '''Checks db accuracy. Valid returns True, else False.
 
-        If valid, returns True.
-        If invalid, returns False.
+        Parameters
+        ----------
+        None
 
-        Count geocode_data is 33223
+        Returns
+        -------
+        True: Boolean
+            If the database is good, returns True.
+        False: Boolean
+            If database is deficient, returns False.
+
+        Raises
+        ------
+        sqlite3.Error
+            Can occur for any number of database-related reasons. Upon error,
+            automatic rollback occurs, but the error is raised because it's
+            probably symptomatic of a bigger problem.
 
         '''
+        PROPER_COUNT = 33223
         try:
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
-            # geocode_logical
+            # Use row count to determine db validity.
             cursor.execute('''SELECT COUNT(*) FROM geocode_joint''')
-            geocode_joint_count = int(cursor.fetchone()[0])
-            assert(geocode_joint_count == 33223)
+            surname_joint_count = int(cursor.fetchone()[0])
+            # If passes assertion, return True
+            assert(surname_joint_count == PROPER_COUNT)
             return True
         except (sqlite3.Error,
                 AssertionError,
@@ -58,6 +109,7 @@ class GeocodeModel(BaseModel):
             self.logger.exception(''.join([e.__class__.__name__,
                                            ': ',
                                            e.__str__()]))
+            # If doesn't pass assertion test, log and return False.
             return False
 
     def db_create(self):
@@ -325,7 +377,8 @@ class GeocodeModel(BaseModel):
             None
 
         '''
-
+        print(zip_code)
+        print(type(zip_code))
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
         cursor.execute('''SELECT * FROM geocode_joint

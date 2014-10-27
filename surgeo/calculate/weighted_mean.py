@@ -6,23 +6,31 @@ import io
 
 def get_weighted_mean(percentage_index_numbers,
                       analyzed_subject_index_numbers,
-                      filepath_in,
-                      filepath_out=''):
+                      file_path_in,
+                      file_path_out=''):
     '''Gives the weighted mean of a particular data set.
 
-        Args:
-            filepath_in: file path of csv from which data is read
-            filepath_out: file path of csv where data is written.
-                          If blank, return value.
-            percentage_index_numbers: tuple of index numbers of %s to use.
-            analyzed_subject_index_numbers: tuple of index numbers to analyze
-        Returns:
-            None, or string depending on filepath_out.
-        Raises:
-            None
+    Parameters
+    ----------
+    file_path_in : string
+        File path of csv from which data is read.
+    file_path_out: string
+        File path of csv where data is written. If blank, return value.
+    percentage_index_numbers : tuple
+        Tuple of index numbers of %s to use, such as (1,4).
+    analyzed_subject_index_numbers : tuple
+        Tuple of index numbers to analyze.
+
+    Returns
+    -------
+    text_output : string
+        Only if file_path_out is empty string.
+
+    Raises
+    ------
+    None
 
     '''
-
     with open(filepath_in, 'rU') as input_csv:
         # First pass, get all data and count up
         csv_reader = csv.reader(input_csv)

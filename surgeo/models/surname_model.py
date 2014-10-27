@@ -346,7 +346,7 @@ class SurnameModel(BaseModel):
                       count_api +
                       count_ai +
                       count_multi)
-        argument_dict = {'name': name,
+        argument_dict = {'surname': name,
                          'hispanic': round((count_hispanic/total), 5),
                          'white': round((count_white/total), 5),
                          'black': round((count_black/total), 5),

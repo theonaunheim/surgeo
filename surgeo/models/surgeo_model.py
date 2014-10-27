@@ -78,7 +78,7 @@ class SurgeoModel(BaseModel):
         True: Boolean
             If the database is good, returns True.
         False: Boolean
-            If database is deficient, returns False.
+            Ifu database is deficient, returns False.
 
         Raises
         ------
@@ -178,8 +178,10 @@ class SurgeoModel(BaseModel):
         final probability.
 
         '''
-        geocode_result = self.geocode_model(zcta)
-        surname_result = self.surname_model(surname)
+        geocode_result = self.geocode_model.get_result_object(zcta)
+        surname_result = self.surname_model.get_result_object(surname)
+        print(dir(geocode_result))
+        print(dir(surname_result))
         # Filter out erroneous results
         if geocode_result.zcta == 'error' or surname_result.surname == 'error':
             error_result = Result({'name': 0,
@@ -364,6 +366,4 @@ class SurgeoModel(BaseModel):
                             (line_list[zcta_index], line_list[surname_index]),
                             ('zcta', 'surname'),
                             continue_on_model_fail=True)
-            # Prevent multiple hits
-            return
 

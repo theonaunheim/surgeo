@@ -1,6 +1,6 @@
 '''This __main__.py file exists solely to allow for module execution.'''
-from surgeo.executable_cli import main
+from surgeo.scripts.cli_executable import cli_main
 
 
-main()
+cli_main()
 
