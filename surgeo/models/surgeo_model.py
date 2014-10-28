@@ -182,7 +182,7 @@ class SurgeoModel(BaseModel):
         surname_result = self.surname_model.get_result_object(surname)
         # Filter out erroneous results
         if any([geocode_result._error_result,
-                surname_result._error_result]) == True:
+                surname_result._error_result]) is True:
             error_result = Result(**{'zcta': 0,
                                      'surname': 0,
                                      'hispanic': 0,
@@ -261,7 +261,7 @@ class SurgeoModel(BaseModel):
 
     def csv_summary(self,
                     csv_path_in,
-                    summary_path_out):
+                    summary_path_out=''):
         '''Wraps get_weighted_mean().
 
         Parameters
@@ -306,8 +306,9 @@ class SurgeoModel(BaseModel):
         subject_index = []
         # Create percent index
         for row_index, row_item in enumerate(line_list_1):
-            if any(HEADER_LIST) in row_item:
-                percent_index.append(row_index)
+            for header_item in HEADER_LIST:
+                if header_item in row_item:
+                    percent_index.append(row_index)
         # Create subject index
         for row_index, row_item in enumerate(line_list_2):
             try:

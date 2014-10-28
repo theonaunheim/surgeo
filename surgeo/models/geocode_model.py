@@ -427,7 +427,7 @@ class GeocodeModel(BaseModel):
 
     def csv_summary(self,
                     csv_path_in,
-                    summary_path_out):
+                    summary_path_out=''):
         '''Wraps get_weighted_mean()'''
         for index, line in enumerate(open(csv_path_in, 'r')):
             if index > 1:

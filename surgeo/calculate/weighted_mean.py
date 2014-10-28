@@ -31,7 +31,7 @@ def get_weighted_mean(percentage_index_numbers,
     None
 
     '''
-    with open(filepath_in, 'rU') as input_csv:
+    with open(file_path_in, 'rU') as input_csv:
         # First pass, get all data and count up
         csv_reader = csv.reader(input_csv)
         row_1 = next(csv_reader)
@@ -115,9 +115,9 @@ def get_weighted_mean(percentage_index_numbers,
             summary_text.write('\n')
     text_output = summary_text.getvalue()
     summary_text.close()
-    if filepath_out == '':
+    if file_path_out == '':
         return text_output
     else:
-        with open(filepath_out, 'w+') as f:
+        with open(file_path_out, 'w+') as f:
             f.write(text_output)
 
