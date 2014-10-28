@@ -381,9 +381,8 @@ class GeocodeModel(BaseModel):
         cursor = connection.cursor()
         cursor.execute('''SELECT * FROM geocode_joint
                           WHERE zcta=?''', (zip_code,))
-        try:
-            row = cursor.fetchone()[:]
-        except TypeError:
+        row = cursor.fetchone()
+        if row is None:
             error_result = Result(**{'zcta': 0,
                                      'hispanic': 0,
                                      'white': 0,

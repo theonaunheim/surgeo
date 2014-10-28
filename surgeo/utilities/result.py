@@ -116,6 +116,7 @@ class Result(object):
                 continue
             else:
                 setattr(self, member_name, 'error')
+        return self
 
     def value_list(self):
         '''This returns a list of a ProxyResult's values.'''

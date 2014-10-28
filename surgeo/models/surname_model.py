@@ -320,10 +320,9 @@ class SurnameModel(BaseModel):
         cursor = connection.cursor()
         cursor.execute('''SELECT * FROM surname_joint
                           WHERE name=?''', (upper_surname,))
-        try:
-            row = cursor.fetchone()[:]
+        row = cursor.fetchone()
 ######## Error result. Terminates with returning error result
-        except TypeError:
+        if row is None:
             error_result = Result(**{'name': 0,
                                      'hispanic': 0,
                                      'white': 0,
