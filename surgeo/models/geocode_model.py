@@ -429,30 +429,32 @@ class GeocodeModel(BaseModel):
                     csv_path_in,
                     summary_path_out=''):
         '''Wraps get_weighted_mean()'''
+        HEADER_LIST = ['hispanic',
+                       'white',
+                       'black',
+                       'api',
+                       'ai',
+                       'multi']
         for index, line in enumerate(open(csv_path_in, 'r')):
             if index > 1:
                 break
             if index == 0:
                 first_line = line.split(',')
-            if index == 2:
+            if index == 1:
                 second_line = line.split(',')
         # List of lines
         line_list_1 = [item.replace('\"', '').replace('\'', '').strip()
                        for item in first_line]
         line_list_2 = [item.replace('\"', '').replace('\'', '').strip()
-                       for item in first_line]
+                       for item in second_line]
         # Indices to become tuples
         percent_index = []
         subject_index = []
         # Create percent index
         for row_index, row_item in enumerate(line_list_1):
-            if any(['hispanic',
-                    'white',
-                    'black',
-                    'api',
-                    'ai',
-                    'multi']) in row_item:
-                percent_index.append(row_index)
+            for header_item in HEADER_LIST:
+                if header_item in row_item:
+                    percent_index.append(row_index)
         # Create subject index
         for row_index, row_item in enumerate(line_list_2):
             try:

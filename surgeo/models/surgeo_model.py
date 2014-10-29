@@ -294,13 +294,13 @@ class SurgeoModel(BaseModel):
                 break
             if index == 0:
                 first_line = line.split(',')
-            if index == 2:
+            if index == 1:
                 second_line = line.split(',')
         # List of lines
         line_list_1 = [item.replace('\"', '').replace('\'', '').strip()
                        for item in first_line]
         line_list_2 = [item.replace('\"', '').replace('\'', '').strip()
-                       for item in first_line]
+                       for item in second_line]
         # Indices to become tuples
         percent_index = []
         subject_index = []
@@ -323,8 +323,8 @@ class SurgeoModel(BaseModel):
                           summary_path_out)
 
     def csv_process(self,
-                    filepath_in,
-                    filepath_out):
+                    file_path_in,
+                    file_path_out):
         '''Thin wrapper around the BaseModel's csv_process method.
 
         Parameters
@@ -343,13 +343,12 @@ class SurgeoModel(BaseModel):
         None
 
         '''
-
         SURNAME_HEADERS = ['name', 'surname', 'last_name', 'last name']
         ZCTA_HEADERS = ['zcta', 'zip', 'zip_code', 'zip_code']
         # TODO: Make so all subclassed or all imported as functions.
         surname_index = None
         zcta_index = None
-        for index, line in enumerate(open(filepath_in, 'r')):
+        for index, line in enumerate(open(file_path_in, 'r')):
             if index > 0:
                 break
             first_line = line.split(',')
@@ -361,8 +360,8 @@ class SurgeoModel(BaseModel):
                 surname_index = index
             if item.lower() in ZCTA_HEADERS:
                 zcta_index = index
-        super().csv_process(filepath_in,
-                            filepath_out,
+        super().csv_process(file_path_in,
+                            file_path_out,
                             (line_list[zcta_index], line_list[surname_index]),
                             ('zcta', 'surname'),
                             continue_on_model_fail=True)

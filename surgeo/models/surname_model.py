@@ -413,20 +413,21 @@ class SurnameModel(BaseModel):
                 break
             if index == 0:
                 first_line = line.split(',')
-            if index == 2:
+            if index == 1:
                 second_line = line.split(',')
         # List of lines
         line_list_1 = [item.replace('\"', '').replace('\'', '').strip()
                        for item in first_line]
         line_list_2 = [item.replace('\"', '').replace('\'', '').strip()
-                       for item in first_line]
+                       for item in second_line]
         # Indices to become tuples
         percent_index = []
         subject_index = []
         # Create percent index
         for row_index, row_item in enumerate(line_list_1):
-            if any(HEADER_LIST) in row_item:
-                percent_index.append(row_index)
+            for header_item in HEADER_LIST:
+                if header_item in row_item:
+                    percent_index.append(row_index)
         # Create subject index
         for row_index, row_item in enumerate(line_list_2):
             try:
