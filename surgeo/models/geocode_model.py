@@ -54,6 +54,8 @@ class GeocodeModel(BaseModel):
 
     def __init__(self):
         super().__init__()
+        self._author = 'Theo Naunheim'
+        self._version = '2010.1'
         self.census_states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas',
                               'California', 'Colorado', 'Connecticut',
                               'Delaware', 'District_of_Columbia', 'Florida',
@@ -99,9 +101,9 @@ class GeocodeModel(BaseModel):
             cursor = connection.cursor()
             # Use row count to determine db validity.
             cursor.execute('''SELECT COUNT(*) FROM geocode_joint''')
-            surname_joint_count = int(cursor.fetchone()[0])
+            count = int(cursor.fetchone()[0])
             # If passes assertion, return True
-            assert(surname_joint_count == PROPER_COUNT)
+            assert(count == PROPER_COUNT)
             return True
         except (sqlite3.Error,
                 AssertionError,

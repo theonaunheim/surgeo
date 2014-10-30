@@ -1,4 +1,6 @@
 import atexit
+import collections
+import itertools
 import ftplib
 import os
 import sqlite3
@@ -13,8 +15,8 @@ from surgeo.utilities.download_bar import PercentageHTTP
 from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
-class SurnameModel(BaseModel):
-    '''Contains data references and methods for running a Surname model.
+class GenderNameModel(BaseModel):
+    '''Contains data references and methods for running a Gender/Name model.
 
     Attributes
     ----------
@@ -68,7 +70,7 @@ class SurnameModel(BaseModel):
         '''
         super().__init__()
         self._author = 'Theo Naunheim'
-        self._version = '2000.1'
+        self._version = '2013.1'
 
     def db_check(self):
         '''Checks db accuracy. Valid returns True, else False.
@@ -92,12 +94,12 @@ class SurnameModel(BaseModel):
             probably symptomatic of a bigger problem.
 
         '''
-        PROPER_COUNT = 151671
+        PROPER_COUNT = 33072
         try:
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
             # Use row count to determine db validity.
-            cursor.execute('''SELECT COUNT(*) FROM surname_joint''')
+            cursor.execute('''SELECT COUNT(*) FROM gendername_joint''')
             count = int(cursor.fetchone()[0])
             # If passes assertion, return True
             assert(count == PROPER_COUNT)
@@ -112,13 +114,11 @@ class SurnameModel(BaseModel):
             return False
 
     def db_create(self):
-        '''Creates surname database based on Census 2000 data.
+        '''Creates gender/name database based on 2013 SSA data.
 
-        This downloads a single census data file which gives the relative
-        ethnic makeup for each individual name. It only includes names with
-        over 100 instances. Certain elements are scrubbed for anonymity's sake
-        from the original database. The anonymized entries are summed and
-        divided among the applicable entries.
+        This downloads data from the Social Security Administration which
+        contains the most popular surnames, along with their associated
+        genders.
 
         Parameters
         ----------
@@ -140,32 +140,28 @@ class SurnameModel(BaseModel):
         surgeo.adapter.adaprint('Trying to download prefabricated db ...')
         try:
             destination = os.path.join(self.temp_folder_path,
-                                       'surname.sqlite')
+                                       'gender.sqlite')
             ftp_for_prefab = ftplib.FTP('ftp.theonaunheim.com')
             ftp_for_prefab.login()
             # Custom function for graphical ftp
-            PercentageFTP('surname.sqlite',
+            PercentageFTP('gender.sqlite',
                           destination,
                           ftp_for_prefab).start()
             surgeo.adapter.adaprint('Copying data to local table ...')
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
-            cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
+            cursor.execute('''DROP TABLE IF EXISTS gendername_joint''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS gendername_joint(
                               id INTEGER PRIMARY KEY,
-                              name TEXT,
-                              pct_white REAL,
-                              pct_black REAL,
-                              pct_api REAL,
-                              pct_ai_an REAL,
-                              pct_2_or_more REAL,
-                              pct_hispanic REAL)''')
+                              first_name TEXT,
+                              female_prob REAL,
+                              male_prob REAL)''')
             # Copy foreign db into local db
             cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
-            cursor.execute('''INSERT INTO surname_joint
-                              SELECT * FROM downloaded_db.surname_joint''')
-            cursor.execute('''CREATE INDEX IF NOT EXISTS surname_index
-                              ON surname_joint(name)''')
+            cursor.execute('''INSERT INTO gendername_joint
+                              SELECT * FROM downloaded_db.gendername_joint''')
+            cursor.execute('''CREATE INDEX IF NOT EXISTS first_name_index
+                              ON gendername_joint(first_name)''')
             connection.commit()
             surgeo.adapter.adaprint('Successfully written ...')
             return
@@ -174,11 +170,11 @@ class SurnameModel(BaseModel):
             surgeo.adapter.adaprint('Unable to find prefab database ...')
             surgeo.adapter.adaprint('Time-consuming rebuild starting ...')
 ######## Downloads
-        surgeo.adapter.adaprint('Creating SurnameModel database manually ...')
+        surgeo.adapter.adaprint('Creating GenderModel database manually ...')
         # Remove downloaded files in event of a hangup.
         atexit.register(self.temp_cleanup)
         surgeo.adapter.adaprint('Downloading files ...')
-        url = 'http://www2.census.gov/topics/genealogy/2000surnames/names.zip'
+        url = 'http://www.ssa.gov/oact/babynames/names.zip'
         title = 'names.zip'
         destination_path = os.path.join(self.temp_folder_path,
                                         title)
@@ -186,101 +182,70 @@ class SurnameModel(BaseModel):
                        destination_path,
                        title).start()
 ######## Unzip files
+        FILE_LIST = ['yob1989.txt', 'yob1990.txt', 'yob1991.txt',
+                     'yob1992.txt', 'yob1993.txt', 'yob1994.txt',
+                     'yob1995.txt', 'yob1996.txt', 'yob1997.txt',
+                     'yob1998.txt', 'yob1999.txt', 'yob2000.txt',
+                     'yob2001.txt', 'yob2002.txt', 'yob2003.txt',
+                     'yob2004.txt', 'yob2005.txt', 'yob2006.txt',
+                     'yob2007.txt', 'yob2008.txt', 'yob2009.txt',
+                     'yob2010.txt', 'yob2011.txt', 'yob2012.txt',
+                     'yob2013.txt']
+        # Set up counter to start tabulating names and counts.
+        female_counter = collections.Counter()
+        male_counter = collections.Counter()
         surgeo.adapter.adaprint('Unzipping files ...')
         with zipfile.ZipFile(destination_path) as zip_file:
-            data = zip_file.read('app_c.csv')
-        new_csv_path = os.path.join(self.temp_folder_path,
-                                    'app_c.csv')
-        with open(new_csv_path, 'wb+') as f:
-            f.write(data)
+            for item in FILE_LIST:
+                data = zip_file.read(item)
+                new_file_path = os.path.join(self.temp_folder_path,
+                                             item)
+                # TODO Roundabout way or getting file data.
+                with open(new_file_path, 'wb+') as destination_file:
+                    destination_file.write(data)
+                with open(destination_file, 'r') as opened_file:
+                    for line in opened_file:
+                        split_line = line.split(',')
+                        name = split_line[0].strip()
+                        gender = split_line[1].strip()
+                        count = split_line[2].strip()
+                        # Add to counts
+                        if gender == 'F':
+                            female_counter.update({name: int(count)})
+                        if gender == 'M':
+                            male_counter.update({name: int(count)})
+        # Create name set.
+        name_set = set(itertools.chain(female_counter.keys(),
+                                       male_counter.keys()))
+        # Prep names for db entry
+        list_of_entry_tuples = []
+        for name in name_set:
+            female_count = female_counter[name]
+            male_count = male_counter[name]
+            total = female_count + male_count
+            female_percentage = float(female_count) / float(total)
+            male_percentage = float(male_count) / float(total)
+            list_of_entry_tuples.append(tuple(name,
+                                              female_percentage,
+                                              male_percentage))
 ######## Write to db
         surgeo.adapter.adaprint('Writing to database ...')
         try:
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
-            cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS surname_joint(
+            cursor.execute('''DROP TABLE IF EXISTS gendername_joint''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS gendername_joint(
                               id INTEGER PRIMARY KEY,
-                              name TEXT,
-                              pct_white REAL,
-                              pct_black REAL,
-                              pct_api REAL,
-                              pct_ai_an REAL,
-                              pct_2_or_more REAL,
-                              pct_hispanic REAL)''')
-            # Open csv file.
-            with open(new_csv_path, 'Ur', encoding='latin-1') as csv:
-                for index, line in enumerate(csv):
-                    # Skip row 0
-                    if index == 0:
-                        continue
-                    line = line.split(',')
-                    name = line[0]
-                    rank = line[1]
-                    count = line[2]
-                    prop1000k = line[3]
-                    cum_prop1000k = line[4]
-                    pct_white = line[5]
-                    pct_black = line[6]
-                    pct_api = line[7]
-                    pct_ai_an = line[8]
-                    pct_2_or_more = line[9]
-                    pct_hispanic = line[10].replace('\n', '')
-                    # Reconstitute data (missing represented by '(S)')
-                    if '(S)' in line:
-                        percentage_dict = {'pct_white': pct_white,
-                                           'pct_black': pct_black,
-                                           'pct_api': pct_api,
-                                           'pct_ai_an': pct_ai_an,
-                                           'pct_2_or_more': pct_2_or_more,
-                                           'pct_hispanic': pct_hispanic}
-                        redacted_pers = {key: value
-                                         for key, value in
-                                         percentage_dict.items()
-                                         if value == '(S)'}
-                        non_redacted_pers = {key: float(value)
-                                             for key, value in
-                                             percentage_dict.items()
-                                             if value != '(S)'}
-                        # Sum non redacted (should be floats). dict_values
-                        # requires a list wrapper.
-                        values = list(non_redacted_pers.values())
-                        non_redacted_sum = sum(values)
-                        redacted_sum = float(100 - non_redacted_sum)
-                        len_redacted_per = len(redacted_pers)
-                        average_redacted_percentage = (redacted_sum /
-                                                       len_redacted_per)
-                        percentage_dict = {key:
-                                           (average_redacted_percentage if
-                                            value == '(S)' else value)
-                                           for key, value
-                                           in percentage_dict.items()}
-                    # If no reconstitution required
-                    else:
-                        percentage_dict = {'pct_white': float(pct_white),
-                                           'pct_black': float(pct_black),
-                                           'pct_api': float(pct_api),
-                                           'pct_ai_an': float(pct_ai_an),
-                                           'pct_2_or_more':
-                                           float(pct_2_or_more),
-                                           'pct_hispanic': float(pct_hispanic)}
-                    # Create tuple for insertion
-                    formatted_dict = {key: round(float(value)/100, 5)
-                                      for key, value
-                                      in percentage_dict.items()}
-                    insertion_tuple = (name,
-                                       formatted_dict['pct_white'],
-                                       formatted_dict['pct_black'],
-                                       formatted_dict['pct_api'],
-                                       formatted_dict['pct_ai_an'],
-                                       formatted_dict['pct_2_or_more'],
-                                       formatted_dict['pct_hispanic'])
-                    cursor.execute('''INSERT INTO surname_joint
-                                      VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)''',
-                                   insertion_tuple)
+                              first_name TEXT,
+                              female_prob REAL,
+                              male_prob REAL)''')
+            for item_tuple in list_of_entry_tuples:
+                cursor.execute('''INSERT INTO gendername_joint
+                                  VALUES(NULL, ?, ?, ?)''',
+                               item_tuple)
                 surgeo.adapter.adaprint('Creating index ...')
-                cursor.execute('''CREATE INDEX IF NOT EXISTS surname_index
-                                  ON surname_joint(name)''')
+                cursor.execute('''CREATE INDEX IF NOT EXISTS first_name_index
+                                  ON gender_joint(first_name)''')
                 connection.commit()
                 connection.close()
         except sqlite3.Error as e:
@@ -288,12 +253,12 @@ class SurnameModel(BaseModel):
             connection.commit()
             raise e
 
-    def get_result_object(self, surname):
+    def get_result_object(self, first_name):
         '''Takes last name, returns race object.
 
         Parameters
         ----------
-        surname : string
+        first_name : string
             This is the name for which you are getting data.
 
         Returns
@@ -301,13 +266,8 @@ class SurnameModel(BaseModel):
         result : surgeo.Result
             The return is not an error result, it is a custom object which
             contains attributes:
-                *surname : string
-                *hispanic : string
-                *white : string
-                *black : string
-                *api : string
-                *ai : string
-                *multi : string
+                *first_name : string
+                *gender : string
 
         Raises
         ------
@@ -318,43 +278,21 @@ class SurnameModel(BaseModel):
 
         '''
         # No removal of jr, sr, II, etc. Clean your data accordingly.
-        upper_surname = surname.upper().replace('-','').replace(' ','')
+        title_first_name = first_name.title()
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''SELECT * FROM surname_joint
-                          WHERE name=?''', (upper_surname,))
+        cursor.execute('''SELECT * FROM gender_joint
+                          WHERE first_name=?''', (title_first_name,))
         row = cursor.fetchone()
 ######## Error result. Terminates with returning error result
         if row is None:
-            error_result = Result(**{'name': 0,
-                                     'hispanic': 0,
-                                     'white': 0,
-                                     'black': 0,
-                                     'api': 0,
-                                     'ai': 0,
-                                     'multi': 0}).errorify()
+            error_result = Result(**{'first_name': 0,
+                                     'gender': 0}).errorify()
             return error_result
-        name = row[1]
-        count_hispanic = row[7]
-        count_white = row[2]
-        count_black = row[3]
-        count_api = row[4]
-        count_ai = row[5]
-        count_multi = row[6]
-        # Float because dividing later
-        total = float(count_hispanic +
-                      count_white +
-                      count_black +
-                      count_api +
-                      count_ai +
-                      count_multi)
-        argument_dict = {'surname': name,
-                         'hispanic': round((count_hispanic/total), 5),
-                         'white': round((count_white/total), 5),
-                         'black': round((count_black/total), 5),
-                         'api': round((count_api/total), 5),
-                         'ai': round((count_ai/total), 5),
-                         'multi': round((count_multi/total), 5)}
+        first_name = row[1]
+        gender = row[2]
+        argument_dict = {'first_name': first_name,
+                         'gender': gender}
         result = Result(**argument_dict)
         return result
 
@@ -377,7 +315,7 @@ class SurnameModel(BaseModel):
         '''
         connection = sqlite3.connect(self.db_path)
         cursor = connection.cursor()
-        cursor.execute('''DROP TABLE IF EXISTS surname_joint''')
+        cursor.execute('''DROP TABLE IF EXISTS gender_joint''')
         connection.commit()
         connection.close()
 
@@ -405,12 +343,11 @@ class SurnameModel(BaseModel):
             probably symptomatic of a bigger problem.
 
         '''
-        HEADER_LIST = ['hispanic',
-                       'white',
-                       'black',
-                       'api',
-                       'ai',
-                       'multi']
+        HEADER_LIST = ['name',
+                       'first_name',
+                       'first',
+                       'gender',
+                       'sex']
         for index, line in enumerate(open(csv_path_in, 'r')):
             if index > 1:
                 break
@@ -424,13 +361,12 @@ class SurnameModel(BaseModel):
         line_list_2 = [item.replace('\"', '').replace('\'', '').strip()
                        for item in second_line]
         # Indices to become tuples
-        percent_index = []
         subject_index = []
         # Create percent index
         for row_index, row_item in enumerate(line_list_1):
             for header_item in HEADER_LIST:
                 if header_item in row_item:
-                    percent_index.append(row_index)
+                    gender_index = row_index
         # Create subject index
         for row_index, row_item in enumerate(line_list_2):
             try:
