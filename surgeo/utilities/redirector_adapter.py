@@ -1,7 +1,7 @@
 import multiprocessing
 import xmlrpc.client
 
-from surgeo.utilities.redirector_class import Redirector
+from surgeo.utilities.redirector import Redirector
 
 
 class RedirectorAdapter(object):

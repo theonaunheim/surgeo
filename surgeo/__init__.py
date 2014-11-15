@@ -18,7 +18,7 @@ import surgeo.models
 import surgeo.scripts
 import surgeo.utilities
 
-from surgeo.utilities.error_class import SurgeoError
+from surgeo.utilities.error import SurgeoError
 from surgeo.utilities.redirector_adapter import RedirectorAdapter
 
 
@@ -41,10 +41,8 @@ def autoload_default_modules():
                             member_object)
 
 
-def construct_db(verbose=True):
+def construct_db():
     '''Does not run automatically. Creates database.'''
-    if verbose is False:
-        surgeo.adapter.direct_to_null()
     db_path = os.path.join(os.path.expanduser('~'),
                            '.surgeo',
                            'surgeo.sqlite')
@@ -68,7 +66,6 @@ def construct_db(verbose=True):
                         if inspect.isclass(member_object):
                             if member_object.db_check() is False:
                                 member_object.db_create()
-    surgeo.redirector.direct_to_stdout()
 
 
 def setup_directories():
@@ -98,7 +95,4 @@ def setup_functions():
     setup_directories()
     setup_logger()
     autoload_default_modules()
-
-# Bad, bad Python to run on import, but oh so convenient. TODO TAKE OUT WHEN CLI AND GUI ARE IN PLACE
-setup_functions()
 

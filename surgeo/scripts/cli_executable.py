@@ -1,49 +1,56 @@
 #!/usr/local/bin/python3
 #coding: utf-8
 '''This is an executable wrapper for surgeo.'''
-
-###############################################################################
-# Main
-###############################################################################
-
 import sys
 
 import surgeo
-
-from surgeo.scripts import gui_executable
 
 
 def cli_main(*args):
     '''This is the main application when running the program from a CLI.
 
-    Args:
-        --setup: (0 args) downloads and creates database for model creation
-        --pipe: (0 args) takes stdin, processes, and sends to stdout
-        --file: (2 args) takes 1. filepath input csv 2. filepath output csv
-        --simple: (2 args) takes zip and surname, returns text string
-        --complex: (2 args) takes zip and surname, returns detailed string
-        -q: 'quiet' option that suppresses output.
-    Returns:
-        --setup: None
-        --pipe: long text string
-        --file: None (output to csv file)
-        --simple: text string ('White')
-        --complex: long text string
-    Raises:
-        None
+    Parameters
+    ----------
+    --csv: string (x2)
+        Takes an input filepath and an output filepath for csv processing.
+    --model: string
+        Takes a string which specifies the argument used.
+    --string: string (number of string args variable)
+        Takes a number of strings (# of strings depends on model type).
+    --pipe: None
+        This is an adapter to allow for Unix-like pipes.
+    --setup: None
+        This sets up databases for all models
+    --verbose: None
+        Takes no arguments, and prevents the suppression of output.
+
+    Returns
+    -------
+    None: NoneType
+        Settlement.
+    Result string: string
+        Both the '--string' and '--pipe' return a utf-8 string.
+    Status string: string
+        If '--verbose' various utf-8 strings are returned.
+
+    Raises
+    ------
+    sqlite3.Error
+        Can occur for any number of database-related reasons. Upon error,
+        automatic rollback occurs, but the error is raised because it's
+        probably symptomatic of a bigger problem.
 
     '''
-
-##### Parse arguments
+# TEST eclipse egit plugin.
+##### Parse arguments and setup
     parsed_args = surgeo.utilities.get_parser_args()
-    if parsed_args.quiet:
-        surgeo.redirector.direct_to_null()
-##### Setup
-    surgeo.redirector.add('Running setup ...')
+    surgeo.setup_functions()
+    if parsed_args.verbose:
+        surgeo.adapter.direct_to_null()
 ##### Pipe
     if parsed_args.pipe:
         surgeo.redirector.direct_to_stdout()
-        model = surgeo.SurgeoModel()
+        
         try:
             while True:
                 for line in sys.stdin:
@@ -83,7 +90,11 @@ def cli_main(*args):
                   parsed_args.simple,
                   parsed_args.complex,
                   parsed_args.file]):
-        gui_executable()
+        try:
+            from surgeo.scripts import gui_executable
+            gui_executable()
+        except ImportError:
+            raise SurgeoError('Cannot start GUI. Do you have ttk support?')
 
 if __name__ == "__main__":
     sys.exit(cli_main(sys.argv[1:]))
