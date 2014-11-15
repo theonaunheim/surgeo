@@ -41,7 +41,7 @@ def cli_main(*args):
         probably symptomatic of a bigger problem.
 
     '''
-# TEST eclipse egit plugin.
+# TEST eclipse egit plugin.#
 ##### Parse arguments and setup
     parsed_args = surgeo.utilities.get_parser_args()
     surgeo.setup_functions()
