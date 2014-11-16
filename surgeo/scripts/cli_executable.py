@@ -42,7 +42,7 @@ def cli_main(*args):
 
     '''
 
-    # Parse arguments and setup (csv, model, pipe, setup, string, verbose)
+    # Parse arguments and setup (csv, model, pipe, setup, string, quiet)
     parsed_args = surgeo.utilities.parser.get_parser_args()
     # setup folders and the like
     surgeo.setup_functions()
@@ -50,13 +50,23 @@ def cli_main(*args):
     if parsed_args.quiet:
         surgeo.adapter.direct_to_null()
     # Pipe argument
-    cli_pipe_subroutine(parsed_args)
+    elif parsed_args.pipe:
+        cli_pipe_subroutine(parsed_args)
     # String argument
-    cli_string_subroutine(parsed_args)
+    elif parsed_args.string:
+        cli_string_subroutine(parsed_args)
+    elif parsed_args.summary:
+        cli_summary_subroutine()
     # Setup argument
-    cli_setup_subroutine(parsed_args)
-    # Gui argument (no arguments)
-    cli_gui_subroutine(parsed_args)
+    elif parsed_args.setup:
+        cli_setup_subroutine(parsed_args)
+    # Gui argument (if no arguments, gui)
+        if not any([parsed_args.setup,
+                    parsed_args.pipe,
+                    parsed_args.string,
+                    parsed_args.csv]):
+            cli_gui_subroutine(parsed_args)
+
 
 def cli_pipe_subroutine(parsed_args):
     '''For the "Pipe" argument.'''
@@ -87,6 +97,7 @@ def cli_pipe_subroutine(parsed_args):
         except EOFError:
             pass
 
+
 def cli_string_subroutine(parsed_args):
     '''"String" argument analyzes and returns a string.'''
     if parsed_args.string:
@@ -106,6 +117,7 @@ def cli_string_subroutine(parsed_args):
         result = model.get_result(**argument_dict)
         surgeo.adapter.adaprint(result.as_string())
 
+
 def cli_setup_subroutine(parsed_args):
     '''"Setup" argument causes all databases to be created.'''
     if parsed_args.setup:
@@ -121,17 +133,17 @@ def cli_setup_subroutine(parsed_args):
         if not model.db_check():
             model.db_create()
 
+
+def cli_summary_subroutine():
+    '''Give details on models (e.g. arguments) instead of subparser.'''
+    summary_string = surgeo.models.summarize_models()
+    surgeo.adapter.adaprint(summary_string)
+
+
 def cli_gui_subroutine(parsed_args):
     '''If no arguments, run the GUI.'''
-    if not any([parsed_args.setup,
-                parsed_args.pipe,
-                parsed_args.string,
-                parsed_args.csv]):
-        try:
-            from surgeo.scripts import gui_executable
-            gui_executable()
-        except ImportError:
-            raise surgeo.SurgeoError('Cannot start GUI. Do you have tk support?')
+    surgeo.scripts.gui_executable.gui_executable()
+
 
 if __name__ == "__main__":
     sys.exit(cli_main(sys.argv[1:]))

@@ -1,3 +1,5 @@
+import atexit
+
 from surgeo.models.geocode_model import GeocodeModel
 from surgeo.models.surname_model import SurnameModel
 from surgeo.models.model_base import BaseModel
@@ -109,6 +111,7 @@ class SurgeoModel(BaseModel):
         None
 
         '''
+        atexit.register(self.temp_cleanup)
         # Try geocode and create if necessary
         if self.geocode_model.db_check() is False:
             self.geocode_model.db_create()

@@ -41,8 +41,8 @@ class PercentageHTTP(object):
         if percentage > self.last_written_percentage:
             self.last_written_percentage = percentage
             # Kludgy fix to rewrite same line.
-            sys.stdout.write('\rDownloading {}: {}%'.format(
-                             self.title, self.last_written_percentage))
+            surgeo.adapter.adaprint('\rDownloading {}: {}%'.format(
+                                    self.title, self.last_written_percentage))
 
 
 class PercentageFTP(object):
@@ -87,7 +87,7 @@ class PercentageFTP(object):
         with open(destination_path, 'wb+') as f:
             downloaded_data = 0
             last_written_percentage = 0
-            sys.stdout.write('\rDownloading {}: {}%'.format(ftp_item, str(0)))
+            surgeo.adapter.write('\rDownloading {}: {}%'.format(ftp_item, str(0)))
             while downloaded_data < ftp_size:
                 block = yield
                 downloaded_data += len(block)
@@ -96,11 +96,11 @@ class PercentageFTP(object):
                                  * 100))
                 if percentage > last_written_percentage:
                     try:
-                        sys.stdout.write('\rDownloading {}: {}%'.format(
-                                     ftp_item, str(percentage)))
+                        surgeo.adapter.write('\rDownloading {}: {}%'.format(
+                                             ftp_item, str(percentage)))
                     except (NameError, AttributeError):
-                        sys.stdout.write('\rDownloading {}: {}%'.format(
-                                         ftp_item, str(percentage)))
+                        surgeo.adapter.write('\rDownloading {}: {}%'.format(
+                                             ftp_item, str(percentage)))
                 f.write(block)
-            sys.stdout.write('\rDownloading {}: {}%\n'.format(
-                             ftp_item, str(100)))
+            surgeo.adapter.write('\rDownloading {}: {}%\n'.format(
+                                 ftp_item, str(100)))
