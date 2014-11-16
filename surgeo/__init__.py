@@ -18,11 +18,8 @@ import surgeo.models
 import surgeo.scripts
 import surgeo.utilities
 
-from surgeo.utilities.error import SurgeoError
-from surgeo.utilities.redirector_adapter import RedirectorAdapter
 
-
-def autoload_default_modules():
+def setup_default_modules():
     '''Runs automatically. Loads modules in default and sets up databases'''
     # Import all model object from modules with '_model.py'
     parent_directory = os.path.dirname(os.path.abspath(__file__))
@@ -41,31 +38,23 @@ def autoload_default_modules():
                             member_object)
 
 
-def construct_db():
+
+def setup_all_dbs():
     '''Does not run automatically. Creates database.'''
-    db_path = os.path.join(os.path.expanduser('~'),
-                           '.surgeo',
-                           'surgeo.sqlite')
-    if not os.path.exists(db_path):
-        try:
-            surgeo.adapter.write('Trying prefab database ...\n')
-            pass  # Download dropbox link here
-        except:
-            surgeo.adapter.write('No prefab database availible ...\n')
-            # Import all model object from modules with '_model.py'
-            # TODO, does parent directory point us to the right spot
-            parent_directory = os.path.dirname(os.path.abspath(__file__))
-            file_list = os.listdir(parent_directory)
-            for item in file_list:
-                if not '_model.py' in item:
-                    continue
-                else:
-                    item = ''.join(['surgeo.models.', item[:-3]])
-                    module = importlib.import_module(item)
-                    for name, member_object in inspect.getmembers(module):
-                        if inspect.isclass(member_object):
-                            if member_object.db_check() is False:
-                                member_object.db_create()
+    parent_directory = os.path.dirname(os.path.abspath(__file__))
+    file_list = os.listdir(parent_directory)
+    for item in file_list:
+        if not '_model.py' in item:
+            continue
+        else:
+            #remove '.py'
+            item = ''.join(['surgeo.models.', item[:-3]])
+            module = importlib.import_module(item)
+            for _, member_object in inspect.getmembers(module):
+                if inspect.isclass(member_object):
+                    member_instance = member_object()
+                    if member_instance.db_check() is False:
+                        member_instance.db_create()
 
 
 def setup_directories():
@@ -90,9 +79,20 @@ def setup_logger():
 
 def setup_functions():
     '''Runs automatically and consolidates the necessary functions to run.'''
-    global adapter
-    adapter = RedirectorAdapter()
+    surgeo.adapter = surgeo.utilities.redirector_adapter.RedirectorAdapter()
     setup_directories()
     setup_logger()
-    autoload_default_modules()
+    setup_default_modules()
+    # setup_all_dbs
 
+
+class SurgeoError(Exception):
+    '''Custom error class for vanity's sake.'''
+
+    def __init__(self, reason, response=None):
+        self.reason = reason
+        self.response = response
+        Exception.__init__(self, reason)
+
+    def __str__(self):
+        return self.reason

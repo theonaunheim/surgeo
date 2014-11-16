@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 #coding: utf-8
 '''This is an executable wrapper for surgeo.'''
+import inspect
 import sys
 
 import surgeo
@@ -31,7 +32,7 @@ def cli_main(*args):
     Result string: string
         Both the '--string' and '--pipe' return a utf-8 string.
     Status string: string
-        If '--verbose' various utf-8 strings are returned.
+        If not '--quiet' various utf-8 strings are returned.
 
     Raises
     ------
@@ -41,60 +42,80 @@ def cli_main(*args):
         probably symptomatic of a bigger problem.
 
     '''
-# TEST eclipse egit plugin.#
+
 ##### Parse arguments and setup
-    parsed_args = surgeo.utilities.get_parser_args()
+    # default args = csv, model, pipe, setup, string, verbose
+    parsed_args = surgeo.utilities.parser.get_parser_args()
+    # setup folders and the like
     surgeo.setup_functions()
-    if parsed_args.verbose:
+    # If quiet, no output. Adapter shunts all output.
+    if parsed_args.quiet:
         surgeo.adapter.direct_to_null()
 ##### Pipe
     if parsed_args.pipe:
-        surgeo.redirector.direct_to_stdout()
-        
+        # Check what model
+        if not parsed_args.model:
+            raise surgeo.SurgeoError('No model specified for analysis.')
+        # Instantiate model.
+        model_name = parsed_args.model
+        model_class = getattr(surgeo.models, model_name)
+        model = model_class()
         try:
             while True:
                 for line in sys.stdin:
                     try:
                         # Remove surrounding whitespace
-                        line.strip()
-                        zcta, surname = line.split()
-                        result = model.race_data(zcta, surname)
+                        stripped_line = line.strip()
+                        raw_arguments = stripped_line.split()
+                        argument_dict = {argument.split('=')[0]:
+                                         argument.split('=')[1]
+                                         for argument in raw_arguments}
+                        result = model.get_result(**argument_dict)
                     except ValueError:
-                        result = model.race_data('00000', 'BAD_NAME')
-                    print(result.as_string)
+                        result = surgeo.utilities.result.Result().errorify()
+                    surgeo.adapter.adaprint(result.as_string())
         except EOFError:
             pass
-##### Simple
-    elif parsed_args.simple:
+##### String
+    elif parsed_args.string:
+        if not parsed_args.model:
+            raise surgeo.SurgeoError('No model specified for analysis.')
+        # Instantiate model.
+        model_name = parsed_args.model
+        model_class = getattr(surgeo.models, model_name)
+        model = model_class()
+                        stripped_line = line.strip()
+                        raw_arguments = stripped_line.split()
+                        argument_dict = {argument.split('=')[0]:
+                                         argument.split('=')[1]
+                                         for argument in raw_arguments}
+                        result = model.get_result(**argument_dict)
+                    except ValueError:
+                        result = surgeo.utilities.result.Result().errorify()
+                    surgeo.adapter.adaprint(result.as_string())
+##### Csv
+    elif parsed_args.file:
         model = surgeo.SurgeoModel()
-        zcta = parsed_args.simple[0]
-        surname = parsed_args.simple[1]
-        race = model.guess_race(zcta, surname)
-        print(race)
-##### Complex
+        infile = parsed_args.file[0]
+        outfile = parsed_args.file[1]
+        model.process_csv(infile, outfile)
+##### Setup
     elif parsed_args.complex:
         model = surgeo.SurgeoModel()
         zcta = parsed_args.complex[0]
         surname = parsed_args.complex[1]
         result = model.race_data(zcta, surname)
         print(result.as_string)
-##### File
-    elif parsed_args.file:
-        model = surgeo.SurgeoModel()
-        infile = parsed_args.file[0]
-        outfile = parsed_args.file[1]
-        model.process_csv(infile, outfile)
 ##### If no argument, GUI. Console should remain.
     elif not any([parsed_args.setup,
                   parsed_args.pipe,
-                  parsed_args.simple,
-                  parsed_args.complex,
-                  parsed_args.file]):
+                  parsed_args.string,
+                  parsed_args.csv]):
         try:
             from surgeo.scripts import gui_executable
             gui_executable()
         except ImportError:
-            raise SurgeoError('Cannot start GUI. Do you have ttk support?')
+            raise SurgeoError('Cannot start GUI. Do you have tk support?')
 
 if __name__ == "__main__":
     sys.exit(cli_main(sys.argv[1:]))

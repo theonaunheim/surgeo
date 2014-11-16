@@ -30,10 +30,10 @@ def get_parser_args():
                         help='Takes no inputs and sets up database.',
                         dest='setup')
     # Verbosity
-    parser.add_argument('--verbose',
+    parser.add_argument('--quiet',
                         action='store_true',
-                        help='Unsuppresses output.',
-                        dest='verbose')
+                        help='Suppresses output.',
+                        dest='quiet')
     # Parse and return args
     parsed_args = parser.parse_args()
     return parsed_args

@@ -8,7 +8,6 @@ import sqlite3
 
 import surgeo
 
-from surgeo.utilities.error import SurgeoError
 from surgeo.calculate.weighted_mean import get_weighted_mean
 
 ###############################################################################
