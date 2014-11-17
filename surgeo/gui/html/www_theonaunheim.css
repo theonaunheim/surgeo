@@ -1,0 +1,59 @@
+/* Raleway created by Matt McInerney. Font face. */
+
+@font-face {
+  font-family: RalewayLight;
+  src: url(raleway-light-webfont.woff);
+}
+
+/* Main CSS */
+
+head {
+    background-color: #000000;
+} 
+
+body {
+    background-color: #000000;
+    color: #FFFFFF;
+    font-family: RalewayLight;
+    background-repeat: no-repeat;
+    background-image: url('beta_in_perpetuity_wallpaper.png');
+    background-size: 20%;
+    background-attachment: fixed;
+    background-position: center; 
+}
+
+#body_text {
+    width:80%;
+    margin:10%;
+}
+
+header {
+        position:fixed;
+        background-color: #333333;
+        top: 0;
+        left: 0;
+        width: 100%;
+}
+
+h1 {
+    font-weight:normal;
+    color: #FFFFFF;
+    font-family: RalewayLight;
+    font-size: 300%;
+    vertical-align: middle;
+}
+
+h2 {
+    font-weight:normal;
+    color: #FFFFFF;
+    font-family: RalewayLight;
+    font-size: 250%;
+}
+
+p {
+    font-weight:normal;
+    color: #FFFFFF
+    font-family: RalewayLight;
+    font-size: 200%;
+}
+
