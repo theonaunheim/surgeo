@@ -10,7 +10,6 @@ import surgeo
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
 from surgeo.utilities.download_bar import PercentageFTP
-from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
 class GeocodeModel(BaseModel):
@@ -465,10 +464,10 @@ class GeocodeModel(BaseModel):
                 subject_index.append(row_index)
             except ValueError:
                 continue
-        get_weighted_mean(tuple(percent_index),
-                          tuple(subject_index),
-                          csv_path_in,
-                          summary_path_out)
+        self.get_weighted_mean(tuple(percent_index),
+                               tuple(subject_index),
+                               csv_path_in,
+                               summary_path_out)
 
     def csv_process(self,
                     filepath_in,

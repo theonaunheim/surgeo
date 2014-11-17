@@ -4,7 +4,6 @@ from surgeo.models.geocode_model import GeocodeModel
 from surgeo.models.surname_model import SurnameModel
 from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
-from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
 class SurgeoModel(BaseModel):
@@ -322,10 +321,10 @@ class SurgeoModel(BaseModel):
                 subject_index.append(row_index)
             except ValueError:
                 continue
-        get_weighted_mean(tuple(percent_index),
-                          tuple(subject_index),
-                          csv_path_in,
-                          summary_path_out)
+        self.get_weighted_mean(tuple(percent_index),
+                               tuple(subject_index),
+                               csv_path_in,
+                               summary_path_out)
 
     def csv_process(self,
                     file_path_in,
