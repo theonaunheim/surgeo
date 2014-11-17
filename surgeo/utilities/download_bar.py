@@ -41,7 +41,7 @@ class PercentageHTTP(object):
         if percentage > self.last_written_percentage:
             self.last_written_percentage = percentage
             # Kludgy fix to rewrite same line.
-            surgeo.adapter.adaprint('\rDownloading {}: {}%'.format(
+            surgeo.adapter.adaprint('*r*Downloading {}: {}%'.format(
                                     self.title, self.last_written_percentage))
 
 
@@ -87,7 +87,7 @@ class PercentageFTP(object):
         with open(destination_path, 'wb+') as f:
             downloaded_data = 0
             last_written_percentage = 0
-            surgeo.adapter.write('\rDownloading {}: {}%'.format(ftp_item, str(0)))
+            surgeo.adapter.write('*r*Downloading {}: {}%'.format(ftp_item, str(0)))
             while downloaded_data < ftp_size:
                 block = yield
                 downloaded_data += len(block)
@@ -95,12 +95,9 @@ class PercentageFTP(object):
                                  float(ftp_size)
                                  * 100))
                 if percentage > last_written_percentage:
-                    try:
-                        surgeo.adapter.write('\rDownloading {}: {}%'.format(
-                                             ftp_item, str(percentage)))
-                    except (NameError, AttributeError):
-                        surgeo.adapter.write('\rDownloading {}: {}%'.format(
-                                             ftp_item, str(percentage)))
+                    surgeo.adapter.write('*r*Downloading {}: {}%'.format(
+                                         ftp_item, str(percentage)))
+                    last_written_percentage = percentage
                 f.write(block)
-            surgeo.adapter.write('\rDownloading {}: {}%\n'.format(
+            surgeo.adapter.write('*r*Downloading {}: {}%\n'.format(
                                  ftp_item, str(100)))
