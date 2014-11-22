@@ -12,10 +12,9 @@ from surgeo.models.model_base import BaseModel
 from surgeo.utilities.result import Result
 from surgeo.utilities.download_bar import PercentageFTP
 from surgeo.utilities.download_bar import PercentageHTTP
-from surgeo.calculate.weighted_mean import get_weighted_mean
 
 
-class GenderNameModel(BaseModel):
+class genderModel(BaseModel):
     '''Contains data references and methods for running a Gender/Name model.
 
     Attributes
@@ -99,7 +98,7 @@ class GenderNameModel(BaseModel):
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
             # Use row count to determine db validity.
-            cursor.execute('''SELECT COUNT(*) FROM gendername_joint''')
+            cursor.execute('''SELECT COUNT(*) FROM gender_joint''')
             count = int(cursor.fetchone()[0])
             # If passes assertion, return True
             assert(count == PROPER_COUNT)
@@ -150,18 +149,18 @@ class GenderNameModel(BaseModel):
             surgeo.adapter.adaprint('Copying data to local table ...')
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
-            cursor.execute('''DROP TABLE IF EXISTS gendername_joint''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS gendername_joint(
+            cursor.execute('''DROP TABLE IF EXISTS gender_joint''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS gender_joint(
                               id INTEGER PRIMARY KEY,
                               first_name TEXT,
                               female_prob REAL,
                               male_prob REAL)''')
             # Copy foreign db into local db
             cursor.execute('''ATTACH ? AS "downloaded_db" ''', (destination,))
-            cursor.execute('''INSERT INTO gendername_joint
-                              SELECT * FROM downloaded_db.gendername_joint''')
+            cursor.execute('''INSERT INTO gender_joint
+                              SELECT * FROM downloaded_db.gender_joint''')
             cursor.execute('''CREATE INDEX IF NOT EXISTS first_name_index
-                              ON gendername_joint(first_name)''')
+                              ON gender_joint(first_name)''')
             connection.commit()
             surgeo.adapter.adaprint('Successfully written ...')
             return
@@ -194,7 +193,7 @@ class GenderNameModel(BaseModel):
                 data = zip_file.read(item)
                 new_file_path = os.path.join(self.temp_folder_path,
                                              item)
-                # TODO Roundabout way or getting file data.
+                # Roundabout way or getting file data.
                 with open(new_file_path, 'wb+') as destination_file:
                     destination_file.write(data)
                 with open(destination_file, 'r') as opened_file:
@@ -227,14 +226,14 @@ class GenderNameModel(BaseModel):
         try:
             connection = sqlite3.connect(self.db_path)
             cursor = connection.cursor()
-            cursor.execute('''DROP TABLE IF EXISTS gendername_joint''')
-            cursor.execute('''CREATE TABLE IF NOT EXISTS gendername_joint(
+            cursor.execute('''DROP TABLE IF EXISTS gender_joint''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS gender_joint(
                               id INTEGER PRIMARY KEY,
                               first_name TEXT,
                               female_prob REAL,
                               male_prob REAL)''')
             for item_tuple in list_of_entry_tuples:
-                cursor.execute('''INSERT INTO gendername_joint
+                cursor.execute('''INSERT INTO gender_joint
                                   VALUES(NULL, ?, ?, ?)''',
                                item_tuple)
                 surgeo.adapter.adaprint('Creating index ...')
@@ -281,7 +280,9 @@ class GenderNameModel(BaseModel):
 ######## Error result. Terminates with returning error result
         if row is None:
             error_result = Result(**{'first_name': 0,
-                                     'gender': 0}).errorify()
+                                     'probable_gender': 0,
+                                     'male_probability': 0,
+                                     'female_probability': 0}).errorify()
             return error_result
         first_name = row[1]
         gender = row[2]
@@ -369,10 +370,10 @@ class GenderNameModel(BaseModel):
                 subject_index.append(row_index)
             except ValueError:
                 continue
-        get_weighted_mean(tuple(percent_index),
-                          tuple(subject_index),
-                          csv_path_in,
-                          summary_path_out)
+        self.get_weighted_mean(tuple(percent_index),
+                               tuple(subject_index),
+                               csv_path_in,
+                               summary_path_out)
 
     def csv_process(self,
                     filepath_in,

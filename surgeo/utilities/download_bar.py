@@ -1,5 +1,5 @@
 import decimal
-import sys
+# import sys # import sys is needed to sub for surgeo.adapter if refactored.
 import urllib.request
 
 import surgeo
@@ -41,8 +41,10 @@ class PercentageHTTP(object):
         if percentage > self.last_written_percentage:
             self.last_written_percentage = percentage
             # Kludgy fix to rewrite same line.
-            surgeo.adapter.adaprint('*r*Downloading {}: {}%'.format(
-                                    self.title, self.last_written_percentage))
+            surgeo.adapter.adaprint('*r*Downloading {} from {}: {}%'.format(
+                                    self.title,
+                                    self.url,
+                                    self.last_written_percentage))
 
 
 class PercentageFTP(object):
@@ -87,7 +89,6 @@ class PercentageFTP(object):
         with open(destination_path, 'wb+') as f:
             downloaded_data = 0
             last_written_percentage = 0
-            surgeo.adapter.write('*r*Downloading {}: {}%'.format(ftp_item, str(0)))
             while downloaded_data < ftp_size:
                 block = yield
                 downloaded_data += len(block)
@@ -95,9 +96,13 @@ class PercentageFTP(object):
                                  float(ftp_size)
                                  * 100))
                 if percentage > last_written_percentage:
-                    surgeo.adapter.write('*r*Downloading {}: {}%'.format(
-                                         ftp_item, str(percentage)))
+                    surgeo.adapter.write('*r*Downloading {} from {}: {}%'
+                                         .format(ftp_item,
+                                                 ftp_instance.host,
+                                                 str(percentage)))
                     last_written_percentage = percentage
                 f.write(block)
-            surgeo.adapter.write('*r*Downloading {}: {}%\n'.format(
-                                 ftp_item, str(100)))
+            surgeo.adapter.write('*r*Downloading {} from {}: {}%\n'.format(
+                                 ftp_item,
+                                 ftp_instance.host,
+                                 str(100)))

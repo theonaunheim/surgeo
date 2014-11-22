@@ -6,6 +6,7 @@ import os
 import sys
 
 import surgeo
+import surgeo.models
 
 from surgeo.models.model_base import BaseModel
 from surgeo.models.geocode_model import GeocodeModel
@@ -35,7 +36,7 @@ def load_model(model_module_name):
 
 
 def summarize_models():
-    '''Presents a summary of all models as a string.'''
+    '''Presents a summary of all model arguments as a string.'''
     string_buffer = io.StringIO('')
     parent_directory = os.path.dirname(os.path.abspath(__file__))
     file_list = os.listdir(parent_directory)
