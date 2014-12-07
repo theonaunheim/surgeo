@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang=”en”>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="surgeo.css">
+    <script src="jquery-1.11.1.min.js" type="text/javascript"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset=”utf-8”>
+    <title>Surgeo</title>
+    <meta name=”description” content=”Surgeo GUI”>
+    <meta name=”author” content=”Theo Naunheim”>   
+</head>
+
+<body>
+    <div id="page_content" class="content">
+        <header>
+            <h1>&nbsp;&nbsp;&gt;&gt;&gt;</h1>
+        </header>
+    <div id="body_text" class="content">
+        <br>
+        <br>
+        <br>
+        <!-- Head/body spacer for readability. -->
+        <img src="beta_in_perpetuity_logo.png" alt="perpetuity_logo" height=50% width=50% align=right>
+        <br>
+        <h1>Surgeo</h1>
+        <br>
+        <br>
+    <div id="ajax_text" class="ajax">    
+
+    <!-- Ajax -->
+    
+    <div id="div1"><h2>Let jQuery AJAX Change This Text</h2></div>
+<button>Get External Content</button>
+    
+    
+    
+    <!-- Ajax -->
+
+
+    </div>
+    </div>
+    </div>
+    <!-- Loading animation -->
+    <div id="loader" class="loading_animation">
+        <p>
+        <img src="beta_in_perpetuity_wallpaper.png" alt="Loading" align="center" height=10% width=10%>
+        <font color=#333333>Loading ...</font>
+        </p>
+    </div>
+
+    <script>
+        var interval_id
+        $(document).ready(function() {	
+	        $.ajax();							
+        });
+        $(document).ajaxStart(function(){
+	        $("#loader").hide();
+	        $("#ajax_pane").hide();
+	        interval_id = setInterval(function(){
+	            $("#loader").show().fadeIn(1000);
+	            $("#loader").show().fadeOut(1000);}, 0)
+        });
+        $(document).ajaxStop(function(){
+	        $("ajax_pane").fadeIn(1000);
+	        clearInterval(interval_id);
+        });
+    </script> 
+
+    <script>
+        $(document).ready(function(){
+            $("button").click(function(){
+            $.ajax({url:"http://www.google.com",success:function(result){
+                    $("#div1").text('a');
+                }});
+            });
+        });
+    </script>
+   
+</body>
+
+</html>

@@ -17,7 +17,7 @@ body {
     font-family: RalewayLight;
     background-repeat: no-repeat;
     background-image: url('beta_in_perpetuity_wallpaper.png');
-    background-size: 20%;
+    background-size: 10%;
     background-attachment: fixed;
     background-position: center; 
 }
@@ -51,6 +51,13 @@ h2 {
 }
 
 p {
+    font-weight:normal;
+    color: #FFFFFF
+    font-family: RalewayLight;
+    font-size: 200%;
+}
+
+form {
     font-weight:normal;
     color: #FFFFFF
     font-family: RalewayLight;

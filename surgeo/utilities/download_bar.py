@@ -1,5 +1,4 @@
 import decimal
-# import sys # import sys is needed to sub for surgeo.adapter if refactored.
 import urllib.request
 
 import surgeo
@@ -56,7 +55,7 @@ class PercentageFTP(object):
 
 
     '''
-    
+
     def __init__(self,
                  ftp_filename,
                  destination_path,
@@ -65,10 +64,10 @@ class PercentageFTP(object):
         self.destination_path = destination_path
         self.ftp_instance = ftplib_FTP_instance
         self.file_size = self.ftp_instance.size(self.filename)
-        
+  
     def start(self):
         '''Run loop. Majority of work done in iterator.'''
-        try:      
+        try:
             ftp_generator = self.graphical_ftp_gen(self.filename,
                                                    self.file_size,
                                                    self.destination_path,
@@ -79,7 +78,7 @@ class PercentageFTP(object):
                                          ftp_generator.send(block))
         except StopIteration:
             pass
-                
+  
     def graphical_ftp_gen(self,
                           ftp_item,
                           ftp_size,
@@ -106,3 +105,4 @@ class PercentageFTP(object):
                                  ftp_item,
                                  ftp_instance.host,
                                  str(100)))
+

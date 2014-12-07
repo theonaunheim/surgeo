@@ -68,6 +68,7 @@ class SurnameModel(BaseModel):
         super().__init__()
         self._author = 'Theo Naunheim'
         self._version = '2000.1'
+        self._tables = ['surname_joint']
 
     def db_check(self):
         '''Checks db accuracy. Valid returns True, else False.

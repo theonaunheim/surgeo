@@ -70,6 +70,7 @@ class genderModel(BaseModel):
         super().__init__()
         self._author = 'Theo Naunheim'
         self._version = '2013.1'
+        self._tables = ['gender_joint']
 
     def db_check(self):
         '''Checks db accuracy. Valid returns True, else False.

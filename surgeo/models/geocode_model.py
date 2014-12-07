@@ -55,6 +55,7 @@ class GeocodeModel(BaseModel):
         super().__init__()
         self._author = 'Theo Naunheim'
         self._version = '2010.1'
+        self._tables = ['geocode_joint']
         self.census_states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas',
                               'California', 'Colorado', 'Connecticut',
                               'Delaware', 'District_of_Columbia', 'Florida',

@@ -66,6 +66,7 @@ class SurgeoModel(BaseModel):
         super().__init__()
         self._author = 'Theo Naunheim'
         self._version = '2000.2010.1'
+        self._tables = []
         self.geocode_model = GeocodeModel()
         self.surname_model = SurnameModel()
 
