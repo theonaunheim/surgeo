@@ -31,12 +31,14 @@
     <!-- Ajax -->
     
      <form>
-    Surname:<br>
+    Surname:
     <input type="text" name="firstname">
     <br>
-    Zip Code:<br>
+    <br>
+    Zip Code:
     <input type="text" name="lastname">
     </form> 
+    <br>
     <button>Enter</button>
     
     <!-- Ajax -->
@@ -62,11 +64,11 @@
 	        $.ajax();							
         });
         // Bind 'enter' to button events for page
-        $(document.ready(function(e) {
-            if (e.whcih == 13){
+        $(document).keypress(function(event) {
+            if (event.keyCode == 13) {
                 $("button").click();
             }
-        });
+         });
     </script>
     
     <script>
@@ -100,7 +102,7 @@
     
     <script>
     function submit() {
-    
+        alert("Submission function has run.");
     }
     </script>
 
