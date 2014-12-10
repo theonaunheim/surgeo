@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang=”en-US”>
+<html lang=”en”>
 
 <head>
     <link rel="stylesheet" type="text/css" href="surgeo.css">
     <script src="jquery-1.11.1.min.js" type="text/javascript"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset=”UTF-8”>
+    <meta charset=”utf-8”>
     <title>Surgeo</title>
     <meta name=”description” content=”Surgeo GUI”>
     <meta name=”author” content=”Theo Naunheim”>   
@@ -30,14 +30,8 @@
 
     <!-- Ajax -->
     
-     <form>
-    Surname:<br>
-    <input type="text" name="firstname">
-    <br>
-    Zip Code:<br>
-    <input type="text" name="lastname">
-    </form> 
-    <button>Enter</button>
+    <div id="div1"><h2>Let jQuery AJAX Change This Text</h2></div>
+    <button>Get External Content</button>
     
     <!-- Ajax -->
 
@@ -61,12 +55,6 @@
         $(document).ready(function() {	
 	        $.ajax();							
         });
-        // Bind 'enter' to button events for page
-        $(document.ready(function(e) {
-            if (e.whcih == 13){
-                $("button").click();
-            }
-        });
     </script>
     
     <script>
@@ -83,25 +71,15 @@
     <script>
         // On ajax end, stop blinking.
         $(document).ajaxStop(function(){
-	        $("#ajax_pane").show().fadeIn(1000);
+	        $("#ajax_pane").fadeIn(1000);
 	        clearInterval(interval_id);
         });
-    </script>
-        
-    <script>
         // Submission
         $(document).ready(function(){
             $("button").click(function(){
-                submit()
+            $("#ajax_pane").html("Hello World");
             });
-            $
         });
-    </script>
-    
-    <script>
-    function submit() {
-    
-    }
     </script>
 
 </body>

@@ -20,5 +20,12 @@ start_response('200 OK', response_headers)
 for bit in ['Each ', 'bit ', 'should ', 'be a ', 'chunk.']:
 yield bit
 time.sleep(1) 
+
+from wsgiref.simple_server import make_server
+    srv = make_server('localhost', 8080, hello_world)
+    srv.serve_forever()
+    
+    
+    
 '''
 
