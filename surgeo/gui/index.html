@@ -12,99 +12,119 @@
 </head>
 
 <body>
+
     <div id="page_content" class="content">
         <header>
             <h1>&nbsp;&nbsp;&gt;&gt;&gt;</h1>
         </header>
-    <div id="body_text" class="content">
-        <br>
-        <br>
-        <br>
-        <!-- Head/body spacer for readability. -->
-        <img src="beta_in_perpetuity_logo.png" alt="perpetuity_logo" height=50% width=50% align=right>
-        <br>
-        <h1>Surgeo</h1>
-        <br>
-        <br>
-    <div id="ajax_pane" class="ajax">    
-
-    <!-- Ajax -->
     
-     <form>
-    Surname:
-    <input type="text" name="firstname">
-    <br>
-    <br>
-    Zip Code:
-    <input type="text" name="lastname">
-    </form> 
-    <br>
-    <button>Enter</button>
+        <div id="body_text" class="content">
+            <br><br><br>
+            <img src="beta_in_perpetuity_logo.png" alt="perpetuity_logo" height=50% width=50% align=right>
+            <br>
+            <h1>Surgeo</h1>
+            <br><br>
+
+        <div id="ajax_pane" class="ajax">    
+
+        <!-- Ajax -->
     
-    <!-- Ajax -->
+        <form name="submissionForm">
+            Surname:
+            <input type="text" name="Surname">
+            <br><br>
+            Zip Code:
+            <input type="text" name="ZIP">
+            <br>
+            <select name="model">
+                <option value="surgeo">Geocode</option>
+                <option value="geocode">Surgei</option>
+                <option value="surname">Surname</option>
+            </select> 
+        </form> 
+        <button id="submitButton">Enter</button>
 
+        <!-- Ajax -->
+        </div>
 
-    </div>
-    </div>
-    </div>
+        <!-- Loading animation -->
+        <div id="loader" class="loading_animation">
+            <p>
+            <img src="beta_in_perpetuity_wallpaper.png" alt="Loading" align="center" height=10% width=10%>
+            <font color=#333333>Loading ...</font>
+            </p>
+        </div>
 
-    <!-- Loading animation -->
-    <div id="loader" class="loading_animation">
-        <p>
-        <img src="beta_in_perpetuity_wallpaper.png" alt="Loading" align="center" height=10% width=10%>
-        <font color=#333333>Loading ...</font>
-        </p>
-    </div>
-
-    <script>
-        // Universal interval_id for setInterval events
-        var interval_id
-        // Set up ajax on load.
-        $(document).ready(function() {	
-	        $.ajax();							
-        });
-        // Bind 'enter' to button events for page
-        $(document).keypress(function(event) {
-            if (event.keyCode == 13) {
-                $("button").click();
-            }
-         });
-    </script>
-    
-    <script>
-        // On ajax start, blink
-        $(document).ajaxStart(function(){
-	        $("#loader").hide();
-	        $("#ajax_pane").hide();
-	        interval_id = setInterval(function(){
-	            $("#loader").show().fadeIn(1000);
-	            $("#loader").show().fadeOut(1000);}, 0)
-        });
-    </script>
-    
-    <script>
-        // On ajax end, stop blinking.
-        $(document).ajaxStop(function(){
-	        $("#ajax_pane").show().fadeIn(1000);
-	        clearInterval(interval_id);
-        });
-    </script>
-        
-    <script>
-        // Submission
-        $(document).ready(function(){
-            $("button").click(function(){
-                submit()
+        <script>
+            // Universal interval_id for setInterval events
+            var interval_id
+            // Set up ajax on load. Superfluous. remove. #TODO
+            $(document).ready(function() {	
+	            $.ajax();							
             });
-            $
-        });
-    </script>
+            // Bind 'enter' to button events for page
+            $(document).keypress(function(event) {
+                if (event.keyCode == 13) {
+                    $("#submitButton").click();
+                }
+            });
+        </script>
+
+        <script>
+            // On ajax start, blink
+            $(document).ajaxStart(function(){
+	            $("#loader").hide();
+	            $("#ajax_pane").hide();
+	            interval_id = setInterval(function(){
+	                $("#loader").show().fadeIn(1000);
+	                $("#loader").show().fadeOut(1000);}, 0)
+            });
+        </script>
+
+        <script>
+            // On ajax end, stop blinking.
+            $(document).ajaxStop(function(){
+    	        $("#ajax_pane").show().fadeIn(1000);
+    	        clearInterval(interval_id);
+            });
+        </script>
+        
+        <script>
+            // Submission
+            $(document).ready(function(){
+                $("#submitButton").click(function(){
+                    var formArray = $(":input").serializeArray();
+                    submit(formArray);
+                });
+                $
+            });
+        </script>
     
-    <script>
-    function submit() {
-        alert("Submission function has run.");
-    }
-    </script>
+        <script>
+        // Function submission
+        function submit(serializedArray) {
+            alert("Serialized array" + serializedArray);
+            // Send request
+            var request = $.ajax({
+                url: "localhost:8001",
+                type: "POST",
+                data: {serializedArray},
+                dataType: "html"
+            });
+            // Empty ajax pane
+            $("#ajax_pane").empty();
+            request.done(function(data) {
+            // BOOKMARK
+            $("#log").html(msg);
+            });
+            request.fail(function(jqXHR, textStatus) {
+                alert("An error has occcured: " + textStatus);
+            });
+        }
+        </script>
+
+        <!-- End of body text -->
+        </div>
 
 </body>
 </html>
