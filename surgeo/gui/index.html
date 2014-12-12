@@ -96,7 +96,6 @@
                     var formArray = $(":input").serializeArray();
                     submit(formArray);
                 });
-                $
             });
         </script>
     
@@ -106,9 +105,9 @@
             alert("Serialized array" + serializedArray);
             // Send request
             var request = $.ajax({
-                url: "localhost:8001",
+                url: "http://localhost:8001",
                 type: "POST",
-                data: {serializedArray},
+                data: {Surname: "John", ZIP: "Boston"},
                 dataType: "html"
             });
             // Empty ajax pane
