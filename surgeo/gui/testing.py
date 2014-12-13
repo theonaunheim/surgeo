@@ -1,36 +1,49 @@
-
+import os
+import http.server
+import socketserver
 import threading
-import cgi
-import wsgiref.simple_server
 
 
-def app(environment, start_response):
-    '''Index is mounted at '/'.'''
-    start_response('200 OK', [('Content-Type', 'text/html')])
-    # fp = file pinter
-    post_data = cgi.FieldStorage(fp=environment['wsgi.input'],
-                                 environ=environment.copy(),
-                                 keep_blank_values=True)
-    print(post_data)
-    #return ['string']
+class SurgeoHandler(http.server.BaseHTTPRequestHandler):
 
-class Server_Thread(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.running = True
-        self.server = wsgiref.simple_server.make_server('localhost',
-                                                        8001,
-                                                        app)
-        print("Server_Thread initialized. Serving.")
-    def run(self):
-        while self.running == True:
-           self.server.serve_forever()
-           
+    def do_GET(self):
+        parent_dir = os.path.dirname(os.path.abspath(__file__))
+        try:
+            print(self.path)
+            f = open(parent_dir + os.sep + self.path, 'rb')
+            self.send_response(200)
+            # Misc headers for different types
+            if self.path.endswith('.png'):
+                self.send_header('Content-type',
+                                 'image/png')
+            if self.path.endswith('.css'):
+                self.send_header('Content-type',
+                                 'text/css')
+            if self.path.endswith('.html'):
+                self.send_header('Content-type',
+                                 'text/html')
+                print('ha')
+            if self.path.endswith('.js'):
+                self.send_header('Content-type',
+                                 'text/javascript')
+            self.end_headers()
+            self.wfile.write(f.read())
+            f.close()
+                
+        except IOError:
+            self.send_error(404)
+     
+
+    def do_POST(self):
+        pass
+
 if __name__ == '__main__':
-    server = Server_Thread()
-    server.start()
-    
-    
+    server = http.server.HTTPServer(('localhost', 8001),
+                                    SurgeoHandler)
+    server.serve_forever()
+                                
+
+
     
 '''
 Cross-Origin Request Blocked: The Same Origin Policy disallows reading the 
