@@ -8,49 +8,42 @@
     <meta charset=”UTF-8”>
     <title>Surgeo</title>
     <meta name=”description” content=”Surgeo GUI”>
-    <meta name=”author” content=”Theo Naunheim”>   
+    <meta name=”author” content=”Theo Naunheim”>
+    <link rel="icon" type="image/png" href="favicon.png" />
 </head>
 
 <body>
 
     <div id="page_content" class="content">
+
         <header>
             <h1>&nbsp;&nbsp;&gt;&gt;&gt;</h1>
         </header>
-    
-        <div id="body_text" class="content">
-            <br><br><br>
-            <img src="beta_in_perpetuity_logo.png" alt="perpetuity_logo" height=50% width=50% align=right>
-            <br>
-            <h1>Surgeo</h1>
-            <br><br>
+
+        <div id="title_pane">
+            <img src="beta_in_perpetuity_logo.png" alt="perpetuity_logo" height=40% width=40% align="right">
+            <h1><br>Surgeo.</h1>
+        </div>
 
         <div id="ajax_pane" class="ajax">    
-
         <!-- Ajax -->
     
-        <form name="submissionForm">
-            Surname:
-            <input type="text" name="Surname">
-            <br><br>
-            Zip Code:
-            <input type="text" name="ZIP">
-            <br>
-            <select name="model">
-                <option value="surgeo">Geocode</option>
-                <option value="geocode">Surgei</option>
-                <option value="surname">Surname</option>
-            </select> 
-        </form> 
-        <button id="submitButton">Enter</button>
+        <div id="presentation_pane" align="center">
+            <form name="submissionForm">
+                <img id="landingLogo" onclick="javascript:submit()" src="logo.png" alt="surgeo_logo" height=50% width=50% align="middle" border="10">
+                <input type="hidden" name="command" value="">
+                <input type="hidden" name="thisTemplate" value="landing">
+                <input type="hidden" name="nextTemplate" value="interactive">
+            </form>
+        </div>
 
         <!-- Ajax -->
         </div>
-
+        
         <!-- Loading animation -->
         <div id="loader" class="loading_animation">
             <p>
-            <img src="beta_in_perpetuity_wallpaper.png" alt="Loading" align="center" height=10% width=10%>
+            <img src="beta_in_perpetuity_wallpaper.png" alt="Loading" height=10% width=10%>
             <font color=#333333>Loading ...</font>
             </p>
         </div>
@@ -58,14 +51,15 @@
         <script>
             // Universal interval_id for setInterval events
             var interval_id
-            // Set up ajax on load. Superfluous. remove. #TODO
+            // Set up ajax on load. Kludge prevent show. #TODO
             $(document).ready(function() {	
-	            $.ajax();							
+	            $.ajax();					
             });
             // Bind 'enter' to button events for page
             $(document).keypress(function(event) {
                 if (event.keyCode == 13) {
                     $("#submitButton").click();
+                    submit()
                 }
             });
         </script>
@@ -102,18 +96,16 @@
         <script>
         // Function submission
         function submit(serializedArray) {
-            alert("Serialized array" + serializedArray);
             // Send request
             var request = $.ajax({
                 url: "http://localhost:8001",
                 type: "POST",
-                data: {Surname: "John", ZIP: "Boston"},
+                data: {serializedArray},
                 dataType: "html"
             });
             // Empty ajax pane
             $("#ajax_pane").empty();
             request.done(function(data) {
-            // BOOKMARK
             $("#log").html(msg);
             });
             request.fail(function(jqXHR, textStatus) {
@@ -122,8 +114,7 @@
         }
         </script>
 
-        <!-- End of body text -->
-        </div>
+
 
 </body>
 </html>

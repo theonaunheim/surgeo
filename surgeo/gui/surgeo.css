@@ -19,13 +19,23 @@ body {
     background-image: url('beta_in_perpetuity_wallpaper.png');
     background-size: 10%;
     background-attachment: fixed;
-    background-position: center; 
+    background-position: center;
+    margin:15%;
 }
 
-#body_text {
+#title_pane {
     width:80%;
     margin:10%;
-    font-size: 150%;
+    display: block;
+}
+
+#ajax_pane {
+    width:80%;
+    margin:10%;
+}
+
+#presentation_pane {
+    display: block;
 }
 
 header {
