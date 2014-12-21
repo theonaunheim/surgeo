@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="surgeo.css">
     <script src="jquery-1.11.1.min.js" type="text/javascript"></script>
+    <script src="jquery-ui.js" type="text/javascript"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset=”UTF-8”>
     <title>Surgeo</title>
@@ -29,11 +30,11 @@
         <!-- Ajax -->
     
         <div id="presentation_pane" align="center">
-            <form name="submissionForm">
-                <img id="landingLogo" onclick="javascript:submit()" src="logo.png" alt="surgeo_logo" height=50% width=50% align="middle" border="10">
-                <input type="hidden" name="command" value="">
+            <form id="submissionForm">
+                <img id="landingLogo" onclick="javascript:submit()" src="logo.png" alt="surgeo_logo" height=50% width=50% align="middle" border="5">
                 <input type="hidden" name="thisTemplate" value="landing">
-                <input type="hidden" name="nextTemplate" value="interactive">
+                <input type="hidden" name="command" value="changePage">
+                <input type="hidden" name="arguments" value="interactive">
             </form>
         </div>
 
@@ -87,8 +88,7 @@
             // Submission
             $(document).ready(function(){
                 $("#submitButton").click(function(){
-                    var formArray = $(":input").serializeArray();
-                    submit(formArray);
+                    submit();
                 });
             });
         </script>
@@ -96,17 +96,19 @@
         <script>
         // Function submission
         function submit(serializedArray) {
+            // Get array info
+            var formArray = $("#submissionForm").serialize();
             // Send request
             var request = $.ajax({
                 url: "http://localhost:8001",
                 type: "POST",
-                data: {serializedArray},
+                data: {formArray},
                 dataType: "html"
             });
             // Empty ajax pane
             $("#ajax_pane").empty();
             request.done(function(data) {
-            $("#log").html(msg);
+            $("#ajax_pane").html(data);
             });
             request.fail(function(jqXHR, textStatus) {
                 alert("An error has occcured: " + textStatus);

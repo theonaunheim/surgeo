@@ -1,16 +1,19 @@
+import urllib
 import http.server
 import mimetypes
 import os
 import threading
-import webbrowser
+
+import surgeo
 
 
 class SurgeoHandler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         parent_dir = os.path.dirname(os.path.abspath(__file__))
+        path = parent_dir + self.path
         try:
-            f = open(parent_dir + os.sep + self.path, 'rb')
+            f = open(path, 'rb')
             self.send_response(200)
             specified_type = mimetypes.guess_type(self.path)[0]
             self.send_header('Content-Type',
@@ -27,16 +30,19 @@ class SurgeoHandler(http.server.BaseHTTPRequestHandler):
             if item[0] == 'Content-Length':
                 content_length = int(item[1])
                 break
-        post_data = self.rfile.read(content_length)
-        string_list = post_data.decode().split('&')
-        data_dict = {item.partition('=')[0]: item.partition('=')[2]
-                     for item in string_list}
-        return_data = self.process_post_data(data_dict)
-        self.wfile.write(return_data)
+        post_data_as_html = self.rfile.read(content_length).decode()
+        post_data_pre_dict = urllib.parse.parse_qs(post_data_as_html)
+        post_data_string = post_data_pre_dict['formArray'][0]
+        post_data_list = post_data_string.split('&')
+        post_data_dict = {item.partition('=')[0]: item.partition('=')[2]
+                          for item in post_data_list}
+        return_data = self.process_post_data(post_data_dict)
+        self.wfile.write(return_data.encode())
 
     def process_post_data(self,
                           data_dictionary):
-        pass
+        html_result = HTMLCreator.input_command(data_dictionary)
+        return html_result
 
 
 class ServerThread(threading.Thread):
@@ -49,33 +55,82 @@ class ServerThread(threading.Thread):
         print("ServerThread started. Serving.")
     def run(self):
         self.server.serve_forever()
-        
+
 
 class HTMLCreator(object):
 
-    @staticmethod
-    def generate_generic():
+    # Tie specifc templates to functions
+    template_to_subroutine_dict = {'landing': cls.landing_sub,
+                                   'interactive': cls.interactive_sub}
+
+    @classmethod
+    def input_command(cls,
+                      input_dict):
+        '''This takes an input dict and invokes function based on template.
+
+        Dict should contain:
+        {'command': 'changePage',
+         'thisTemplate': 'landing',
+         'arguments': 'interactive'}
+
+        '''
+        # thisTemplate is what dictates the function used.
+        template_name = input_dict['thisTemplate']
+        # Get subroutine from template to subroutine dict
+        subroutine_to_use = template_to_subroutine_dict[template_name]
+        # Run appropriate function with input dict arguments
+        subroutine_result = subroutine_to_use(input_dict)
+        # Wrap with tabs
+        result_with_tabs = cls.wrap_with_tabs(subroutine_result)
+        # Wrap subroutine_result in form
+        final_result = cls.wrap_in_form(result_with_tabs)
+        # Return subroutine result
+        return final_result
+
+    @classmethod
+    def landing_sub(cls,
+                    input_dict):
+        base_html = ''.join([
+        
+                    ])
+        return base_html
+
+    @classmethod
+    def interactive_sub(cls,
+                        input_dict):
         pass
 
-    @staticmethod
-    def generate_setup():
-        pass
-
-    @staticmethod
-    def generate_list_processing():
-        pass
-
-    @staticmethod
-    def wrap_in_form(html_to_wrap_as_string):
-        wrapped_html = ''.join(['<form name="submissionForm">',
+    @classmethod
+    def wrap_in_form(cls,
+                     html_to_wrap_as_string):
+        wrapped_html = ''.join(['<div id="presentation_pane" align="center">',
+                                '<form name="submissionForm">',
                                 html_to_wrap_as_string,
                                 '</form>',
-                                '<button id="submitButton">Enter</button>'])
+                                '<button id="submitButton">Enter</button>',
+                                '</div>'])
         return wrapped_html
 
-    @staticmethod
-    def tab_create():
-        pass
+    @classmethod
+    def wrap_with_tabs(cls,
+                       input_html):
+        # Generate 'interactive' tab
+        int_tab = '''onclick="javascript:submit()">
+                     <script type="text/javascript"></script>
+                  '''
+        # Settings tab html
+        set_tab = ''
+        # csv tab html
+        csv_tab = ''
+
+        tab_html = ''.join(['<div id="tab_div" style="display: inline-block;"',
+                            int_tab,
+                            set_tab,
+                            csv_tab,
+                            '</div>'])
+        html_wrapped_with_tabs = ''.join([tab_html,
+                                          input_html]) 
+        return html_wrapped_with_tabs
 
 '''
 <span>

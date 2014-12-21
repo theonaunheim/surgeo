@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: RalewayLight;
-  src: url(raleway-light-webfont.woff);
+  src: url('raleway-light-webfont.woff');
 }
 
 /* Main CSS */
