@@ -53,15 +53,12 @@ class ServerThread(threading.Thread):
         self.server = http.server.HTTPServer(address_tuple,
                                              handler)
         print("ServerThread started. Serving.")
+
     def run(self):
         self.server.serve_forever()
 
 
 class HTMLCreator(object):
-
-    # Tie specifc templates to functions
-    template_to_subroutine_dict = {'landing': cls.landing_sub,
-                                   'interactive': cls.interactive_sub}
 
     @classmethod
     def input_command(cls,
@@ -77,26 +74,43 @@ class HTMLCreator(object):
         # thisTemplate is what dictates the function used.
         template_name = input_dict['thisTemplate']
         # Get subroutine from template to subroutine dict
-        subroutine_to_use = template_to_subroutine_dict[template_name]
+        func_to_use = cls.supply_func_from_template(template_name)
         # Run appropriate function with input dict arguments
-        subroutine_result = subroutine_to_use(input_dict)
+        func_result = func_to_use(input_dict)
         # Wrap with tabs
-        result_with_tabs = cls.wrap_with_tabs(subroutine_result)
+        result_with_tabs = cls.wrap_with_tabs(func_result)
         # Wrap subroutine_result in form
         final_result = cls.wrap_in_form(result_with_tabs)
         # Return subroutine result
         return final_result
 
     @classmethod
-    def landing_sub(cls,
-                    input_dict):
-        base_html = ''.join([
-        
-                    ])
-        return base_html
+    def supply_func_from_template(cls, template_name):
+        # Tie specifc templates to functions
+        template_to_func_dict = {'interactive': cls.interactive_sub,
+                                 'settings': cls.settings_sub,
+                                 'landing': cls.landing_sub,
+                                 'menu': cls.menu_sub}
+        return template_to_func_dict[template_name]
 
     @classmethod
     def interactive_sub(cls,
+                        input_dict):
+        pass
+        
+    @classmethod
+    def menu_sub(cls,
+                 input_dict):
+        pass
+
+    @classmethod
+    def landing_sub(cls,
+                    input_dict):
+        html = 'Data here'
+        return html
+
+    @classmethod
+    def settings_sub(cls,
                         input_dict):
         pass
 
@@ -107,62 +121,65 @@ class HTMLCreator(object):
                                 '<form name="submissionForm">',
                                 html_to_wrap_as_string,
                                 '</form>',
-                                '<button id="submitButton">Enter</button>',
+                                '<button id="submit_button" onClick="submit()">Enter</button>',
                                 '</div>'])
         return wrapped_html
 
     @classmethod
     def wrap_with_tabs(cls,
                        input_html):
-        # Generate 'interactive' tab
-        int_tab = '''onclick="javascript:submit()">
-                     <script type="text/javascript"></script>
-                  '''
-        # Settings tab html
-        set_tab = ''
-        # csv tab html
-        csv_tab = ''
+        tab_html = '''<div id="tabs">
+   
+                          <nav style="display: inline-block;">
+                              
+                              <li>
+                              <a href="javascript:interactive_func()">Interactive</a>
+                              </li>
+                              
+                              <script>
+                              function interactive_func() {
+                                  $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">
+                                                                    <input type="hidden" name="command" value="changePage">
+                                                                    <input type="hidden" name="arguments" value="interactive">
+                                  ');
+                                  submit();   
+                              }
+                              </script>
+   
+                              <li>
+                              <a href="javascript:settings_func()">Settings</a>
+                              </li>
+                              
+                              <script>
+                              function settings_func() {
+                                  $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">
+                                                                    <input type="hidden" name="command" value="changePage">
+                                                                    <input type="hidden" name="arguments" value="settings">
+                                  ');
+                                  submit();   
+                              }
+                              </script>
+   
+                              <li>
+                              <a href="javascript:csv_func()">CSV</a>
+                              </li>
 
-        tab_html = ''.join(['<div id="tab_div" style="display: inline-block;"',
-                            int_tab,
-                            set_tab,
-                            csv_tab,
-                            '</div>'])
+                              <script>
+                              function csv_func() {
+                                  $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">
+                                                                    <input type="hidden" name="command" value="changePage">
+                                                                    <input type="hidden" name="arguments" value="csv">
+                                  '); 
+                                  submit();  
+                              }
+                              </script>
+   
+                          </nav>
+                      </div>
+
+                   '''
+        # input_html is none
         html_wrapped_with_tabs = ''.join([tab_html,
                                           input_html]) 
         return html_wrapped_with_tabs
-
-'''
-<span>
-<button id="genericButton">Generic</button>
-<script>
-$(document).ready(function(){
-    $("#submitButton").click(function(){
-        var formArray = $(":input").serializeArray();
-        submit(formArray);
-    });
-});
-</script>
-<button id="setupButton">Setup</button>
-
-<button id="listButton">List</button>
-</span>
-</fieldset>
-        
-
-      <form name="submissionForm">
-            Surname:
-            <input type="text" name="Surname">
-            <br><br>
-            Zip Code:
-            <input type="text" name="ZIP">
-            <br>
-            <select name="model">
-                <option value="surgeo">Geocode</option>
-                <option value="geocode">Surgei</option>
-                <option value="surname">Surname</option>
-            </select> 
-        </form>
-        <button id="submitButton">Enter</button>
-'''
 

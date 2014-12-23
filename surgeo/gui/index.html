@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="surgeo.css">
+    <link rel="stylesheet" href="#jquery-ui.css">
     <script src="jquery-1.11.1.min.js" type="text/javascript"></script>
     <script src="jquery-ui.js" type="text/javascript"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,7 +70,7 @@
             // On ajax start, blink
             $(document).ajaxStart(function(){
 	            $("#loader").hide();
-	            $("#ajax_pane").hide();
+//	            $("#ajax_pane").hide();
 	            interval_id = setInterval(function(){
 	                $("#loader").show().fadeIn(1000);
 	                $("#loader").show().fadeOut(1000);}, 0)
@@ -79,7 +80,7 @@
         <script>
             // On ajax end, stop blinking.
             $(document).ajaxStop(function(){
-    	        $("#ajax_pane").show().fadeIn(1000);
+//    	        $("#ajax_pane").show().fadeIn(1000);
     	        clearInterval(interval_id);
             });
         </script>

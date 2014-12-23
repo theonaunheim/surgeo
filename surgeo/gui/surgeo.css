@@ -38,6 +38,10 @@ body {
     display: block;
 }
 
+#submit_button {
+    float: right;
+}
+
 header {
         position:fixed;
         background-color: #333333;
@@ -72,6 +76,30 @@ form {
     font-weight:normal;
     color: #FFFFFF
     font-family: RalewayLight;
-    font-size: 100%;
+    font-size: 150%;
 }
 
+li {
+    font-weight:normal;
+    color: #FFFFFF;
+    font-family: RalewayLight;
+    font-size: 150%;
+    display: inline;
+    padding-left: 10%;
+}
+
+a:link, a:visited {
+    outline: 0;
+    color: #FFFFFF;
+    text-decoration: none;
+    cursor: default;
+}
+
+a:link:active, a:visited:active, a:hover {
+    color: #1600FF;
+    outline: 0;
+}
+
+nav {
+    width: 100%;
+}
