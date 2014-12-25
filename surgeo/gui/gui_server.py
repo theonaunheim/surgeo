@@ -96,23 +96,25 @@ class HTMLCreator(object):
     @classmethod
     def interactive_sub(cls,
                         input_dict):
-        pass
+        return 'int'
         
     @classmethod
     def menu_sub(cls,
                  input_dict):
-        pass
+        return 'menu'
 
     @classmethod
     def landing_sub(cls,
                     input_dict):
-        html = 'Data here'
+        # Go to interactive
+        html = cls.interactive_sub(input_dict)
         return html
 
     @classmethod
     def settings_sub(cls,
-                        input_dict):
-        pass
+                     input_dict):
+        html = 'Settings sub placeholder.'
+        return html
 
     @classmethod
     def wrap_in_form(cls,
@@ -133,53 +135,27 @@ class HTMLCreator(object):
                           <nav style="display: inline-block;">
                               
                               <li>
-                              <a href="javascript:interactive_func()">Interactive</a>
+                              <a href="javascript:void(0)" onclick="interactive_func();">Interactive</a>
                               </li>
-                              
-                              <script>
-                              function interactive_func() {
-                                  $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">
-                                                                    <input type="hidden" name="command" value="changePage">
-                                                                    <input type="hidden" name="arguments" value="interactive">
-                                  ');
-                                  submit();   
-                              }
-                              </script>
    
                               <li>
-                              <a href="javascript:settings_func()">Settings</a>
+                              <a href="javascript:void(0)" onclick="settings_func();">Settings</a>
                               </li>
-                              
-                              <script>
-                              function settings_func() {
-                                  $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">
-                                                                    <input type="hidden" name="command" value="changePage">
-                                                                    <input type="hidden" name="arguments" value="settings">
-                                  ');
-                                  submit();   
-                              }
-                              </script>
    
                               <li>
-                              <a href="javascript:csv_func()">CSV</a>
+                              <a href="javascript:void(0)" onclick="csv_func();">CSV</a>
                               </li>
-
-                              <script>
-                              function csv_func() {
-                                  $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">
-                                                                    <input type="hidden" name="command" value="changePage">
-                                                                    <input type="hidden" name="arguments" value="csv">
-                                  '); 
-                                  submit();  
-                              }
-                              </script>
    
                           </nav>
                       </div>
 
                    '''
-        # input_html is none
-        html_wrapped_with_tabs = ''.join([tab_html,
-                                          input_html]) 
+        try:
+            html_wrapped_with_tabs = ''.join([tab_html,
+                                              input_html])
+        except TypeError:
+            # If input html is None, filler value
+            html_wrapped_with_tabs = ''.join([tab_html,
+                                              'No code passed to function.'])
         return html_wrapped_with_tabs
 

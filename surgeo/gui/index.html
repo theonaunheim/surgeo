@@ -52,7 +52,7 @@
 
         <script>
             // Universal interval_id for setInterval events
-            var interval_id
+            var interval_id;
             // Set up ajax on load. Kludge prevent show. #TODO
             $(document).ready(function() {	
 	            $.ajax();					
@@ -61,7 +61,7 @@
             $(document).keypress(function(event) {
                 if (event.keyCode == 13) {
                     $("#submitButton").click();
-                    submit()
+                    submit();
                 }
             });
         </script>
@@ -95,29 +95,61 @@
         </script>
     
         <script>
-        // Function submission
-        function submit(serializedArray) {
-            // Get array info
-            var formArray = $("#submissionForm").serialize();
-            // Send request
-            var request = $.ajax({
-                url: "http://localhost:8001",
-                type: "POST",
-                data: {formArray},
-                dataType: "html"
-            });
-            // Empty ajax pane
-            $("#ajax_pane").empty();
-            request.done(function(data) {
-            $("#ajax_pane").html(data);
-            });
-            request.fail(function(jqXHR, textStatus) {
-                alert("An error has occcured: " + textStatus);
-            });
-        }
+            // Function submission
+            function submit(serializedArray) {
+            
+                // Get array info
+                var formArray = $("#submissionForm").serialize();
+                
+                // Send request
+                var request = $.ajax({
+                    url: "http://localhost:8001",
+                    type: "POST",
+                    data: {formArray},
+                    dataType: "html"
+                });
+                
+                // Empty ajax pane
+                $("#ajax_pane").empty();
+                
+                request.done(function(data) {
+                    $("#ajax_pane").html(data);
+                });
+                
+                request.fail(function(jqXHR, textStatus) {
+                    alert("An error has occcured: " + textStatus);
+                });
+            }
         </script>
 
+        <script>
+            // Interactive tab
+            function interactive_func() {
+                $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">\
+                                                 <input type="hidden" name="command" value="changePage">\
+                                                 <input type="hidden" name="arguments" value="interactive">'
+                );
+                submit();   
+            }
 
+            // Settings tab
+            function settings_func() {
+                $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">\
+                                                 <input type="hidden" name="command" value="changePage">\
+                                                 <input type="hidden" name="arguments" value="settings">'
+                );
+                submit();
+            }
+
+            // CSV tab
+            function csv_func() {
+                $("#submissionForm").replaceWith('<input type="hidden" name="thisTemplate" value="menu">\
+                                                 <input type="hidden" name="command" value="changePage">\
+                                                 <input type="hidden" name="arguments" value="csv">'
+                ); 
+                submit();  
+            }
+        </script>
 
 </body>
 </html>
