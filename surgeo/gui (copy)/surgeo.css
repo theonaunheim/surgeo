@@ -41,7 +41,7 @@ body {
 }
 
 #presentation_pane {
-
+    align: center;
 }
 
 #submit_button {
@@ -73,14 +73,14 @@ h2 {
 
 p {
     font-weight:normal;
-    color: #FFFFFF;
+    color: #FFFFFF
     font-family: RalewayLight;
     font-size: 200%;
 }
 
 form {
     font-weight:normal;
-    color: #FFFFFF;
+    color: #FFFFFF
     font-family: RalewayLight;
     font-size: 150%;
     text-align: left;

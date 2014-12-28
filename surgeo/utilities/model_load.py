@@ -7,7 +7,7 @@ import sys
 import surgeo.models
 
 
-def load_model(model_module_name):
+def model_load(model_module_name):
     '''This loads a user-defined module in models namespace.'''
     model_folder_path = os.path.join(os.path.expanduser('~'),
                                      '.surgeo',
@@ -32,9 +32,11 @@ def summarize_models():
     '''Presents a summary of all model arguments as a string.'''
     string_buffer = io.StringIO('')
     parent_directory = os.path.dirname(os.path.abspath(__file__))
-    file_list = os.listdir(parent_directory)
+    surgeo_directory = os.path.dirname(parent_directory)
+    model_directory = os.path.join(surgeo_directory,
+                                   'models')
+    file_list = os.listdir(model_directory)
     member_list = []
-    string_buffer.write('\n')
     for item in file_list:
         # Only models.
         if not 'model' in item.lower():

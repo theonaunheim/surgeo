@@ -14,7 +14,7 @@ from surgeo.utilities.download_bar import PercentageFTP
 from surgeo.utilities.download_bar import PercentageHTTP
 
 
-class genderModel(BaseModel):
+class GenderModel(BaseModel):
     '''Contains data references and methods for running a Gender/Name model.
 
     Attributes

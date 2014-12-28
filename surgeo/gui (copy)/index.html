@@ -60,7 +60,7 @@
             // Bind 'enter' to button events for page
             $(document).keypress(function(event) {
                 if (event.keyCode == 13) {
-                 //   $("#submit_button").click();
+                    $("#submitButton").click();
                     submit();
                 }
             });
@@ -88,7 +88,7 @@
         <script>
             // Submission
             $(document).ready(function(){
-                $("#submit_button").click(function(){
+                $("#submitButton").click(function(){
                     submit();
                 });
             });
@@ -125,11 +125,12 @@
         <script>
             // Function submission
             function model_select_function() {
-                $("#submission_form").empty().append('<input type="hidden" name="sender" value="interactive">\
-                                                     <input type="hidden" name="command" value="model_select">\
-                                                     <input type="hidden" name="arguments" value="' +
-                                                     $("#model_select").val() +
-                                                     'interactive">'
+                alert($("#submission_form").html())
+                $("#submission_form").replaceWith('<input type="hidden" name="sender" value="menu">\
+                                                  <input type="hidden" name="command" value="change_page">\
+                                                  <input type="hidden" name="arguments" value="' +
+                                                  $("#model_select").val() +
+                                                  'interactive">'
                 );
                 submit();
             }
@@ -138,27 +139,27 @@
         <script>
             // Interactive tab
             function interactive_func() {
-                $("#submission_form").empty().append('<input type="hidden" name="sender" value="menu">\
-                                                     <input type="hidden" name="command" value="change_page">\
-                                                     <input type="hidden" name="arguments" value="interactive">'
+                $("#submission_form").replaceWith('<input type="hidden" name="sender" value="menu">\
+                                                  <input type="hidden" name="command" value="change_page">\
+                                                  <input type="hidden" name="arguments" value="interactive">'
                 );
                 submit();   
             }
 
             // Settings tab
             function settings_func() {
-                $("#submission_form").empty().append('<input type="hidden" name="sender" value="menu">\
-                                                     <input type="hidden" name="command" value="change_page">\
-                                                     <input type="hidden" name="arguments" value="settings">'
+                $("#submission_form").replaceWith('<input type="hidden" name="sender" value="menu">\
+                                                  <input type="hidden" name="command" value="change_page">\
+                                                  <input type="hidden" name="arguments" value="settings">'
                 );
                 submit();
             }
 
             // CSV tab
             function csv_func() {
-                $("#submission_form").empty().append('<input type="hidden" name="sender" value="menu">\
-                                                     <input type="hidden" name="command" value="change_page">\
-                                                     <input type="hidden" name="arguments" value="csv">'
+                $("#submission_form").replaceWith('<input type="hidden" name="sender" value="menu">\
+                                                  <input type="hidden" name="command" value="change_page">\
+                                                  <input type="hidden" name="arguments" value="csv">'
                 ); 
                 submit();  
             }

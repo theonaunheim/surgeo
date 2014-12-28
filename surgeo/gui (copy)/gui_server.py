@@ -73,6 +73,8 @@ class HTMLCreator(object):
          'arguments': 'interactive'}
 
         '''
+        print(input_dict)
+        print('line77 guiserver')
         # sender is what dictates the function used.
         template_name = input_dict['sender']
         # Get subroutine from template to subroutine dict
@@ -115,53 +117,13 @@ class HTMLCreator(object):
                                         '</option>'])
                                for model_name in model_list]
         model_select = ''.join(['<select id=\"model_select\" ',
-                                'onchange=\"model_select_function()\">',
+                                'onchange=\"model_select_function()\"',
                                 '<option selected>Select model</option>',
                                 ''.join(models_as_html_list),
                                 '</select>'])
-######## For simple page change
-        if (input_dict['command'] == 'change_page' and
-            input_dict['arguments'] == 'interactive'):
-            hidden_inputs = ''.join(['<input type="hidden" name="sender" ',
-                                     'value="interactive">',
-                                     '<input type="hidden" name="command" '
-                                     'value="">'
-                                     '<input type="hidden" name="arguments" ',
-                                     'value="">']) 
-            model_html = '<br><br>Select a model.'
-            return ''.join([model_select,
-                            hidden_inputs,
-                            model_html])
-######## Model change
-        if input_dict['command'] == 'model_select':
-            hidden_inputs = ''.join(['<input type="hidden" name="sender" ',
-                                     'value="interactive">',
-                                     '<input type="hidden" name="command" '
-                                     'value="">'
-                                     '<input type="hidden" name="arguments" ',
-                                     'value="">'])
-            selected_model = input_dict['arguments']
-            # Pre select the chose model and create lst
-            pre_selected_list = [''.join(['<option selected value=\"',
-                                          model_name,
-                                          '\">',
-                                          html.escape(model_name),
-                                          '</option>'])
-                                          if model_name == selected_model 
-                                 else ''.join(['<option value=\"',
-                                        model_name,
-                                        '\">',
-                                        html.escape(model_name),
-                                        '</option>'])
-                                 for model_name in model_list]
-            model_select = ''.join(['<select id=\"model_select\" ',
-                                    'onchange=\"model_select_function()\">',
-                                    ''.join(pre_selected_list),
-                                    '</select>'])
-            model_html = 'model_html_here'
-            return ''.join([model_select,
-                            hidden_inputs,
-                            model_html])
+        #html = model_select 
+        #return html
+        return model_select
                           
         
     @classmethod
@@ -186,7 +148,7 @@ class HTMLCreator(object):
     def wrap_in_form(cls,
                      html_to_wrap_as_string):
         wrapped_html = ''.join(['<div id="presentation_pane" align="center">',
-                                '<form id="submission_form">',
+                                '<form name="submission_form">',
                                 html_to_wrap_as_string,
                                 '</form>',
                                 '<button id="submit_button" onClick="submit()">Enter</button>',
