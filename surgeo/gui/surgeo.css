@@ -37,7 +37,6 @@ body {
 #ajax_pane2 {
     width:80%;
     margin:10%;
-    font-size: 150%;
 }
 
 #presentation_pane {
@@ -61,6 +60,7 @@ h1 {
     color: #FFFFFF;
     font-family: RalewayLight;
     font-size: 300%;
+    font-size: 5vw;
     vertical-align: middle;
 }
 
@@ -69,6 +69,7 @@ h2 {
     color: #FFFFFF;
     font-family: RalewayLight;
     font-size: 250%;
+    font-size: 5vw;
 }
 
 p {
@@ -76,6 +77,7 @@ p {
     color: #FFFFFF;
     font-family: RalewayLight;
     font-size: 200%;
+    font-size: 2vw;
 }
 
 form {
@@ -83,6 +85,7 @@ form {
     color: #FFFFFF;
     font-family: RalewayLight;
     font-size: 150%;
+    font-size: 2vw;
     text-align: left;
 }
 
@@ -91,6 +94,7 @@ li {
     color: #FFFFFF;
     font-family: RalewayLight;
     font-size: 150%;
+    font-size: 3vw;
     display: inline;
     padding-left: 10%;
 }

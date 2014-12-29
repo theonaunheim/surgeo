@@ -104,7 +104,7 @@ class HTMLCreator(object):
         model_directory = os.path.join(surgeo_directory,
                                        'models')
         file_list = os.listdir(model_directory)
-        model_list = [item[:-3].partition('_')[0].title()
+        model_list = [item[:-3]
                       for item in file_list
                       if '_model' in item]
         # Create list of: <option value="geocode_model">geocode_model</option>
@@ -157,8 +157,22 @@ class HTMLCreator(object):
             model_select = ''.join(['<select id=\"model_select\" ',
                                     'onchange=\"model_select_function()\">',
                                     ''.join(pre_selected_list),
-                                    '</select>'])
-            model_html = 'model_html_here'
+                                    '</select><br><br>'])
+            model_info = input_dict['arguments']
+            model_html = ''.join(['<div id="main_div">', 
+                                    '<div id="input_name">',
+                                        'INPUT_NAMES',
+                                    '</div>',
+                                    '<div id="input_values">',
+                                        'INPUT_NAMES',
+                                    '</div>',
+                                    '<div id="output_name">',
+                                        'INPUT_NAMES',
+                                    '</div>',
+                                    '<div id="output_values">',
+                                        'INPUT_NAMES',
+                                    '</div>',
+                                  '</div>')]
             return ''.join([model_select,
                             hidden_inputs,
                             model_html])
@@ -167,7 +181,18 @@ class HTMLCreator(object):
     @classmethod
     def menu_sub(cls,
                  input_dict):
-        return 'menu'
+        if (input_dict['command'] == 'change_page' and
+            input_dict['arguments'] == 'interactive'):
+            html = cls.interactive_sub(input_dict)
+            return html
+        if (input_dict['command'] == 'change_page' and
+            input_dict['arguments'] == 'settings'):
+            html = cls.settings_sub(input_dict)
+            return html
+        if (input_dict['command'] == 'change_page' and
+            input_dict['arguments'] == 'csv'):
+            html = cls.csv_sub(input_dict)
+            return html
 
     @classmethod
     def landing_sub(cls,
@@ -179,7 +204,13 @@ class HTMLCreator(object):
     @classmethod
     def settings_sub(cls,
                      input_dict):
-        html = 'Settings sub placeholder.'
+        html = 'settings sub placeholder.'
+        return html
+
+    @classmethod
+    def csv_sub(cls,
+                     input_dict):
+        html = 'csv sub placeholder.'
         return html
 
     @classmethod
