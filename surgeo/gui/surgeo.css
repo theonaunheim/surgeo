@@ -20,7 +20,9 @@ body {
     background-size: 10%;
     background-attachment: fixed;
     background-position: center;
-    margin:15%;
+    margin-left:5%;
+    margin-right:5%;
+    margin-top:20%;
 }
 
 #title_pane {
@@ -45,6 +47,15 @@ body {
 
 #submit_button {
     float: right;
+}
+
+#main_model_div {
+
+}
+
+#input_name, #input_value, #output_name, #output_value {
+    display:inline-block;
+    padding-right: 5%;
 }
 
 header {
@@ -96,7 +107,7 @@ li {
     font-size: 150%;
     font-size: 3vw;
     display: inline;
-    padding-left: 10%;
+    padding-right: 15%;
 }
 
 a:link, a:visited {
@@ -113,7 +124,9 @@ a:link:active, a:visited:active, a:hover {
 }
 
 nav {
-    width: 100%;
+    width: 180%;
     padding-bottom: 5%;
     padding-top: 5%;
+    display: inline-block;
 }
+

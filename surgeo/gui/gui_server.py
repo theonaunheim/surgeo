@@ -79,12 +79,10 @@ class HTMLCreator(object):
         func_to_use = cls.supply_func_from_template(template_name)
         # Run appropriate function with input dict arguments
         func_result = func_to_use(input_dict)
-        # Wrap with tabs
-        result_with_tabs = cls.wrap_with_tabs(func_result)
+        # Wrap in form
+        form_result = cls.wrap_in_form(func_result)
         # Wrap subroutine_result in form
-        final_result = cls.wrap_in_form(result_with_tabs)
-        # Return subroutine result
-        return final_result
+        return form_result
 
     @classmethod
     def supply_func_from_template(cls, template_name):
@@ -159,20 +157,23 @@ class HTMLCreator(object):
                                     ''.join(pre_selected_list),
                                     '</select><br><br>'])
             model_info = input_dict['arguments']
-            model_html = ''.join(['<div id="main_div">', 
+            
+            # BOOKMARK
+            
+            model_html = ''.join(['<div id="main_model_div">', 
                                     '<div id="input_name">',
                                         'INPUT_NAMES',
                                     '</div>',
-                                    '<div id="input_values">',
+                                    '<div id="input_value">',
                                         'INPUT_NAMES',
                                     '</div>',
                                     '<div id="output_name">',
                                         'INPUT_NAMES',
                                     '</div>',
-                                    '<div id="output_values">',
+                                    '<div id="output_value">',
                                         'INPUT_NAMES',
                                     '</div>',
-                                  '</div>')]
+                                  '</div>'])
             return ''.join([model_select,
                             hidden_inputs,
                             model_html])
@@ -223,36 +224,4 @@ class HTMLCreator(object):
                                 '<button id="submit_button" onClick="submit()">Enter</button>',
                                 '</div>'])
         return wrapped_html
-
-    @classmethod
-    def wrap_with_tabs(cls,
-                       input_html):
-        tab_html = '''<div id="tabs">
-   
-                          <nav style="display: inline-block;">
-                              
-                              <li>
-                              <a href="javascript:void(0)" onclick="interactive_func();">Interactive</a>
-                              </li>
-   
-                              <li>
-                              <a href="javascript:void(0)" onclick="settings_func();">Settings</a>
-                              </li>
-   
-                              <li>
-                              <a href="javascript:void(0)" onclick="csv_func();">CSV</a>
-                              </li>
-   
-                          </nav>
-                      </div>
-
-                   '''
-        try:
-            html_wrapped_with_tabs = ''.join([tab_html,
-                                              input_html])
-        except TypeError:
-            # If input html is None, filler value
-            html_wrapped_with_tabs = ''.join([tab_html,
-                                              'No code passed to function.'])
-        return html_wrapped_with_tabs
 

@@ -3,11 +3,9 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="surgeo.css">
-    <link rel="stylesheet" href="#jquery-ui.css">
     <script src="jquery-1.11.1.min.js" type="text/javascript"></script>
-    <script src="jquery-ui.js" type="text/javascript"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset=”UTF-8”>
+    <meta charset="UTF-8">
     <title>Surgeo</title>
     <meta name=”description” content=”Surgeo GUI”>
     <meta name=”author” content=”Theo Naunheim”>
@@ -25,6 +23,19 @@
         <div id="title_pane">
             <img src="beta_in_perpetuity_logo.png" alt="perpetuity_logo" height=40% width=40% align="right">
             <h1><br>Surgeo.</h1>
+            <div id="tabs">   
+                <nav>                  
+                    <li>
+                        <a href="javascript:void(0)" onclick="interactive_func(); return false;">Interactive</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="settings_func(); return false;">Settings</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" onclick="csv_func(); return false;">CSV</a>
+                    </li>
+                </nav>
+            </div>
         </div>
 
         <div id="ajax_pane" class="ajax">    
@@ -142,7 +153,7 @@
                                                      <input type="hidden" name="command" value="change_page">\
                                                      <input type="hidden" name="arguments" value="interactive">'
                 );
-                submit();   
+                submit();
             }
 
             // Settings tab
@@ -160,7 +171,7 @@
                                                      <input type="hidden" name="command" value="change_page">\
                                                      <input type="hidden" name="arguments" value="csv">'
                 ); 
-                submit();  
+                submit();
             }
         </script>
 
