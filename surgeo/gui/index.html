@@ -26,13 +26,13 @@
             <div id="tabs">   
                 <nav>                  
                     <li>
-                        <a href="javascript:void(0)" onclick="interactive_func(); return false;">Interactive</a>
+                        <a href="javascript:void(0);" onclick="interactive_func(); return false;">Interactive</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)" onclick="settings_func(); return false;">Settings</a>
+                        <a href="javascript:void(0);" onclick="settings_func(); return false;">Settings</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)" onclick="csv_func(); return false;">CSV</a>
+                        <a href="javascript:void(0);" onclick="csv_func(); return false;">CSV</a>
                     </li>
                 </nav>
             </div>
@@ -52,7 +52,7 @@
 
         <!-- Ajax -->
         </div>
-        
+        <SPACER TYPE=VERTICAL SIZE=100>
         <!-- Loading animation -->
         <div id="loader" class="loading_animation">
             <p>
@@ -130,6 +130,7 @@
                 request.fail(function(jqXHR, textStatus) {
                     alert("An error has occcured: " + textStatus);
                 });
+                return false;
             }
         </script>
 
@@ -154,6 +155,7 @@
                                                      <input type="hidden" name="arguments" value="interactive">'
                 );
                 submit();
+                return false;
             }
 
             // Settings tab
@@ -163,6 +165,7 @@
                                                      <input type="hidden" name="arguments" value="settings">'
                 );
                 submit();
+                return false;
             }
 
             // CSV tab
@@ -172,6 +175,7 @@
                                                      <input type="hidden" name="arguments" value="csv">'
                 ); 
                 submit();
+                return false;
             }
         </script>
 
