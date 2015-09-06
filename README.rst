@@ -3,6 +3,14 @@
 Surgeo
 ==============
 
+**Development of this project was pushed to a Django web-application:**
+https://github.com/theonaun/theo_site
+
+**When my basement server is on, you can find it in action here:**
+https://secure.theonaunheim.com
+
+Please message me if you want login credentials.
+
 **Link to Windows installer at bottom.**
 
 Surgeo is an attempt to reverse engineer the Consumer Financial Protection 
