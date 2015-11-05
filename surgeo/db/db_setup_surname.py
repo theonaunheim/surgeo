@@ -45,7 +45,7 @@ def setup_surname_table(verbose):
                                    'configuration.txt')
         parser_instance = configparser.ConfigParser()
         parser_instance.read(config_path)
-        url = 'http://www.census.gov/genealogy/www/data/2000surnames/names.zip'
+        url = 'http://www2.census.gov/ftp/topics/genealogy/2000surnames/names.zip'
         # No try block for url. If it fails, no point in continuing.
         #site = urllib.request.urlopen(url)
         #length_in_bytes = int(site.info()['Content-Length'])
