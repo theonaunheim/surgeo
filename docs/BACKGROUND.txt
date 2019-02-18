@@ -1,3 +1,24 @@
+##############################################################################
+Supplemental Documentation
+##############################################################################
+
+    2000_surname_methodology.pdf
+        https://www2.census.gov/topics/genealogy/2000surnames/surnames.pdf
+        Document the lays the base for the 2010 surname collection methodolgy.
+
+    2010_surname_methodology.pdf:
+        https://www2.census.gov/topics/genealogy/2010surnames/surnames.pdf
+        Document outlining the surname collection methodolgy for 2010.
+
+    2010_surname_data.csv
+        https://www2.census.gov/topics/genealogy/2010surnames/names.zip
+        This provides the entire race/surname census data set.
+
+    2010_race_data
+        https://www2.census.gov/census_2010/03-Demographic_Profile_with_SF1geos/National/us20101.dp.zip
+        This provides the entire race/geography census data set.
+
+
 ###############################################################################
 Background (links valid as of 10/1/2014)
 ###############################################################################
