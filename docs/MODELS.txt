@@ -1,0 +1,43 @@
+Surgeo model classes exist to provide a user-friendly means of loading and
+using algorithms. For signatures, please see the docstrings themseleves. This
+is simply a general primer.
+
+A model should institute the following methods:
+
+    build_up (optional)
+        Does model setup at the enf of instantiation.
+        
+    db_check
+        Returns True if the database is properly set up in the surgeo.sqlite
+        database. Returns False if database is not properly set up.
+        
+    db_create
+        This method creates the database table in the surgeo.sqlite database.
+        As a convention, tables should be have the model name first and a 
+        table name joined with an underscore (e.g. GeocodeModel has a table
+        called 'geocode_joint'). Ideally the data should be availible from
+        public sources. Put temp files in the temp folder.
+
+    db_destroy
+        Destroys the tables created in db_create.
+
+    get_result_object
+        First composes a dictionary object. It takes the dictionary and 
+        provides an object with attributes as a result. 
+        get_result_object({'white_probability': .95} creates a result object 
+        with a white_probability attribute of .95. For example:
+        print(result.white_probability) gives us .95.
+        
+    csv_summary
+        Summarizes a csv (typically via weighted mean). It is typically much
+        easier to write a simple wrapper aroud the BaseModel's csv_summary
+        method via super().csv_summary().
+
+    csv_process
+        This takes a csv and runs the model on the appropriate elements,
+        appending the output to a new csv.
+
+    temp_cleanup (optional)
+        The default method will typically suffice. It just removes everything
+        in the temp folder.
+

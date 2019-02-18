@@ -1,0 +1,154 @@
+###############################################################################
+Background (links valid as of 10/1/2014)
+###############################################################################
+
+On September 18, 2014, the Consumer Financial Protection Bureau (CFPB) 
+released a whitepaper entitled, "Using Publicly Available Information to Proxy 
+For Unidentified Race and Ethnicity". Link here (current as of September 19, 
+2014):
+
+http://files.consumerfinance.gov/f/201409_cfpb_report_proxy-methodology.pdf
+
+The whitepaper detailed the CFPB's use of Bayesian Improved Surname Geocoding 
+(BISG) analysis for analyzing disparate impact discrimination under the Equal 
+Credit Opportunity Act (ECOA). BISG analysis allows for the determination of 
+race through the use of proxy information (such as surname and geographical 
+information). The CFPB's BISG model is based off of a 2009 study, "Using the 
+Census Bureau's Surname List to Improve Estimates of Race/Ethnicity and 
+Associated Disparities", which was published in the Journal of Health Services 
+and Outcomes Research Methodology v. 9, no. 2, June 2009, p. 69-83. A copy of 
+this study may be purchased here:
+
+http://link.springer.com/article/10.1007%2Fs10742-009-0047-1
+
+At the same time the whitepaper was released, the CFPB released a reference 
+model which it claims to use for its analysis. The model is writen in STATA 12 
+and requires geocode pre-formatted data. The model can be found here:
+
+https://github.com/cfpb/proxy-methodology
+
+Surgeo is an MIT-licensed tool for quickly analyzing datasets and then 
+providing a preliminary indication as to whether disparate impact 
+discrimination may exist. It uses publically availible data and can be run 
+using free and open source components.
+
+###############################################################################
+Model
+###############################################################################
+
+The model upon which this software is based was created by Mark N. Elliot et 
+al. in the article "Using the Census Bureau's surname list to improve 
+estimates of race/ethnicity and associated disparities".
+
+Where k is census block
+Where j is surname
+Where i is race (1 = Hispanic, 
+                 2 = White, 
+                 3 = Black, 
+                 4 = Asian or Pacific Islander, 
+                 5 = American Indian / Alaska Native, 
+                 6 = Multiracial)
+
+Where u(i,j,k) = p(i|j) * r(k|i):
+
+                                      u(i,j,k)
+q(i|j,k) = ---------------------------------------------------------------
+           u(1,j,k) + u(2,j,k) + u(3,j,k) + u(4,j,k) + u(5,j,k) + u(6,j,k)
+
+Geocode data comes from racial proportions in SF1 file.
+
+###############################################################################
+Surname Data
+###############################################################################
+
+Listed surnames come from file giving proportions for all names (count >= 100)
+Unlisted surnames are excluded.
+
+Surname file:
+http://www.census.gov/genealogy/www/freqnames2k.html
+http://www.census.gov/genealogy/www/data/2000surnames/names.zip
+
+This is where the surname information is pulled from.
+
+Per "Demographic Aspects of Surnames from Census 2000"
+http://www.census.gov/genealogy/www/data/2000surnames/surnames.pdf
+
+Field           Description
+-----           -----------
+name            Last Name
+rank            Rank
+count           Number of occurances
+prop1000k       Proportion per 100,000 people for name
+cum_prop100k    Cumulative proportion per 100,000 people
+pctwhite        Percent Non-Hispanic White Only
+pctblack        Percent Non-Hispanic Black Only
+pctapi          Percent Non-Hispanic Asian and Pacific Islander Only
+pctaian         Percent Non-Hispanic American Indian and Alaskan Native Only
+pct2prace       Percent Non-Hispanic of Two or More Races
+pcthispanic     Percent Hispanic Origin
+
+Certain information is scrubbed to help anonymize the data. This data is
+reconstituted by getting a total, and dividing it by the scrubbed number of
+entries.
+
+###############################################################################
+Block Race Data
+###############################################################################
+
+Census file 1, data components (need all 50 states):
+ftp://ftp.census.gov/census_2010/04-Summary_File_1/
+
+Census SF1 Technical doc
+http://www.census.gov/prod/cen2010/doc/sf1.pdf
+
+File names (where __ is the 2 letter state code:
+__geo2010.sf1
+__000032010.sf1
+
+For Geo File
+------------
+Desired summary level (zip code) is 871.
+
+Line indexed as a whole:
+    state = line[6:8]
+    summary_level = line[8:11]
+    logical_record = line[18:25]
+    zcta = line[171:176]
+
+For State File 3
+----------------
+
+Line split before indexing because of varying lengths:
+split_line = line.split(',')
+    state = split_line[1]
+    logical_record = split_line[4]
+    table_p5 = split_line[16:33]
+    
+table_P5 (split_line[16:33]) is further subdivided/reindexed into:
+    total_pop = table_p5[0]
+    total_not_hispanic = table_p5[1]
+    num_white = table_p5[2]
+    num_black = table_p5[3]
+    num_ai = table_p5[4]
+    num_asian = table_p5[5]
+    num_pacisland = table_p5[6]
+    num_other = table_p5[7]
+    num_api = str((int(num_asian) +
+                   int(num_pacisland)))
+    num_multi = table_p5[8]
+    num_hispanic = table_p5[9]
+
+Note: Hispanic or latino is defined as an ethnicity, rather than a race. An 
+individual can therefore be "White" or "Hispanic or Latino White" for example.
+
+For "other race" the popuation is allocated according to Jirousek and Preucil
+On the effective implementation of the iterative proportional fitting procedure.
+Comput. Stat. Data Anal. 19(2), 177–189 (1995):
+
+70.5% White
+11.1% Hispanic
+11.3% Black
+7.0% API
+0.8% multiracial
+0.9% AI/AN
+
