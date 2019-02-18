@@ -11,3 +11,6 @@ v.0.7.0:
 ========
 -Quick fix. Previous version weighted stdev was incorrect.
 
+v.1.0.0:
+========
+-Ground up re-write using pandas.

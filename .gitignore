@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# VSCode
+*.code-workspace
+
 # C extensions
 *.so
 
