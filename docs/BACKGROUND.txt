@@ -14,10 +14,13 @@ Supplemental Documentation
         https://www2.census.gov/topics/genealogy/2010surnames/names.zip
         This provides the entire race/surname census data set.
 
-    2010_race_data
+    2010_geo_data.csv
+    2010_zcta_data.csv
         https://www2.census.gov/census_2010/03-Demographic_Profile_with_SF1geos/National/us20101.dp.zip
-        This provides the entire race/geography census data set.
+        These provide the raw data for the for the 2010_combined_geo_data.csv file.
 
+    2010_combined_geo_data.csv
+        This merges the ZCTA data with ZIP track race data.
 
 ###############################################################################
 Background (links valid as of 10/1/2014)

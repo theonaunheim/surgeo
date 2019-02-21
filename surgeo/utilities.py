@@ -74,6 +74,7 @@ def normalize_surnames(series):
 
     # Create regex pattern and run regex to strip.
     # I.E. ['JR', 'JUNIOR'] -> '(JR$)|(JUNIOR$)'
+    # This must follow the translation above to work properly.
     list_of_regexes = ['({}$)'.format(word) for word in WORDS_TO_STRIP]
     combined_regex_pattern = '|'.join(list_of_regexes)
     series = series.str.replace(combined_regex_pattern, '')
