@@ -26,6 +26,8 @@ version = '2010.0.1'
 
 # -- General configuration ---------------------------------------------------
 
+master_doc = 'index'
+
 # User defined HMTL Logo
 html_logo = '_static/logo.gif'
 
