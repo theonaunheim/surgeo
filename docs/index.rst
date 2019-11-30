@@ -7,9 +7,9 @@ Welcome to surgeo's documentation!
 ==================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
+.. contents:: Table of Contents
+   :depth: 1
 
 
 Indices and tables
