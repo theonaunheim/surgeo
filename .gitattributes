@@ -1,0 +1,11 @@
+# Images are binary
+*.png binary
+
+# Excel data entry templates should have line endings untouched
+*.xlsx binary
+
+# Linguist vendoring
+static/* linguist-vendored
+
+# Linguist coersion
+*.ipynb linguist-language=Python

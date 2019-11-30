@@ -11,6 +11,6 @@ v.0.7.0:
 ========
 -Quick fix. Previous version weighted stdev was incorrect.
 
-v.1.0.0:
+v.2010.1.0:
 ========
--Ground up re-write using pandas.
+-Ground up re-write using pandas using 2010 census data.
