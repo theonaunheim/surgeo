@@ -1,0 +1,2 @@
+class SurgeoException(Exception):
+    pass

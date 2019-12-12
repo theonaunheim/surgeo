@@ -1,6 +1,7 @@
 import pathlib
 import string
 
+import numpy as np
 import pandas as pd
 
 
@@ -11,7 +12,9 @@ class BaseModel(object):
         # Add geocode df
         self._GEOCODE_DF = pd.read_csv(
             self._package_root / 'data' / 'population_2010.csv',
-            index_col='zcta5'
+            index_col='zcta5',
+            na_values=[''],
+            keep_default_na=False,
         )
         # Convert geocode zip codes to strings
         self._GEOCODE_DF.index = (
@@ -33,7 +36,6 @@ class BaseModel(object):
         )
         translation_table =  str.maketrans('', '', unwanted_characters)
         # Run our string operations
-        # TODO NAN IS A NAME TOO
         output = (
             names.astype(str)
                  .str.translate(translation_table)

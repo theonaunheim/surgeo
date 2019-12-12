@@ -1,6 +1,7 @@
 import pandas as pd
 
 from .base_model import BaseModel
+from ..utility.surgeo_exception import SurgeoException
 
 
 class SurgeoModel(BaseModel):
@@ -12,6 +13,8 @@ class SurgeoModel(BaseModel):
                           names: pd.Series,
                           zctas: pd.Series, 
                           base_data=False) -> pd.DataFrame:
+        # Check inputs
+        self._check_inputs(names, zctas)
         # Get components
         sur_probs = self._get_surname_probs(names)
         geo_probs = self._get_geocode_probs(zctas)
@@ -63,3 +66,14 @@ class SurgeoModel(BaseModel):
             return surgeo_data
         else:
             return surgeo_data
+
+    def _check_inputs(self, 
+                      names: pd.Series,
+                      zctas: pd.Series):
+        if len(names) != len(zctas):
+            err_string = (
+                f'Length mismatch. '
+                f'Name length: {len(names)}. '
+                f'ZCTA length: {len(zctas)}.'
+            )
+            raise SurgeoException(err_string)
