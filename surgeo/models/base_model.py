@@ -15,10 +15,8 @@ class BaseModel(object):
         )
         # Convert geocode zip codes to strings
         self._GEOCODE_DF.index = (
-            self._GEOCODE_DF.index
-                            .astype('str')
-                            .str
-                            .zfill(5)
+            self._GEOCODE_DF.index.astype('str')
+                                  .str.zfill(5)
         )
         # Add surname df
         self._SURNAME_DF = pd.read_csv(
@@ -35,11 +33,11 @@ class BaseModel(object):
         )
         translation_table =  str.maketrans('', '', unwanted_characters)
         # Run our string operations
+        # TODO NAN IS A NAME TOO
         output = (
             names.astype(str)
-                 .str.strip()
-                 .str.upper()
                  .str.translate(translation_table)
+                 .str.upper()
                  .str.replace('\sJ\.*R\.*\s*$', '')
                  .str.replace('\sS\.*R\.*\s*$', '')
                  .str.replace('\sIII\s*$',      '')
@@ -53,3 +51,29 @@ class BaseModel(object):
         zfilled = converted.str.zfill(5)
         zfilled.name = 'zcta5'
         return zfilled
+
+    def _get_surname_probs(self, names: pd.Series) -> pd.DataFrame:
+        normalized_names = (
+            self._normalize_names(names)
+                .to_frame()
+        )
+        surname_probs = normalized_names.merge(
+            self._SURNAME_DF,
+            left_on='name',
+            right_index=True,
+            how='left',
+        )
+        return surname_probs
+
+    def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:
+        normalized_zctas = (
+            self._normalize_zctas(zctas)
+                .to_frame()
+        )
+        geocode_probs = normalized_zctas.merge(
+            self._GEOCODE_DF,
+            left_on='zcta5',
+            right_index=True,
+            how='left',
+        )
+        return geocode_probs
