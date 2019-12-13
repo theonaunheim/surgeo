@@ -37,6 +37,7 @@ class SurgeoModel(BaseModel):
         surgeo_denom = surgeo_numer.sum(axis=1)
         # Caluclate the surgeo probabilities
         surgeo_probs = surgeo_numer.div(surgeo_denom, axis=0)
+        surgeo_probs = surgeo_probs.round(4)
         return surgeo_probs
 
     def _adjust_frame(self,
