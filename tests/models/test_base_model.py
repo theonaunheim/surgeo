@@ -1,8 +1,8 @@
-import pathlib
-import sys
 import unittest
 
 import pandas as pd
+
+from surgeo.models.base_model import BaseModel
 
 
 class UtilityFunctions(unittest.TestCase):
@@ -10,23 +10,16 @@ class UtilityFunctions(unittest.TestCase):
 
     def setUp(self):
         '''Add surgeo to path and other operations.'''
-
-        # Add surgeo module to path.
-        self.module_path = pathlib.Path(__file__)
-        self.top_level_path = self.module_path.parent.parent
-        sys.path.append(str(self.top_level_path))
+        pass
 
     def tearDown(self):
         '''Remove from path and other random operations.'''
-        
-        # Remove surgeo module from path.
-        sys.path.remove(str(self.top_level_path))
+        pass
 
     def test_normalize_surnames(self):
         '''This function transforms surnames based on a series of rules.'''
 
         # Import function to test
-        from surgeo.utilities import normalize_surnames
 
         # Setup mapping
         NORMALIZED_MAPPING = {
