@@ -1,6 +1,7 @@
-import sys
+"""Script containing a basic command line program."""
+
 import pathlib
-import warnings
+import sys
 
 import pandas as pd
 
@@ -17,11 +18,39 @@ from surgeo import SurgeoModel
 from surgeo import SurnameModel
 
 
-class SurgeoApplication(object):
+class SurgeoCLI(object):
+    """A CLI application class to create executable
+    
+    This script adds surgeo to path and runs a simple command line script.
+    The class pulls in a parser, parsers the command line arguments as
+    needed, loads the data, processes the data, and sends the output to a
+    file. It uses the "surgeo_main()" function and then uses other methods
+    as helpers.
+
+    usage: executable.py [-h] [--zcta_column ZCTA_COLUMN]
+                        [--surname_column SURNAME_COLUMN]
+                        input output type
+
+    Get Surgeo arguments.
+
+    input                 Input CSV or XLSX of data.
+    output                Output CSV or XLSX of data.
+    type                  The model type being run ("sur", "geo" or "surgeo")
+
+    optional arguments:
+    -h, --help            show this help message and exit
+    --zcta_column ZCTA_COLUMN
+                        The input column to analyze as ZCTA/ZIP)
+    --surname_column SURNAME_COLUMN
+                        The input column to analyze as surname")
+
+    """
 
     def __init__(self):
+        # Get args from SurgeoArgParser class
         parser = SurgeoArgParser()
         args = parser.get_parsed_args()
+        # Add those arguments as members
         self._input_path = pathlib.Path(args.input)
         self._output_path = pathlib.Path(args.output)
         self._model_type = args.type.lower()
@@ -29,11 +58,15 @@ class SurgeoApplication(object):
         self._sur_col = args.surname_column
 
     def _load_df(self):
+        """This creates a dataframe based on self._input_path"""
         suffix = self._input_path.suffix
+        # If it's excel, read_excel()
         if suffix == '.xlsx' or suffix == 'xls':
             df = pd.read_excel(self._input_path)
+        # If CSV, read read_csv()
         elif suffix == '.csv':
             df = pd.read_csv(self._input_path)
+        # If path is unrecognized, throw error
         else:
             raise SurgeoException(
                 f'File ending for "{self._input_path}" not '
@@ -42,13 +75,20 @@ class SurgeoApplication(object):
         return df
 
     def _run_geo(self, df):
+        """Method called from self._process_df() to get geo results"""
         model = GeocodeModel()
+        # If an optional name is speicied, select that column and run
         if self._zcta_col is not None:
             target = df[self._zcta_col]
             result = model.get_probabilities(target)
+        # Otherwise use 'zcta5' (and raise error if need be.)
         else:
-            target = df['zcta5']
-            result = model.get_probabilities(target)
+            try:
+                target = df['zcta5']
+                result = model.get_probabilities(target)
+            except KeyError:
+                raise SurgeoException('No "zcta5" column and no column '
+                                      'specified.')
         return result
 
     def _run_sur(self, df):
@@ -103,7 +143,7 @@ class SurgeoApplication(object):
                 'Please specify a path ending in ".csv" or ".xlsx".'    
             )
 
-    def surgeo_main(self):
+    def main(self):
         input_df = self._load_df()
         processed_df = self._process_df(input_df)
         self._write_df(processed_df)        
@@ -111,8 +151,8 @@ class SurgeoApplication(object):
 
 if __name__ == '__main__':
     try:
-        app = SurgeoApplication()
-        app.surgeo_main()
+        cli = SurgeoCLI()
+        cli.main()
         sys.exit(0)
     except Exception as e:
         raise e
