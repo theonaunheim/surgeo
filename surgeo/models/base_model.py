@@ -24,20 +24,23 @@ class BaseModel(object):
         # Add surname df
         self._SURNAME_DF = pd.read_csv(
             self._package_root / 'data' / 'surname_2010.csv',
-            index_col='name'
+            index_col='name',
+            na_values=[''],
+            keep_default_na=False,
         )
 
     def _normalize_names(self, names: pd.Series) -> pd.Series:
         # Make a transalation table of unwanted characers
         unwanted_characters = (
-            string.digits + 
-            string.punctuation + 
+            string.digits +
+            string.punctuation +
             string.whitespace
         )
         translation_table =  str.maketrans('', '', unwanted_characters)
-        # Run our string operations
+        # Run our string operations (remember NAN is a valid name)
         output = (
-            names.astype(str)
+            names.fillna('')
+                 .astype(str)
                  .str.translate(translation_table)
                  .str.upper()
                  .str.replace('\sJ\.*R\.*\s*$', '')

@@ -37,6 +37,7 @@ class SurgeoGUI(object):
         self._objects['frame'] = tk.Frame(master=self._objects['root'])
         self._objects['root'].title(f"Surgeo v.{surgeo.VERSION}")
         self._objects['root'].minsize(700, 150)
+        self._objects['root'].bind('<Return>', self._execute)
         # Add icon
         self._objects['root'].tk.call(
             'wm', 
@@ -49,7 +50,7 @@ class SurgeoGUI(object):
         input_filename = filedialog.askopenfilename(
             title='Select Input Path',
             filetypes=(
-                ('csv files' , '*.csv' ),
+                ('CSV files' , '*.csv' ),
                 ('Excel XLSX', '*.xlsx'),
                 ('Excel XLS' , '*.xls' )
             )
@@ -57,12 +58,14 @@ class SurgeoGUI(object):
         self._objects['input_var'].set(input_filename)
 
     def _select_output(self):
+        files = (
+            ('CSV files' , '*.csv' ),
+            ('Excel XLSX', '*.xlsx'),
+        )
         output_filename = filedialog.asksaveasfilename(
             title='Select Output Path',
-            filetypes=(
-                ('csv files' , '*.csv' ),
-                ('Excel XLSX', '*.xlsx'),
-            )
+            filetypes=files,
+            defaultextension=files,
         )
         self._objects['output_var'].set(output_filename)
 
@@ -193,9 +196,9 @@ class SurgeoGUI(object):
 
     def _check_inputs(self, df):
         """Raise error if improper column names given"""
-        name_var   = self._objects['name_var']
-        zip_var    = self._objects['zip_var']
-        model_var  = self._objects['model_var']
+        name_var = self._objects['name_var'].get()
+        zip_var = self._objects['zip_var'].get()
+        model_var = self._objects['model_var'].get()
         if model_var == 'Geocode':
             if zip_var not in df.columns:
                 raise SurgeoException(f'{name_var} not in input data.')
@@ -226,16 +229,37 @@ class SurgeoGUI(object):
             )
         return df
 
-    def _execute(self):
+    def _execute(self, event=None):
         # Get variables
-        input_var  = self._objects['input_var']
-        output_var = self._objects['output_var']
-        name_var   = self._objects['name_var']
-        zip_var    = self._objects['zip_var']
-        model_var  = self._objects['model_var']
+        input_var = self._objects['input_var'].get()
+        output_var = self._objects['output_var'].get()
+        name_var = self._objects['name_var'].get()
+        zip_var = self._objects['zip_var'].get()
+        model_var = self._objects['model_var'].get()
+        suffix = pathlib.Path(output_var).suffix
         try:
-            df = self._load_df(input_var)
-            self._check_inputs(df)            
+            input_df = self._load_df(input_var)
+            self._check_inputs(input_df)
+            if model_var == 'Geocode':
+                geo = GeocodeModel()
+                output_df = geo.get_probabilities(input_df[zip_var])
+            if model_var == 'Surname':
+                sur = SurnameModel()
+                output_df = sur.get_probabilities(input_df[name_var])
+            if model_var == 'Surgeo (Surname + Geocode)':
+                surgeo = SurgeoModel()
+                output_df = surgeo.get_probabilities(
+                    input_df[name_var], 
+                    input_df[zip_var]
+                )
+            if suffix == '.xlsx':
+                output_df.to_excel(output_var, index=False)
+            else:
+                output_df.to_csv(output_var, index=False)
+            messagebox.showinfo(
+                'Success',
+                f'{len(output_df)} items successfully written.'
+            )
         except Exception:
             err = traceback.format_exc()
             messagebox.showerror('Error', err)
