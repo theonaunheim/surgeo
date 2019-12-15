@@ -1,7 +1,9 @@
 """Script containing a basic command line program."""
 
+import argparse
 import pathlib
 import sys
+import traceback
 
 import pandas as pd
 
@@ -11,7 +13,6 @@ sys.path.append(str(path_dir))
 
 import surgeo
 
-from surgeo.cli.parser import SurgeoArgParser
 from surgeo.utility.surgeo_exception import SurgeoException
 from surgeo import GeocodeModel
 from surgeo import SurgeoModel
@@ -20,7 +21,7 @@ from surgeo import SurnameModel
 
 class SurgeoCLI(object):
     """A CLI application class to create executable
-    
+
     This script adds surgeo to path and runs a simple command line script.
     The class pulls in a parser, parsers the command line arguments as
     needed, loads the data, processes the data, and sends the output to a
@@ -48,8 +49,7 @@ class SurgeoCLI(object):
 
     def __init__(self):
         # Get args from SurgeoArgParser class
-        parser = SurgeoArgParser()
-        args = parser.get_parsed_args()
+        args = self.get_parsed_args()
         # Add those arguments as members
         self._input_path = pathlib.Path(args.input)
         self._output_path = pathlib.Path(args.output)
@@ -143,6 +143,33 @@ class SurgeoCLI(object):
                 'Please specify a path ending in ".csv" or ".xlsx".'    
             )
 
+    def get_parsed_args(self):
+        parser = argparse.ArgumentParser(description='Get Surgeo arguments.')
+        parser.add_argument(
+            'input',
+            help='Input CSV or XLSX of data.',
+        )
+        parser.add_argument(
+            'output',
+            help='Output CSV or XLSX of data.',
+        )
+        parser.add_argument(
+            'type',
+            help='The model type being run ("sur", "geo" or "surgeo")',
+        )
+        parser.add_argument(
+            '--zcta_column',
+            help='The input column to analyze as ZCTA/ZIP)',
+            dest='zcta_column'
+        )
+        parser.add_argument(
+            '--surname_column',
+            help='The input column to analyze as surname")',
+            dest='surname_column'
+        )
+        parsed_args = parser.parse_args()
+        return parsed_args
+
     def main(self):
         input_df = self._load_df()
         processed_df = self._process_df(input_df)
@@ -150,10 +177,6 @@ class SurgeoCLI(object):
 
 
 if __name__ == '__main__':
-    try:
-        cli = SurgeoCLI()
-        cli.main()
-        sys.exit(0)
-    except Exception as e:
-        raise e
-        sys.exit(1)
+    cli = SurgeoCLI()
+    cli.main()
+    sys.exit(0)
