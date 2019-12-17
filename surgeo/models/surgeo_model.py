@@ -5,7 +5,16 @@ from ..utility.surgeo_exception import SurgeoException
 
 
 class SurgeoModel(BaseModel):
+    """
 
+    References
+    ----------
+    .. [1] Elliott, M.N., Morrison, P.A., Fremont, A. et al. "Using the 
+    Census Bureau’s surname list to improve estimates of race/ethnicity and 
+    associated disparities". Health Serv Outcomes Res Method (2009) 9: 69.
+    https://link.springer.com/article/10.1007/s10742-009-0047-1
+    
+    """
     def __init__(self):
         super().__init__()
 

@@ -1,3 +1,5 @@
+"""Containins the base model for Surname, Geocode, and Surgeo models."""
+
 import pathlib
 import string
 
@@ -6,22 +8,53 @@ import pandas as pd
 
 
 class BaseModel(object):
+    """Base class for the surname, geocode, and surname-geocode models.
+
+    Class creation is greatly simplified by placing most of the
+    funcionality wihtin a single base class and leaving only small areas
+    of responsibility for the subclass. This base class does the following
+    operations:
+
+    1. Creating geocode and surname lookup dataframes upon instantiation;
+    2. Houseing normalization routines for dirty ZIP code and surname data;
+    3. Getting probabilities for a set of ZIPs or surnames by joining the
+    input data with the aforementioned lookup frames.
+
+    Note
+    ----
+    Surnames are normalized in a manner consistent with Word et. al (2007),
+    below. This includes removing all whitespace/punctuation/digits,
+    making the strings upper case, and then removing elements such as
+    "JR", "SR", "IV" from the tail of the string. AN example would be
+    "Dav 3idson" being translated to "DAVIDSON".
+
+    ZCTAs, which serve as a proxy for ZIP codes, are normalized by simply
+    translating them to stirngs and then .zfill()ing them. An example would
+    be "531" to "00531".
+
+    References
+    ----------
+    .. [1] Word, David L., Charles D. Coleman, Robert Nunziata and Robert 
+    Kominski.  2007.  "Demographic Aspects of Surnames from Census 2000".   
+    http://www2.census.gov/topics/genealogy/2000surnames/surnames.pdf.  
+    
+    """
 
     def __init__(self):
         self._package_root = pathlib.Path(__file__).parents[1]
-        # Add geocode df
+        # Attach geocode data as a dataframe for lookups
         self._GEOCODE_DF = pd.read_csv(
             self._package_root / 'data' / 'population_2010.csv',
             index_col='zcta5',
             na_values=[''],
             keep_default_na=False,
         )
-        # Convert geocode zip codes to strings
+        # Convert geocode zip codes to 00000-formatted strings
         self._GEOCODE_DF.index = (
             self._GEOCODE_DF.index.astype('str')
                                   .str.zfill(5)
         )
-        # Add surname df
+        # Attach surname df (beware ... some NA values like "NAN" are names)
         self._SURNAME_DF = pd.read_csv(
             self._package_root / 'data' / 'surname_2010.csv',
             index_col='name',
@@ -30,6 +63,7 @@ class BaseModel(object):
         )
 
     def _normalize_names(self, names: pd.Series) -> pd.Series:
+        """Take names and run a normalization routine"""
         # Make a transalation table of unwanted characers
         unwanted_characters = (
             string.digits +
@@ -82,3 +116,7 @@ class BaseModel(object):
             how='left',
         )
         return geocode_probs
+
+    def get_probabilities(self, *args):
+        """Main method for subclasses to implement"""
+        raise NotImplementedError('This class is not intended for direct use.')
