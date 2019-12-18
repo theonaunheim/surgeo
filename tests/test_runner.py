@@ -3,8 +3,6 @@ import pathlib
 import sys
 import unittest
 
-import models.test_base_model
-
 # Add pyfair directory to path
 this_file = pathlib.Path(__file__).absolute()
 repo_dir = this_file.parents[1]
@@ -15,7 +13,7 @@ sys.path.append(path)
 
 # List test modules
 test_modules = [
-    models.test_base_model,
+
 ]
 
 # Create loader and suite
