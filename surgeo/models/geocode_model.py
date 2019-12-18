@@ -7,7 +7,17 @@ class GeocodeModel(BaseModel):
 
     def __init__(self):
         super().__init__()
+        self._PROB_RACE_GIVEN_ZCTA = self._get_prob_race_given_zcta()
 
     def get_probabilities(self, zctas: pd.Series) -> pd.DataFrame:
-        geocode_probs = self._get_geocode_probs(zctas)
+        normalized_zctas = (
+            self._normalize_zctas(zctas)
+                .to_frame()
+        )
+        geocode_probs = normalized_zctas.merge(
+            self._PROB_RACE_GIVEN_ZCTA,
+            left_on='zcta5',
+            right_index=True,
+            how='left',
+        )
         return geocode_probs

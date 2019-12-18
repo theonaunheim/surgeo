@@ -42,25 +42,47 @@ class BaseModel(object):
 
     def __init__(self):
         self._package_root = pathlib.Path(__file__).parents[1]
-        # Attach geocode data as a dataframe for lookups
-        self._GEOCODE_DF = pd.read_csv(
-            self._package_root / 'data' / 'population_2010.csv',
+
+    def _get_prob_race_given_zcta(self):
+        """Create dataframe of race probs given ZCTA (for Geo)"""
+        prob_race_given_zcta = pd.read_csv(
+            self._package_root / 'data' / 'prob_race_given_zcta_2010.csv',
             index_col='zcta5',
             na_values=[''],
             keep_default_na=False,
         )
         # Convert geocode zip codes to 00000-formatted strings
-        self._GEOCODE_DF.index = (
-            self._GEOCODE_DF.index.astype('str')
-                                  .str.zfill(5)
+        prob_race_given_zcta.index = (
+            prob_race_given_zcta.index.astype('str')
+                                .str.zfill(5)
         )
-        # Attach surname df (beware ... some NA values like "NAN" are names)
-        self._SURNAME_DF = pd.read_csv(
-            self._package_root / 'data' / 'surname_2010.csv',
+        return prob_race_given_zcta
+
+    def _get_prob_zcta_given_race(self):
+        """Create dataframe of ZCTA ratios given a race (for SurGeo)"""
+        prob_zcta_given_race = pd.read_csv(
+            self._package_root / 'data' / 'prob_zcta_given_race_2010.csv',
+            index_col='zcta5',
+            na_values=[''],
+            keep_default_na=False,
+        )
+        # Convert geocode zip codes to 00000-formatted strings
+        prob_zcta_given_race.index = (
+            prob_zcta_given_race.index.astype('str')
+                                .str.zfill(5)
+        )
+        return prob_zcta_given_race
+
+    def _get_prob_race_given_surname(self):
+        """Create dataframe of race probabilities given surnames (for Sur)"""
+        # Create surname df (beware ... some NA values like "NAN" are names)
+        prob_race_given_surname = pd.read_csv(
+            self._package_root / 'data' / 'prob_race_given_surname_2010.csv',
             index_col='name',
             na_values=[''],
             keep_default_na=False,
         )
+        return prob_race_given_surname
 
     def _normalize_names(self, names: pd.Series) -> pd.Series:
         """Take names and run a normalization routine"""
@@ -90,32 +112,6 @@ class BaseModel(object):
         zfilled = converted.str.zfill(5)
         zfilled.name = 'zcta5'
         return zfilled
-
-    def _get_surname_probs(self, names: pd.Series) -> pd.DataFrame:
-        normalized_names = (
-            self._normalize_names(names)
-                .to_frame()
-        )
-        surname_probs = normalized_names.merge(
-            self._SURNAME_DF,
-            left_on='name',
-            right_index=True,
-            how='left',
-        )
-        return surname_probs
-
-    def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:
-        normalized_zctas = (
-            self._normalize_zctas(zctas)
-                .to_frame()
-        )
-        geocode_probs = normalized_zctas.merge(
-            self._GEOCODE_DF,
-            left_on='zcta5',
-            right_index=True,
-            how='left',
-        )
-        return geocode_probs
 
     def get_probabilities(self, *args):
         """Main method for subclasses to implement"""

@@ -13,10 +13,12 @@ class SurgeoModel(BaseModel):
     Census Bureau’s surname list to improve estimates of race/ethnicity and 
     associated disparities". Health Serv Outcomes Res Method (2009) 9: 69.
     https://link.springer.com/article/10.1007/s10742-009-0047-1
-    
+
     """
     def __init__(self):
         super().__init__()
+        self._PROB_ZCTA_GIVEN_RACE = self._get_prob_zcta_given_race()
+        self._PROB_RACE_GIVEN_SURNAME = self._get_prob_race_given_surname()
 
     def get_probabilities(self, 
                           names: pd.Series,
@@ -87,3 +89,29 @@ class SurgeoModel(BaseModel):
                 f'ZCTA length: {len(zctas)}.'
             )
             raise SurgeoException(err_string)
+
+    def _get_surname_probs(self, names: pd.Series) -> pd.DataFrame:
+        normalized_names = (
+            self._normalize_names(names)
+                .to_frame()
+        )
+        surname_probs = normalized_names.merge(
+            self._PROB_RACE_GIVEN_SURNAME,
+            left_on='name',
+            right_index=True,
+            how='left',
+        )
+        return surname_probs
+
+    def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:
+        normalized_zctas = (
+            self._normalize_zctas(zctas)
+                .to_frame()
+        )
+        geocode_probs = normalized_zctas.merge(
+            self._PROB_ZCTA_GIVEN_RACE,
+            left_on='zcta5',
+            right_index=True,
+            how='left',
+        )
+        return geocode_probs
