@@ -1,9 +1,24 @@
+"""Module containing the SurnameModel class."""
+
 import pandas as pd
 
 from .base_model import BaseModel
 
 
 class SurnameModel(BaseModel):
+    """
+    Notes
+    -----
+    The manner in which the surame data file was created can be found in
+    the "fetch_surnames" Jupyter notebook.
+
+    References
+    ----------
+    .. [1] United States Census Bureau. "Frequently Occurring Surnames from
+    the 2010 Census".   
+    https://www.census.gov/topics/population/genealogy/data/2010_surnames.html.  
+    Last Accessed 2019.12.18.
+    """
 
     def __init__(self):
         super().__init__()

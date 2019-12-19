@@ -1,3 +1,5 @@
+"""Module containing Surgeo BISG class"""
+
 import pandas as pd
 
 from .base_model import BaseModel
@@ -5,7 +7,53 @@ from ..utility.surgeo_exception import SurgeoException
 
 
 class SurgeoModel(BaseModel):
-    """
+    """Subclass for running a Bayesian Improved Surname Geocode model.
+
+    This class:
+    1. Loads the appropriate surname and geocode lookup dataframes upon
+    instantiation;
+    2. Exposes a public get_probabilities() function to compute race
+    probabilities based on proxy data (namely surnames and ZIP codes); and,
+    3. Contains a number of helper functions for cleaning ZCTA/names, 
+    multiplying probabilities, checking input values, and obtaining
+    ZCTA/name data components.
+
+    Notes
+    -----
+    The surname probability dataframe for this model is identical to that
+    used for the SurnameModel (`prob_race_given_surname_2010.csv`); the 
+    geocode probability dataframe for this model is not the same as that
+    used for the GeocodeModel. This model uses the
+    `prob_zcta_given_race_2010.csv` file, which has the percentage of
+    a particular race that falls within that ZCTA (e.g. .002% of all
+    White US citizens live within this ZIP code). The GeocodeModel uses the
+    `prob_race_given_zcta_2010.csv` file, which has the race percentages
+    for a given ZCTA (e.g. 90% of ZCTA 63144 is White).
+
+    The manner in which the geogrpahy data file was created can be found in
+    the "fetch_geography" Jupyter notebook.
+
+    This is based of the following general formula from Elliott et al:
+
+    .. math::
+
+        q(i \mid j,k) = \frac
+            {\large{u(i,j,k)}}
+            {\large{u(1,j,k) \; + \; u(2,j,k) \; + \; u(3,j,k) \; + \; u(4,j,k) \; + \; u(5,j,k) \; + \; u(6,j,k)}} \\[25px]
+        \text{Where:} \\[25px]
+            \hspace{25px} u(i,j,k) = P(i \mid j) \times r(k \mid i)\\[25px]
+        \text{And where:} \\[25px]
+            \hspace{25px}\text{\( P(i \mid j) \) is the probability of a selected race given surname} \\
+            \hspace{25px}\text{\( r(k \mid i) \) is the probability of a selected ZCTA of residence given race} \\
+            \hspace{25px}\text{\( k \) is Census Block} \\
+            \hspace{25px}\text{\( j \) is Surname} \\
+            \hspace{25px}\text{\( i \) is Race} \\
+                \hspace{50px}\text{1 = Hispanic} \\
+                \hspace{50px}\text{2 = White} \\
+                \hspace{50px}\text{3 = Black} \\
+                \hspace{50px}\text{4 = Asian or Pacific Islander} \\
+                \hspace{50px}\text{5 = American Indian / Alaska Native} \\
+                \hspace{50px}\text{6 = Multiracial} \\
 
     References
     ----------
@@ -22,66 +70,75 @@ class SurgeoModel(BaseModel):
 
     def get_probabilities(self, 
                           names: pd.Series,
-                          zctas: pd.Series, 
-                          base_data=False) -> pd.DataFrame:
+                          zctas: pd.Series) -> pd.DataFrame:
+        """Obtain a set of BISG probabilities for name/ZCTA series
+
+        This method first takes the data and checks to see if the data is
+        formatted appropraitely. It triggers the _get_surname_probs() and
+        _get_geocode_probs() helper function to merge the probabilities
+        for the inputs with their looked-up values. It then runs the
+        _combined_probs() helper function to actually conduct the data
+        calculation and obtain the BISG probabilities. It finally runs the
+        _adjust_frame() method to concatenate the inputs and outputs in a
+        single convenient frame.
+
+         Parameters
+        ----------
+        names : pd.Series
+            A series of names to use for the BISG algorithm
+        zctas : pd.Series
+            A series of ZIP/ZCTA codes for the BISG algorithm
+
+        Returns
+        -------
+        pd.DataFrame
+            Dataframe of BISG probability results
+
+        """
+
         # Check inputs
         self._check_inputs(names, zctas)
-        # Get components
+        # Get component probabilities
         sur_probs = self._get_surname_probs(names)
         geo_probs = self._get_geocode_probs(zctas)
-        # Get surgeo probs
+        # Run Surgeo algorithm
         surgeo_probs = self._combined_probs(sur_probs, geo_probs)
+        # Combine inputs with results and adjust as necessary
         result = self._adjust_frame(
             sur_probs,
             geo_probs,
             surgeo_probs,
-            base_data,
         )
         return result
 
     def _combined_probs(self,
                         sur_probs: pd.DataFrame,
                         geo_probs: pd.DataFrame) -> pd.DataFrame:
+        """Performs the BISG calculation"""
         # Calculate each of the numerators
         surgeo_numer = sur_probs.iloc[:, 1:] * geo_probs.iloc[:, 1:]
         # Calculate the denominator
         surgeo_denom = surgeo_numer.sum(axis=1)
-        # Caluclate the surgeo probabilities
+        # Caluclate the surgeo probabilities (each num / denom)
         surgeo_probs = surgeo_numer.div(surgeo_denom, axis=0)
-        surgeo_probs = surgeo_probs.round(4)
         return surgeo_probs
 
     def _adjust_frame(self,
                       sur_probs: pd.DataFrame,
                       geo_probs: pd.DataFrame,
-                      surgeo_probs: pd.DataFrame,
-                      base_data: bool) -> pd.DataFrame:
-        # Build base
+                      surgeo_probs: pd.DataFrame) -> pd.DataFrame:
+        # Build frame from zctas, names, and probabilities
         surgeo_data = pd.concat([
             geo_probs['zcta5'].to_frame(),
             sur_probs['name'].to_frame(),
             surgeo_probs
         ], axis=1)
-        if base_data is True:
-            sur_data = sur_probs.iloc[:, 1:]
-            geo_data = geo_probs.iloc[:, 1:]
-            merged_data = sur_data.merge(
-                geo_data, 
-                left_index=True,
-                right_index=True,
-                suffixes=['_sur', '_geo']
-            )
-            surgeo_data = pd.concat([
-                surgeo_data,
-                merged_data,
-            ], axis=1)
-            return surgeo_data
-        else:
-            return surgeo_data
+        return surgeo_data
 
     def _check_inputs(self, 
                       names: pd.Series,
                       zctas: pd.Series):
+        """Check names and ZCTAs and ensure they are same length"""
         if len(names) != len(zctas):
             err_string = (
                 f'Length mismatch. '
@@ -90,11 +147,15 @@ class SurgeoModel(BaseModel):
             )
             raise SurgeoException(err_string)
 
-    def _get_surname_probs(self, names: pd.Series) -> pd.DataFrame:
+    def _get_surname_probs(self,
+                           names: pd.Series) -> pd.DataFrame:
+        """Normalizes names and joins names to their race probabilities."""
+        # Normalize names
         normalized_names = (
             self._normalize_names(names)
                 .to_frame()
         )
+        # Merge names to dataframe, which gives probs for each name
         surname_probs = normalized_names.merge(
             self._PROB_RACE_GIVEN_SURNAME,
             left_on='name',
@@ -104,10 +165,13 @@ class SurgeoModel(BaseModel):
         return surname_probs
 
     def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:
+        """Normalizes ZCTAs/ZIPs and joins them to their race probs."""
+        # Normalize
         normalized_zctas = (
             self._normalize_zctas(zctas)
                 .to_frame()
         )
+        # Merge names to dataframe, which gives probs for each name.
         geocode_probs = normalized_zctas.merge(
             self._PROB_ZCTA_GIVEN_RACE,
             left_on='zcta5',

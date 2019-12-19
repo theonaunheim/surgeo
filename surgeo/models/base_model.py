@@ -15,10 +15,8 @@ class BaseModel(object):
     of responsibility for the subclass. This base class does the following
     operations:
 
-    1. Creating geocode and surname lookup dataframes upon instantiation;
-    2. Houseing normalization routines for dirty ZIP code and surname data;
-    3. Getting probabilities for a set of ZIPs or surnames by joining the
-    input data with the aforementioned lookup frames.
+    1. Creating functions to provide lookup dataframes; and,
+    2. Houseing normalization routines for dirty ZIP code and surname data.
 
     Note
     ----
@@ -35,7 +33,7 @@ class BaseModel(object):
     References
     ----------
     .. [1] Word, David L., Charles D. Coleman, Robert Nunziata and Robert 
-    Kominski.  2007.  "Demographic Aspects of Surnames from Census 2000".   
+    Kominski. 2007. "Demographic Aspects of Surnames from Census 2000".   
     http://www2.census.gov/topics/genealogy/2000surnames/surnames.pdf.  
 
     """
@@ -92,6 +90,7 @@ class BaseModel(object):
             string.punctuation +
             string.whitespace
         )
+        # Remove unwanted characters efficiently
         translation_table =  str.maketrans('', '', unwanted_characters)
         # Run our string operations (remember NAN is a valid name)
         output = (
@@ -108,11 +107,8 @@ class BaseModel(object):
         return output
 
     def _normalize_zctas(self, zcta: pd.Series) -> pd.Series:
+        """Transform ZCTAs into standardized strings"""
         converted = pd.Series(zcta.values, dtype=str)
         zfilled = converted.str.zfill(5)
         zfilled.name = 'zcta5'
         return zfilled
-
-    def get_probabilities(self, *args):
-        """Main method for subclasses to implement"""
-        raise NotImplementedError('This class is not intended for direct use.')
