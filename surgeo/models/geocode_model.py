@@ -1,3 +1,5 @@
+"""This module contains the GeocodeModel class"""
+
 import pandas as pd
 
 from .base_model import BaseModel

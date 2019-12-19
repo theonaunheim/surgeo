@@ -11,17 +11,19 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import pathlib
 import sys
-sys.path.insert(0, os.path.abspath('../'))
-
+sys.path.append(str(
+    pathlib.Path('./').resolve().parents[1]
+))
 
 # -- Project information -----------------------------------------------------
 
 project = 'surgeo'
 copyright = '2019, Theo Naunheim'
 author = 'Theo Naunheim'
-release = '2010.0.1'
-version = '2010.0.1'
+release = '2010.1.1'
+version = '2010.1.1'
 
 
 # -- General configuration ---------------------------------------------------
