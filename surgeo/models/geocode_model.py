@@ -30,9 +30,9 @@ class GeocodeModel(BaseModel):
 
     References
     ----------
-    .. [1] United States Census Bureau. "United States Census Summary File
-    1". https://www.census.gov/prod/cen2010/doc/sf1.pdf. Last Accessed
-    2019.12.18.
+        United States Census Bureau. United States Census Summary File
+        1. `<https://www.census.gov/prod/cen2010/doc/sf1.pdf>`_. Last
+        Accessed 2019.12.18.
 
     """
 

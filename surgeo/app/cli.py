@@ -30,24 +30,26 @@ class SurgeoCLI(object):
 
     Example
     -------
-    ```$ python ./surgeo/app/gui.py --help
+        .. code-block:: shell
 
-    usage: executable.py [-h] [--zcta_column ZCTA_COLUMN]
-                        [--surname_column SURNAME_COLUMN]
-                        input output type
+            $ python ./surgeo/app/gui.py --help
 
-    Get Surgeo arguments.
+            usage: executable.py [-h] [--zcta_column ZCTA_COLUMN]
+                                [--surname_column SURNAME_COLUMN]
+                                input output type
 
-    input                 Input CSV or XLSX of data.
-    output                Output CSV or XLSX of data.
-    type                  The model type being run ("sur", "geo" or "surgeo")
+            Get Surgeo arguments.
 
-    optional arguments:
-    -h, --help            show this help message and exit
-    --zcta_column ZCTA_COLUMN
-                        The input column to analyze as ZCTA/ZIP)
-    --surname_column SURNAME_COLUMN
-                        The input column to analyze as surname")```
+            input                 Input CSV or XLSX of data.
+            output                Output CSV or XLSX of data.
+            type                  The model type being run ("sur", "geo" or "surgeo")
+
+            optional arguments:
+            -h, --help            show this help message and exit
+            --zcta_column ZCTA_COLUMN
+                                The input column to analyze as ZCTA/ZIP)
+            --surname_column SURNAME_COLUMN
+                                The input column to analyze as surname")
 
     """
 
@@ -68,14 +70,14 @@ class SurgeoCLI(object):
 
         1. Read arguments;
         2. Take a user defined path argument and load an Excel or CSV into a
-        dataframe;
+           dataframe;
         3. Route that dataframe to a speciic processing function based on the
-        "type" function argument (e.g. surname, geocoding, or surgeo);
+           "type" function argument (e.g. surname, geocoding, or surgeo);
         4. Optional specifies the column names to analyze (if not using the 
-        default "zcta5" or "name" headers);
+           default "zcta5" or "name" headers);
         5. Runs the appropriate algorithm and returns a new dataframe;
         6. Writes the resulting data to a new CSV based to output path
-        specified by user.
+           specified by user.
 
         Raises
         ------

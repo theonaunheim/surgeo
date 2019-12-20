@@ -7,7 +7,7 @@ from ..utility.surgeo_exception import SurgeoException
 
 
 class SurgeoModel(BaseModel):
-    """Subclass for running a Bayesian Improved Surname Geocode model.
+    r"""Subclass for running a Bayesian Improved Surname Geocode model.
 
     This class:
     1. Loads the appropriate surname and geocode lookup dataframes upon
@@ -33,35 +33,36 @@ class SurgeoModel(BaseModel):
     The manner in which the geogrpahy data file was created can be found in
     the "fetch_geography" Jupyter notebook.
 
-    This is based of the following general formula from Elliott et al:
+    This is based of the following general formula from Elliott et al.
 
-    .. math::
-
-        q(i \mid j,k) = \frac
-            {\large{u(i,j,k)}}
-            {\large{u(1,j,k) \; + \; u(2,j,k) \; + \; u(3,j,k) \; + \; u(4,j,k) \; + \; u(5,j,k) \; + \; u(6,j,k)}} \\[25px]
-        \text{Where:} \\[25px]
-            \hspace{25px} u(i,j,k) = P(i \mid j) \times r(k \mid i)\\[25px]
-        \text{And where:} \\[25px]
-            \hspace{25px}\text{\( P(i \mid j) \) is the probability of a selected race given surname} \\
-            \hspace{25px}\text{\( r(k \mid i) \) is the probability of a selected ZCTA of residence given race} \\
-            \hspace{25px}\text{\( k \) is Census Block} \\
-            \hspace{25px}\text{\( j \) is Surname} \\
-            \hspace{25px}\text{\( i \) is Race} \\
-                \hspace{50px}\text{1 = Hispanic} \\
-                \hspace{50px}\text{2 = White} \\
-                \hspace{50px}\text{3 = Black} \\
-                \hspace{50px}\text{4 = Asian or Pacific Islander} \\
-                \hspace{50px}\text{5 = American Indian / Alaska Native} \\
-                \hspace{50px}\text{6 = Multiracial} \\
+    | :math:`q(i \mid j,k) = \Large \frac{u(i,j,k)}{u(1,j,k) \, + \, u(2,j,k) \, + \, u(3,j,k) \, + \, u(4,j,k) \, + \, u(5,j,k) \, + \, u(6,j,k)}`
+    |
+    | Where:
+    | :math:`\hspace{25px} u(i,j,k) = P(i \mid j) \times r(k \mid i)`
+    |
+    | And where:
+    | :math:`\hspace{25px} P(i \mid j)` is the probability of a selected race given surname
+    | :math:`\hspace{25px} r(k \mid i)` is the probability of a selected ZCTA of residence given race
+    | :math:`\hspace{25px} k` is Census Block
+    | :math:`\hspace{25px} j` is Surname
+    | :math:`\hspace{25px} i` is Race
+    |
+    | And where:
+    | :math:`\hspace{25px} 1` is Hispanic
+    | :math:`\hspace{25px} 2` is White
+    | :math:`\hspace{25px} 3` is Black
+    | :math:`\hspace{25px} 4` is Asian or Pacific Islander
+    | :math:`\hspace{25px} 5` is American Indian / Alaska Native
+    | :math:`\hspace{25px} 6` is Multiracial
 
     References
     ----------
-    .. [1] Elliott, M.N., Morrison, P.A., Fremont, A. et al. "Using the 
-    Census Bureau’s surname list to improve estimates of race/ethnicity and 
-    associated disparities". Health Serv Outcomes Res Method (2009) 9: 69.
-    https://link.springer.com/article/10.1007/s10742-009-0047-1
-
+        Elliott, M.N., Morrison, P.A., Fremont, A. et al. Using the Census
+        Bureau’s surname list to improve estimates of race/ethnicity and
+        associated disparities. Health Serv Outcomes Res Method (2009) 9:
+        69.
+        `<https://link.springer.com/article/10.1007/s10742-009-0047-1>`_
+        
     """
     def __init__(self):
         super().__init__()
@@ -82,7 +83,7 @@ class SurgeoModel(BaseModel):
         _adjust_frame() method to concatenate the inputs and outputs in a
         single convenient frame.
 
-         Parameters
+        Parameters
         ----------
         names : pd.Series
             A series of names to use for the BISG algorithm

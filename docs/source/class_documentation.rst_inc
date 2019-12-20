@@ -9,18 +9,21 @@ SurgeoModel
 
 .. autoclass:: surgeo.models.surgeo_model.SurgeoModel
     :members:
+    :inherited-members:
 
 GeocodeModel
 ~~~~~~~~~~~~
 
 .. autoclass:: surgeo.models.geocode_model.GeocodeModel
     :members:
+    :inherited-members:
 
 SurnameModel
 ~~~~~~~~~~~~
 
 .. autoclass:: surgeo.models.surname_model.SurnameModel
     :members:
+    :inherited-members:
 
 BaseModel
 ~~~~~~~~~
@@ -49,5 +52,5 @@ Utility Classes
 SurgeoException
 ~~~~~~~~~~~~~~~
 
-.. autoclass:: surgeo.utility.surgeo_exception.SurgeoException
+.. autoexception:: surgeo.utility.surgeo_exception.SurgeoException
     :members:

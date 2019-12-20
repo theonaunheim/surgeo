@@ -32,9 +32,9 @@ class BaseModel(object):
 
     References
     ----------
-    .. [1] Word, David L., Charles D. Coleman, Robert Nunziata and Robert 
-    Kominski. 2007. "Demographic Aspects of Surnames from Census 2000".   
-    http://www2.census.gov/topics/genealogy/2000surnames/surnames.pdf.  
+        Word, David L., Charles D. Coleman, Robert Nunziata and Robert 
+        Kominski. 2007. Demographic Aspects of Surnames from Census 2000.   
+        `<http://www2.census.gov/topics/genealogy/2000surnames/surnames.pdf>`_.  
 
     """
 
