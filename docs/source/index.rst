@@ -11,7 +11,7 @@ Welcome to surgeo's documentation!
 .. contents:: Table of Contents
    :depth: 1
 
-.. include:: class_documentation.rst_inc
+.. include:: class_documentation.rst
 
 Indices and tables
 ==================
