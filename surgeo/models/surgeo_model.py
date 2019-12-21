@@ -12,17 +12,17 @@ class SurgeoModel(BaseModel):
     This class:
 
     1. Loads the appropriate surname and geocode lookup dataframes upon
-    instantiation;
+       instantiation;
     2. Exposes a public get_probabilities() function to compute race
-    probabilities based on proxy data (namely surnames and ZIP codes); and,
-    3. Contains a number of helper functions for cleaning ZCTA/names, 
-    multiplying probabilities, checking input values, and obtaining
-    ZCTA/name data components.
+       probabilities based on proxy data (namely surnames and ZIP codes); and,
+    3. Contains a number of helper functions for cleaning ZCTA/names,
+       multiplying probabilities, checking input values, and obtaining
+       ZCTA/name data components.
 
     Notes
     -----
     The surname probability dataframe for this model is identical to that
-    used for the SurnameModel (`prob_race_given_surname_2010.csv`); the 
+    used for the SurnameModel (`prob_race_given_surname_2010.csv`); the
     geocode probability dataframe for this model is not the same as that
     used for the GeocodeModel. This model uses the
     `prob_zcta_given_race_2010.csv` file, which has the percentage of
@@ -137,7 +137,7 @@ class SurgeoModel(BaseModel):
         ], axis=1)
         return surgeo_data
 
-    def _check_inputs(self, 
+    def _check_inputs(self,
                       names: pd.Series,
                       zctas: pd.Series):
         """Check names and ZCTAs and ensure they are same length"""

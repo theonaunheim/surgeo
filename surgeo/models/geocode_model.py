@@ -22,15 +22,15 @@ class GeocodeModel(BaseModel):
     the "fetch_geography" Jupyter notebook.
 
     This does not use the same Geocode data as the Surgeo class. This model
-    uses the `prob_race_given_zcta_2010.csv` file, which has the race 
+    uses the `prob_race_given_zcta_2010.csv` file, which has the race
     percentages for a given ZCTA (e.g. 90% of ZCTA 63144 is White). The
     SurgeoModel uses the `prob_zcta_given_race_2010.csv` file, which has
-    the percentage of a particular race that falls within that ZCTA (e.g. 
+    the percentage of a particular race that falls within that ZCTA (e.g.
     .002% of all White US citizens live within this ZIP code).
 
     References
     ----------
-        United States Census Bureau. United States Census Summary File
+    1.  United States Census Bureau. United States Census Summary File
         1. `<https://www.census.gov/prod/cen2010/doc/sf1.pdf>`_. Last
         Accessed 2019.12.18.
 
