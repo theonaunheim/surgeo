@@ -10,6 +10,7 @@ class SurgeoModel(BaseModel):
     r"""Subclass for running a Bayesian Improved Surname Geocode model.
 
     This class:
+
     1. Loads the appropriate surname and geocode lookup dataframes upon
     instantiation;
     2. Exposes a public get_probabilities() function to compute race
@@ -48,28 +49,28 @@ class SurgeoModel(BaseModel):
     | :math:`\hspace{25px} i` is Race
     |
     | And where:
-    | :math:`\hspace{25px} 1` is Hispanic
-    | :math:`\hspace{25px} 2` is White
-    | :math:`\hspace{25px} 3` is Black
-    | :math:`\hspace{25px} 4` is Asian or Pacific Islander
-    | :math:`\hspace{25px} 5` is American Indian / Alaska Native
-    | :math:`\hspace{25px} 6` is Multiracial
+    | :math:`\hspace{25px} 1 \text{ is } i = \text{Hispanic}`
+    | :math:`\hspace{25px} 2 \text{ is } i = \text{White}`
+    | :math:`\hspace{25px} 3 \text{ is } i = \text{Black}`
+    | :math:`\hspace{25px} 4 \text{ is } i = \text{Asian or Pacific Islander}`
+    | :math:`\hspace{25px} 5 \text{ is } i = \text{American Indian / Alaska Native}`
+    | :math:`\hspace{25px} 6 \text{ is } i = \text{Multiracial}`
 
     References
     ----------
-        Elliott, M.N., Morrison, P.A., Fremont, A. et al. Using the Census
+    1.  Elliott, M.N., Morrison, P.A., Fremont, A. et al. Using the Census
         Bureau’s surname list to improve estimates of race/ethnicity and
         associated disparities. Health Serv Outcomes Res Method (2009) 9:
         69.
         `<https://link.springer.com/article/10.1007/s10742-009-0047-1>`_
-        
+
     """
     def __init__(self):
         super().__init__()
         self._PROB_ZCTA_GIVEN_RACE = self._get_prob_zcta_given_race()
         self._PROB_RACE_GIVEN_SURNAME = self._get_prob_race_given_surname()
 
-    def get_probabilities(self, 
+    def get_probabilities(self,
                           names: pd.Series,
                           zctas: pd.Series) -> pd.DataFrame:
         """Obtain a set of BISG probabilities for name/ZCTA series
