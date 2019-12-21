@@ -15,7 +15,7 @@ setup(
     author_email='theonaunheim@gmail.com',
     packages=[
         'surgeo',
-        'surgeo.cli',
+        'surgeo.app',
         'surgeo.models',
         'surgeo.utility',
     ],
