@@ -11,4 +11,7 @@ surgeo
 
 **THIS IS THE DEVELOPMENT BRANCH. NOT FOR PRODUCTION.**
 
+The documentation for Surgeo may be found here:
+`<https://surgeo.readthedocs.io/en/dev/>`_
+
 Currently a ground-up rewrite is underway.
