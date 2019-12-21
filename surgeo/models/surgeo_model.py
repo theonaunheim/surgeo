@@ -49,12 +49,12 @@ class SurgeoModel(BaseModel):
     | :math:`\hspace{25px} i` is Race
     |
     | And where:
-    | :math:`\hspace{25px} 1 \text{ is } i = \text{Hispanic}`
-    | :math:`\hspace{25px} 2 \text{ is } i = \text{White}`
-    | :math:`\hspace{25px} 3 \text{ is } i = \text{Black}`
-    | :math:`\hspace{25px} 4 \text{ is } i = \text{Asian or Pacific Islander}`
-    | :math:`\hspace{25px} 5 \text{ is } i = \text{American Indian / Alaska Native}`
-    | :math:`\hspace{25px} 6 \text{ is } i = \text{Multiracial}`
+    | :math:`\hspace{25px} 1 \text{ is } i =` Hispanic
+    | :math:`\hspace{25px} 2 \text{ is } i =` White
+    | :math:`\hspace{25px} 3 \text{ is } i =` Black
+    | :math:`\hspace{25px} 4 \text{ is } i =` Asian or Pacific Islander
+    | :math:`\hspace{25px} 5 \text{ is } i =` American Indian / Alaska Native
+    | :math:`\hspace{25px} 6 \text{ is } i =` Multi Racial
 
     References
     ----------

@@ -25,7 +25,7 @@ class SurgeoCLI(object):
     This script adds surgeo to path and runs a simple command line script.
     The class pulls in a parser, parsers the command line arguments as
     needed, loads the data, processes the data, and sends the output to a
-    file. It uses the "main()" function and then uses other methods as 
+    file. It uses the "main()" function and then uses other methods as
     helpers.
 
     Example
@@ -73,7 +73,7 @@ class SurgeoCLI(object):
            dataframe;
         3. Route that dataframe to a speciic processing function based on the
            "type" function argument (e.g. surname, geocoding, or surgeo);
-        4. Optional specifies the column names to analyze (if not using the 
+        4. Optional specifies the column names to analyze (if not using the
            default "zcta5" or "name" headers);
         5. Runs the appropriate algorithm and returns a new dataframe;
         6. Writes the resulting data to a new CSV based to output path

@@ -24,7 +24,7 @@ class SurnameModel(BaseModel):
     ----------
     1.  United States Census Bureau. Frequently Occurring Surnames from
         the 2010 Census.
-        `<https://www.census.gov/topics/population/genealogy/data/2010_surnames.html>`_.  
+        `<https://www.census.gov/topics/population/genealogy/data/2010_surnames.html>`_.
         Last Accessed 2019.12.18.
 
     """
