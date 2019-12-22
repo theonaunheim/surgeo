@@ -1,11 +1,9 @@
-surgeo
+Surgeo
 ==============
 
 **THIS IS THE DEVELOPMENT BRANCH. NOT FOR PRODUCTION.**
 
 .. image:: static/logo.gif
-    :alt: logo
-    :width: 50px
 
 |rtd_badge| |travis_badge|
 
@@ -13,13 +11,12 @@ surgeo
 
 .. |travis_badge| image:: https://travis-ci.org/theonaunheim/surgeo.svg?branch=dev
 
-The documentation for Surgeo may be found here:
-`<https://surgeo.readthedocs.io/en/dev/>`_
+The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/dev/>`_
 
 Overview
 --------
 
-Surgeo is an open source Bayesian Improved Surname Geocode Analysis (BISG)
+Surgeo is an open source Bayesian Improved Surname Geocode (BISG)
 algorithm. In other words, Surgeo allows you to construct race
 probabilities from commonly available data such as ZIP codes and surnames.
 It is inspired by the work of the Consumer Financial Protection Bureau
@@ -34,12 +31,8 @@ New In Version 2010.1.1
 Version 2010.1.1 is a complete rewrite that adds the following features:
 
 1.  Usage of the pandas library for clarity and vectorized calculations;
-2.  Modular construction to allow for future census data updates;
-3.  A rudimentary GUI to aid in batch processing;
-4.  APIs for Surname, Geocoding, and Surname-Geocoding models to aid in
-    data science; and,
-5.  Enhanced documentation to provide a detailed view of how the algorithm
-    works.
+2.  A rudimentary GUI to aid in batch processing; and,
+3.  APIs for Surname, Geocoding, and Surname-Geocoding models.
 
 Installation
 ------------
@@ -50,15 +43,16 @@ To install as a Python module, you can use pip:
 
 .. code-block:: shell
 
-    $ pip3 install surgeo
+    $ pip install surgeo
 
 Usage
 -----
 
-Surgeo can be used as a stand-alone executable or a Python module.
+Surgeo can be used as a stand-alone executable or a Python module. Details
+follow.
 
 As a Program
------------~
+~~~~~~~~~~~~
 
 To use the GUI, simply type in "surgeo".
 
@@ -66,7 +60,7 @@ To use the GUI, simply type in "surgeo".
 
     $ surgeo
 
-image:: ./static/gui_example.gif
+.. image:: ./static/gui_example.gif
 
 To use the CLI, type in "surgeo" followed by your arguments.
 
@@ -91,12 +85,12 @@ To use the CLI, type in "surgeo" followed by your arguments.
     --surname_column SURNAME_COLUMN
                         The input column to analyze as surname")
 
-As a module
+As a Module
 ~~~~~~~~~~~
 
 Surgeo is best used as a module.
 
-:: python3
+.. code-block:: python
 
     import pandas as pd
     import surgeo
@@ -113,7 +107,7 @@ Surgeo is best used as a module.
 
 .. image:: static/model_results.gif
 
-Prefab files
+Prefab Files
 ------------
 
 Windows installer:

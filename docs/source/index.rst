@@ -1,8 +1,3 @@
-.. surgeo documentation master file, created by
-   sphinx-quickstart on Sat Nov 30 13:30:44 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to surgeo's documentation!
 ==================================
 
@@ -10,6 +5,14 @@ Welcome to surgeo's documentation!
 
 .. contents:: Table of Contents
    :depth: 1
+
+.. include:: overview.rst
+
+.. include:: background.rst
+
+.. include:: bisg_by_example.rst
+
+.. include:: usage.rst
 
 .. include:: class_documentation.rst
 
