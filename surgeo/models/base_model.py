@@ -98,10 +98,10 @@ class BaseModel(object):
                  .astype(str)
                  .str.translate(translation_table)
                  .str.upper()
-                 .str.replace('\sJ\.*R\.*\s*$', '')
-                 .str.replace('\sS\.*R\.*\s*$', '')
-                 .str.replace('\sIII\s*$',      '')
-                 .str.replace('\sIV\s*$',       '')
+                 .str.replace(r'\sJ\.*R\.*\s*$', '')
+                 .str.replace(r'\sS\.*R\.*\s*$', '')
+                 .str.replace(r'\sIII\s*$',      '')
+                 .str.replace(r'\sIV\s*$',       '')
         )
         output.name = 'name'
         return output

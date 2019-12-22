@@ -32,7 +32,7 @@ class SurgeoCLI(object):
     -------
         .. code-block:: shell
 
-            $ python ./surgeo/app/gui.py --help
+            $ surgeo --help
 
             usage: executable.py [-h] [--zcta_column ZCTA_COLUMN]
                                 [--surname_column SURNAME_COLUMN]
@@ -89,7 +89,7 @@ class SurgeoCLI(object):
         """
         input_df = self._load_df()
         processed_df = self._process_df(input_df)
-        self._write_df(processed_df)    
+        self._write_df(processed_df)
 
     def _load_df(self):
         """This creates a dataframe based on self._input_path"""
@@ -189,7 +189,7 @@ class SurgeoCLI(object):
             raise SurgeoException(
                 f'"{model_type}" is not valid model type. '
                 f'Please use "sur", "geo", or "surgeo".'
-            )            
+            )
 
     def _write_df(self, df):
         """Write to CSV or XLSX depending on file suffix"""
@@ -204,7 +204,7 @@ class SurgeoCLI(object):
         else:
             raise SurgeoException(
                 f'"{self._output_path}" is not a valid. '
-                 'Please specify a path ending in ".csv" or ".xlsx".'    
+                f'Please specify a path ending in ".csv" or ".xlsx".'
             )
 
     def _get_parsed_args(self):

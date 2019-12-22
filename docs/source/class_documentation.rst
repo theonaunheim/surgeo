@@ -45,7 +45,6 @@ SurgeoCLI
     :members:
     :noindex:
 
-
 SurgeoGUI
 ~~~~~~~~~
 
@@ -53,6 +52,12 @@ SurgeoGUI
     :members:
     :noindex:
 
+SurgeoCommonEntry
+~~~~~~~~~~~~~~~~~
+
+.. autoclass:: surgeo.app.common_entry.SurgeoCommonEntry
+    :members:
+    :noindex:
 
 Utility Classes
 ---------------
