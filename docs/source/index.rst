@@ -1,5 +1,5 @@
-Welcome to surgeo's documentation!
-==================================
+Surgeo
+======
 
 .. toctree::
 
