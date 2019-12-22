@@ -28,19 +28,13 @@ class GeocodeModel(BaseModel):
     the percentage of a particular race that falls within that ZCTA (e.g.
     .002% of all White US citizens live within this ZIP code).
 
-    References
-    ----------
-    1.  United States Census Bureau. United States Census Summary File
-        1. `<https://www.census.gov/prod/cen2010/doc/sf1.pdf>`_. Last
-        Accessed 2019.12.18.
-
     """
 
     def __init__(self):
         super().__init__()
         self._PROB_RACE_GIVEN_ZCTA = self._get_prob_race_given_zcta()
 
-    def get_probabilities(self, zctas: pd.Series) -> pd.DataFrame:
+    def get_probabilities(self, zctas):
         """Obtain race probabilities for a set of ZIP codes or ZCTAs.
 
         Parameters

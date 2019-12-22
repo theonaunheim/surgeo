@@ -20,20 +20,13 @@ class SurnameModel(BaseModel):
     The surname probability dataframe for this model is generated from the
     `prob_race_given_surname_2010.csv` file.
 
-    References
-    ----------
-    1.  United States Census Bureau. Frequently Occurring Surnames from
-        the 2010 Census.
-        `<https://www.census.gov/topics/population/genealogy/data/2010_surnames.html>`_.
-        Last Accessed 2019.12.18.
-
     """
 
     def __init__(self):
         super().__init__()
         self._PROB_RACE_GIVEN_SURNAME = self._get_prob_race_given_surname()
 
-    def get_probabilities(self, names: pd.Series) -> pd.DataFrame:
+    def get_probabilities(self, names):
         """Obtain race probabilities for a set of surnames.
 
         Parameters

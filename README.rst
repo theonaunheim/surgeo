@@ -41,7 +41,7 @@ To install surgeo as an executable, please see the installer below.
 
 To install as a Python module, you can use pip:
 
-.. code-block:: shell
+.. code-block::
 
     $ pip install surgeo
 
@@ -56,7 +56,7 @@ As a Program
 
 To use the GUI, simply type in "surgeo".
 
-.. code-block:: shell
+.. code-block::
 
     $ surgeo
 
@@ -64,7 +64,7 @@ To use the GUI, simply type in "surgeo".
 
 To use the CLI, type in "surgeo" followed by your arguments.
 
-.. code-block:: shell
+.. code-block::
 
     $ surgeo --help
 

@@ -20,8 +20,8 @@ class BaseModel(object):
 
     Note
     ----
-    Surnames are normalized in a manner consistent with Word et. al (2007),
-    below. This includes removing all whitespace/punctuation/digits,
+    Surnames are normalized in a manner consistent with Word et. al (2007)
+    [#]_. This includes removing all whitespace/punctuation/digits,
     making the strings upper case, and then removing elements such as
     "JR", "SR", "IV" from the tail of the string. AN example would be
     "Dav 3idson" being translated to "DAVIDSON".
@@ -32,7 +32,10 @@ class BaseModel(object):
 
     References
     ----------
-    1.  Word, David L., Charles D. Coleman, Robert Nunziata and Robert
+
+    .. [#]
+
+        Word, David L., Charles D. Coleman, Robert Nunziata and Robert
         Kominski. 2007. Demographic Aspects of Surnames from Census 2000.   
         `<http://www2.census.gov/topics/genealogy/2000surnames/surnames.pdf>`_.
 

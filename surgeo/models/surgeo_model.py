@@ -34,7 +34,7 @@ class SurgeoModel(BaseModel):
     The manner in which the geogrpahy data file was created can be found in
     the "fetch_geography" Jupyter notebook.
 
-    This is based of the following general formula from Elliott et al.
+    This is based of the following general formula from Elliott et al [#]_.
 
     | :math:`q(i \mid j,k) = \Large \frac{u(i,j,k)}{u(1,j,k) \, + \, u(2,j,k) \, + \, u(3,j,k) \, + \, u(4,j,k) \, + \, u(5,j,k) \, + \, u(6,j,k)}`
     |
@@ -58,11 +58,13 @@ class SurgeoModel(BaseModel):
 
     References
     ----------
-    1.  Elliott, M.N., Morrison, P.A., Fremont, A. et al. Using the Census
+
+    .. [#]
+
+        Elliott, M.N., Morrison, P.A., Fremont, A. et al. Using the Census
         Bureau’s surname list to improve estimates of race/ethnicity and
         associated disparities. Health Serv Outcomes Res Method (2009) 9:
-        69.
-        `<https://link.springer.com/article/10.1007/s10742-009-0047-1>`_
+        69. `<https://link.springer.com/article/10.1007/s10742-009-0047-1>`_
 
     """
     def __init__(self):
@@ -70,9 +72,7 @@ class SurgeoModel(BaseModel):
         self._PROB_ZCTA_GIVEN_RACE = self._get_prob_zcta_given_race()
         self._PROB_RACE_GIVEN_SURNAME = self._get_prob_race_given_surname()
 
-    def get_probabilities(self,
-                          names: pd.Series,
-                          zctas: pd.Series) -> pd.DataFrame:
+    def get_probabilities(self, names, zctas):
         """Obtain a set of BISG probabilities for name/ZCTA series
 
         This method first takes the data and checks to see if the data is

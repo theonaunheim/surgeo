@@ -1,6 +1,11 @@
 Background
 ==========
 
+.. note::
+
+    If you are only looking for how to use Surgeo and are not interested in
+    the mechanics, please skip to `Usage`_.
+
 There are a variety of mechanisms by which one can impute race based one
 generally available characaristics. Two popular approaches are
 surname-based and location-based.
@@ -28,8 +33,7 @@ location-based approaches alone [#]_. To do this we take the probability
 of race given a particular surname (prior probability) and then multiply
 it by ratio of the population in a particular geograpahical area given that
 race. The result is an updated (posterior) probability of race given both a
-particular surname and geographic area. This is summarized by the following
-formula.
+particular surname and geographic area.
 
 For additional detail on how this works, please see `BISG by Example`_.
 
@@ -46,23 +50,4 @@ For additional detail on how this works, please see `BISG by Example`_.
     Elliott, M.N., Morrison, P.A., Fremont, A. et al. "Using the Census
     Bureau’s surname list to improve estimates of race/ethnicity and
     associated disparities". Health Serv Outcomes Res Method (2009) 9:
-    69.
-    `<https://link.springer.com/article/10.1007/s10742-009-0047-1>`_
-
-
-
-
-Surgeo uses United States Census data from the 2010 Census. This contains
-
-The United States Census fat
-
-.. warning:: 
-
-    ZIP Code Tabulation Areas (ZCTAs) are not identical to ZIP codes.
-    Because ZIP codes change from year-to-year, the Census Bureau uses
-    what it calls ZCTAs. These ZCTAs are rough approximations of the ZIP
-    code geographic area--but it remains static after being created.
-
-.. warning::
-
-    Racial / Ethnic Groups
+    69. `<https://link.springer.com/article/10.1007/s10742-009-0047-1>`_

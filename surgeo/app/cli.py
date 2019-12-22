@@ -30,13 +30,13 @@ class SurgeoCLI(object):
 
     Example
     -------
-        .. code-block:: shell
+        .. code-block::
 
             $ surgeo --help
 
-            usage: executable.py [-h] [--zcta_column ZCTA_COLUMN]
-                                [--surname_column SURNAME_COLUMN]
-                                input output type
+            usage: cli.py [-h] [--zcta_column ZCTA_COLUMN]
+                          [--surname_column SURNAME_COLUMN]
+                          input output type
 
             Get Surgeo arguments.
 
