@@ -20,7 +20,7 @@ sys.path.append(str(
 # -- Project information -----------------------------------------------------
 
 project = 'surgeo'
-copyright = '2019, Theo Naunheim'
+copyright = '2020, Theo Naunheim'
 author = 'Theo Naunheim'
 release = '1.0.1'
 version = '1.0.1'

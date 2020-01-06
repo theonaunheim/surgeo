@@ -68,7 +68,7 @@ To use the CLI, type in "surgeo" followed by your arguments.
 
     $ surgeo --help
 
-    usage: executable.py [-h] [--zcta_column ZCTA_COLUMN]
+    usage: surgeo [-h] [--zcta_column ZCTA_COLUMN]
                         [--surname_column SURNAME_COLUMN]
                         input output type
 
