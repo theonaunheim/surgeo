@@ -1,4 +1,4 @@
-"""Containins the base model for Surname, Geocode, and Surgeo models."""
+"""Contains the base model for Surname, Geocode, and Surgeo models."""
 
 import pathlib
 import string

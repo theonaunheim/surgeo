@@ -10,10 +10,18 @@ path = str(repo_dir)
 sys.path.append(path)
 
 # Import test modules
+# import app.test_cli
+# import app.test_common_entry
+# import app.test_gui
+import models.test_base_model
+# import models.test_geocode_model
+# import models.test_surgeo_model
+# import models.test_surname_model
+# import utility.test_surgeo_exception
 
 # List test modules
 test_modules = [
-
+    models.test_base_model
 ]
 
 # Create loader and suite
