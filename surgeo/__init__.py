@@ -4,4 +4,4 @@ from .models.geocode_model import GeocodeModel
 from .models.surname_model import SurnameModel
 from .models.surgeo_model import SurgeoModel
 
-VERSION = '2010.1.1'
+VERSION = '1.0.1'

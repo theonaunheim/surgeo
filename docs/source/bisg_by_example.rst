@@ -29,14 +29,15 @@ we use to calculate these probabilties is:
 The steps for performing this calculation are broken down below. Generally
 speaking, the steps are:
 
-1. Obtain probability for :math:`P(i \mid j)` (probability of race given
-   surname) and :math:`r(k \mid i)` (proprtion of ZCTA given race);
+1. Obtain :math:`P(i \mid j)` (probability of race given surname) and
+   :math:`r(k \mid i)` (proprtion of ZCTA given race);
 2. Multiply each probability with each proprtion on a race-by-race basis to
-   obtain :math:`u(i,j,k)` (probability of race given a particular ZCTA and
-   surname) for each race; and then,
-3. Divide the probability of each individual race probability by the sum of
-   all race probabilities to obtain conditional probabilities adding up to
-   1.
+   obtain :math:`u(i,j,k)` (probability intermediate) for each race; and
+   then,
+3. Divide the posterior probability of each individual race dividing the
+   intermediate above by the sum of all intermediates to give
+   :math:`q(i \mid j,k)` (the probability of race given a surname and ZIP
+   code).
 
 Surname Data (Obtaining :math:`P(i \mid j)`)
 --------------------------------------------
@@ -91,7 +92,75 @@ mathematically as :math:`r(k \mid i)`.
 Multiplying Probabilities (Obtaining :math:`u(i,j,k)`)
 ------------------------------------------------------
 
-:math:`\hspace{25px} u(i,j,k) = P(i \mid j) \times r(k \mid i)`
+The next step is to multiply our vectors together to obtain
+:math:`u(i,j,k)`, which is an intermediate used to calculate the final
+posterior probability. This uses is a simple element-wise multiplication
+operation defined by:
 
+:math:`u(i,j,k) = P(i \mid j) \times r(k \mid i)`
 
+Step-by-step, we can take the numbers above from :math:`P(i \mid j)`:
 
++--------+--------+--------+--------+----------+-----------+
+| White  | Black  | API    | Native | Multiple | Hispanic  |
++========+========+========+========+==========+===========+
+| 0.0538 | 0.0045 | 0.0141 | 0.0047 | 0.0026   | 0.9203    |
++--------+--------+--------+--------+----------+-----------+
+
+... and then multiply it by our numbers for :math:`r(k \mid i)`:
+
++----------+----------+----------+----------+-----------+-------------+
+| White    | Black    | API      | Native   | Multiple  | Hispanic    |
++==========+==========+==========+==========+===========+=============+
+| 0.000039 | 0.000007 | 0.000037 | 0.000005 | 0.000025  | 0.000005    |
++----------+----------+----------+----------+-----------+-------------+
+
+... which then results in :math:`u(i,j,k)`:
+
++----------+----------+----------+----------+-----------+-------------+
+| White     | Black   | API      | Native   | Multiple  | Hispanic    |
++==========+==========+==========+==========+===========+=============+
+| 2.07e-06 | 3.04e-08 | 5.21e-07 | 2.30e-08 | 6.48e-08  | 4.33e-06    |
++----------+----------+----------+----------+-----------+-------------+
+
+As you can see from the above, the "White" probability for this surname is
+0.0538 and the "White" proportion for this ZIP is .000039. If we multiply
+0.0538 times .000039, we get 0.00000207. This is also done for the
+remaining races.
+
+Obtaining Final Probability Vector (:math:`q(i \mid j,k)`
+---------------------------------------------------------
+
+The final step is defined by the following equation:
+
+:math:`q(i \mid j,k) = \Large \frac{u(i,j,k)}{u(1,j,k) \, + \, u(2,j,k) \, + \, u(3,j,k) \, + \, u(4,j,k) \, + \, u(5,j,k) \, + \, u(6,j,k)}`
+
+What this means is simply that in order to obtain our final probability for
+a given race :math:`i`, we must take the intermediate value for that race
+and then divide it by the sum of all races. For example, to run This
+calculation for "White" the formula would read:
+
+:math:`q(\text{white} \mid j,k) = \Large \frac{u(\text{white},j,k)}{u(\text{hispanic},j,k) \, + \, u(\text{white},j,k) \, + \, u(\text{black},j,k) \, + \, u(\text{api},j,k) \, + \, u(\text{native},j,k) \, + \, u(\text{multi},j,k)}`
+
+And pluging in the intermediate values from :math:`u(i,j,k)`:
+
++----------+----------+----------+----------+-----------+-------------+
+| White     | Black   | API      | Native   | Multiple  | Hispanic    |
++==========+==========+==========+==========+===========+=============+
+| 2.07e-06 | 3.04e-08 | 5.21e-07 | 2.30e-08 | 6.48e-08  | 4.33e-06    |
++----------+----------+----------+----------+-----------+-------------+
+
+We would have the following calculation for "White" (29.4%):
+
+:math:`.294 = \Large \frac{2.07e-06}{4.33e-06 \, + \, 2.07e-06 \, + \, 3.04e-08 \, + \, 5.21e-07 \, + \, 2.30e-08 \, + \, 6.48e-08 }`
+
+And the following final percentages for "GARCIA" and "63144":
+
++----------+---------+----------+----------+-----------+-------------+
+| White    | Black   | API      | Native   | Multiple  | Hispanic    |
++==========+=========+==========+==========+===========+=============+
+| .294     | .004    | .084     | .003     | .009      | .615        |
++----------+---------+----------+----------+-----------+-------------+
+
+This comes out very much like we might expect--the 63144 ZIP skews White,
+but "GARCIA" is overwhelmingly a Hispanic.

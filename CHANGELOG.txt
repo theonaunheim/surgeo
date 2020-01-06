@@ -11,6 +11,6 @@ v.0.7.0:
 ========
 -Quick fix. Previous version weighted stdev was incorrect.
 
-v.2010.1.0:
+v.1.0.1:
 ========
--Ground up re-write using pandas using 2010 census data.
+-Complete re-write using pandas and 2010 census data for surname/geocoding.

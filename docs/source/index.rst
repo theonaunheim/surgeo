@@ -10,9 +10,9 @@ Surgeo
 
 .. include:: background.rst
 
-.. include:: bisg_by_example.rst
-
 .. include:: usage.rst
+
+.. include:: bisg_by_example.rst
 
 .. include:: class_documentation.rst
 
