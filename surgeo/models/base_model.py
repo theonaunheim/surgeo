@@ -101,17 +101,17 @@ class BaseModel(object):
                  .astype(str)
                  .str.translate(translation_table)
                  .str.upper()
-                 .str.replace(r'\sJ\.*R\.*\s*$', '')
-                 .str.replace(r'\sS\.*R\.*\s*$', '')
-                 .str.replace(r'\sIII\s*$',      '')
-                 .str.replace(r'\sIV\s*$',       '')
+                 .str.replace(r'\s?J\.*?R\.*\s*?$', '')
+                 .str.replace(r'\s?S\.*?R\.*\s*?$', '')
+                 .str.replace(r'\s?III\s*?$',      '')
+                 .str.replace(r'\s?IV\s*?$',       '')
         )
         output.name = 'name'
         return output
 
     def _normalize_zctas(self, zcta: pd.Series) -> pd.Series:
         """Transform ZCTAs into standardized strings"""
-        converted = pd.Series(zcta.values, dtype=str)
+        converted = pd.Series(zcta.values, dtype=str).str.strip()
         zfilled = converted.str.zfill(5)
         zfilled.name = 'zcta5'
         return zfilled

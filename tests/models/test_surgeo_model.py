@@ -1,7 +1,13 @@
 import unittest
 
+import pandas as pd
 
-class TestStub(unittest.TestCase):
+from surgeo.models.surgeo_model import SurgeoModel
+
+
+class TestSurgeoModel(unittest.TestCase):
+
+    _SURGEO_MODEL = SurgeoModel()
 
     def setUp(self):
         pass
@@ -9,6 +15,8 @@ class TestStub(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def test_get_probabilities(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

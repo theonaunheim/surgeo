@@ -14,14 +14,21 @@ sys.path.append(path)
 # import app.test_common_entry
 # import app.test_gui
 import models.test_base_model
-# import models.test_geocode_model
-# import models.test_surgeo_model
+import models.test_geocode_model
+import models.test_surgeo_model
 # import models.test_surname_model
 # import utility.test_surgeo_exception
 
 # List test modules
 test_modules = [
-    models.test_base_model
+    # app.test_cli,
+    # app.test_common_entry,
+    # app.test_gui,
+    models.test_base_model,
+    models.test_geocode_model,
+    models.test_surgeo_model,
+    # models.test_surname_model,
+    # utility.test_surgeo_exception,
 ]
 
 # Create loader and suite
