@@ -18,5 +18,6 @@ class TestSurgeoModel(unittest.TestCase):
     def test_get_probabilities(self):
         pass
 
+
 if __name__ == '__main__':
     unittest.main()
