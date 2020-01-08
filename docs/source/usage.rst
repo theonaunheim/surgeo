@@ -68,7 +68,7 @@ To use the CLI, type in "surgeo" followed by your arguments. The first
 argument is the input file path, the second argument is the output file
 path, and the third argument is the model being used. There are also
 optional argument to define the name of the ZCTA and surname columns if
-they are not the defaults ("zcta5" and "surname" respectively).
+they are not the defaults ("zcta5" and "name" respectively).
 
 .. code-block::
 

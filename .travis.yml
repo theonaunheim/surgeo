@@ -1,2 +1,4 @@
 language: python
 script: python ./tests/test_runner.py
+before_script:
+- export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
