@@ -35,12 +35,6 @@ class TestSurgeoModel(unittest.TestCase):
 
     _GET_GEOCODE_PROBS_WHITE_RESULT = pd.Series([0.000163, 0.000039, 0.000045])
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def test_get_probabilities(self):
         """Test Surgeo model versus known result"""
         # Get probs

@@ -26,12 +26,6 @@ class TestGeocodeModel(unittest.TestCase):
         0.0
     ])
 
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def test_get_probabilities(self):
         """Test Geocode model versus known result"""
         # Get our data and clean it

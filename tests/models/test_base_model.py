@@ -14,21 +14,19 @@ class TestBaseModel(unittest.TestCase):
         ' D\'angelo'  : 'DANGELO',
         'DE SANTIS '  : 'DESANTIS',
     }
+
     _NORMALIZED_ZCTA_MAPPING = {
         63144   : '63144',
         631     : '00631',
         '65201' : '65201',
         ' 63110': '63110',
     }
+
     _BASE_MODEL = BaseModel()
+
     _ZCTA_DF_LENGTH = 33_223
+    
     _SURNAME_DF_LENGTH = 162_254
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
 
     def test_get_prob_race_given_zcta(self):
         """Check function returns appropriate race given ZCTA df"""
