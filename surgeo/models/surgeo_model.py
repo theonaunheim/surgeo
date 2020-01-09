@@ -2,8 +2,8 @@
 
 import pandas as pd
 
-from .base_model import BaseModel
-from ..utility.surgeo_exception import SurgeoException
+from surgeo.models.base_model import BaseModel
+from surgeo.utility.surgeo_exception import SurgeoException
 
 
 class SurgeoModel(BaseModel):

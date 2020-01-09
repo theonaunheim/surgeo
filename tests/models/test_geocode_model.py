@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 import numpy as np
@@ -10,30 +11,27 @@ class TestGeocodeModel(unittest.TestCase):
 
     _GEOCODE_MODEL = GeocodeModel()
 
-    _GEOCODE_DATA = pd.Series([
-        '63144',
-        '631',
-        ' 63110',
-        'Will fail',
-        np.NaN,
-    ])
-
-    _GEOCODE_WHITE_RESULT = pd.Series([
-        0.861114,
-        0.003240,
-        0.518377,
-        0.0,
-        0.0
-    ])
+    _DATA_FOLDER = pathlib.Path(__file__).resolve().parents[1] / 'data'
 
     def test_get_probabilities(self):
         """Test Geocode model versus known result"""
         # Get our data and clean it
-        result = self._GEOCODE_MODEL.get_probabilities(self._GEOCODE_DATA)
-        clean_result = result['white'].round(6).fillna(0.0)
+        input_data = pd.read_csv(
+            self._DATA_FOLDER / 'geocode_input.csv',
+            skip_blank_lines=False,
+        )
+        # Get prob
+        result = self._GEOCODE_MODEL.get_probabilities(input_data['zcta5'])
+        # Get true result
+        true_result = pd.read_csv(
+            self._DATA_FOLDER / 'geocode_output.csv',             
+        )
+        # Clean for consistency
+        result = result.round(4).fillna('')
+        true_result = result.round(4).fillna('')
         # Check that all items in the series are equal
         self.assertTrue(
-            (clean_result == self._GEOCODE_WHITE_RESULT).all()
+            result.equals(true_result)
         )
 
 

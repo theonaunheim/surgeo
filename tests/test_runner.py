@@ -1,13 +1,5 @@
 """Script to create and run a test suite."""
-import pathlib
-import sys
 import unittest
-
-# Add surgeo directory to path
-this_file = pathlib.Path(__file__).absolute()
-repo_dir = this_file.parents[1]
-path = str(repo_dir)
-sys.path.append(path)
 
 # Import test modules
 import app.test_cli

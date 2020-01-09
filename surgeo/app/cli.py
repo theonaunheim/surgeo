@@ -7,10 +7,6 @@ import traceback
 
 import pandas as pd
 
-# Jury rig path
-path_dir = pathlib.Path(__file__).resolve().parents[2]
-sys.path.append(str(path_dir))
-
 import surgeo
 
 from surgeo.utility.surgeo_exception import SurgeoException
@@ -99,7 +95,10 @@ class SurgeoCLI(object):
             df = pd.read_excel(self._input_path)
         # If CSV, read read_csv()
         elif suffix == '.csv':
-            df = pd.read_csv(self._input_path)
+            df = pd.read_csv(
+                self._input_path, 
+                skip_blank_lines=False,
+            )
         # If path is unrecognized, throw error
         else:
             raise SurgeoException(

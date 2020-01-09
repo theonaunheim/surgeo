@@ -3,10 +3,6 @@
 import pathlib
 import sys
 
-# Jury rig path
-path_dir = pathlib.Path(__file__).resolve().parents[2]
-sys.path.append(str(path_dir))
-
 import surgeo
 
 from surgeo.app.cli import SurgeoCLI

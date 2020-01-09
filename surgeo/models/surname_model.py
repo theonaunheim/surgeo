@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from .base_model import BaseModel
+from surgeo.models.base_model import BaseModel
 
 
 class SurnameModel(BaseModel):
