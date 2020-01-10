@@ -5,11 +5,13 @@ Surgeo
 
 .. image:: static/logo.gif
 
-|rtd_badge| |travis_badge|
+|rtd_badge| |travis_badge| |shieldio_badge|
 
 .. |rtd_badge| image:: https://readthedocs.org/projects/surgeo/badge/?version=dev
 
 .. |travis_badge| image:: https://travis-ci.org/theonaunheim/surgeo.svg?branch=dev
+
+.. |shieldio_badge| image:: https://badge.fury.io/py/surgeo.svg
 
 The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/dev/>`_
 
