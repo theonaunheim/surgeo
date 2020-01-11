@@ -1,7 +1,5 @@
 os:
   - windows
-  - osx
-  - linux
 
 language: 
   - python
