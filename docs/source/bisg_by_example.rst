@@ -39,8 +39,8 @@ speaking, the steps are:
    :math:`q(i \mid j,k)` (the probability of race given a surname and ZIP
    code).
 
-Surname Data (Obtaining :math:`P(i \mid j)`)
---------------------------------------------
+Using Surname Data To Obtaining :math:`P(i \mid j)`
+---------------------------------------------------
 
 According to the Census Bureau data, the surname "GARCIA" has the following
 racial/ethnic probabilities.
@@ -64,8 +64,8 @@ In other words, these are the probabilities (:math:`P`) of a race
 mathematically as :math:`P(i \mid j)`. It is the so-called "prior
 probability" that we will be updating with our location information.
 
-Geocode Data (Obtaining :math:`r(k \mid i)`)
---------------------------------------------
+Using Geocoding Data to Obtain :math:`r(k \mid i)`
+--------------------------------------------------
 
 According to Census Bureau data, the ZIP code "63144" contains this
 proportion of the United State's race populations.
@@ -89,8 +89,8 @@ etc. In other words, these are the proportions (:math:`r`) of a selected
 ZIP (:math:`k`) given a particular race (:math:`i`), which is represented
 mathematically as :math:`r(k \mid i)`.
 
-Multiplying Probabilities (Obtaining :math:`u(i,j,k)`)
-------------------------------------------------------
+Multiplying Probabilities to Obtain :math:`u(i,j,k)`
+----------------------------------------------------
 
 The next step is to multiply our vectors together to obtain
 :math:`u(i,j,k)`, which is an intermediate used to calculate the final
@@ -128,8 +128,8 @@ As you can see from the above, the "White" probability for this surname is
 0.0538 times .000039, we get 0.00000207. This is also done for the
 remaining races.
 
-Obtaining Final Probability Vector (:math:`q(i \mid j,k)`
----------------------------------------------------------
+Obtaining Final Probability Vector :math:`q(i \mid j,k)`
+--------------------------------------------------------
 
 The final step is defined by the following equation:
 
@@ -140,7 +140,7 @@ a given race :math:`i`, we must take the intermediate value for that race
 and then divide it by the sum of all races. For example, to run This
 calculation for "White" the formula would read:
 
-:math:`q(\text{white} \mid j,k) = \Large \frac{u(\text{white},j,k)}{u(\text{hispanic},j,k) \, + \, u(\text{white},j,k) \, + \, u(\text{black},j,k) \, + \, u(\text{api},j,k) \, + \, u(\text{native},j,k) \, + \, u(\text{multi},j,k)}`
+:math:`q(\text{white} \mid \text{Garcia},\text{63144}) = \Large \frac{u(\text{white},\text{Garcia},\text{63144})}{u(\text{hispanic},\text{Garcia},\text{63144}) \, + \, u(\text{white},\text{Garcia},\text{63144}) \, + \, u(\text{black},\text{Garcia},\text{63144}) \, + \, u(\text{api},\text{Garcia},\text{63144}) \, + \, u(\text{native},\text{Garcia},\text{63144}) \, + \, u(\text{multi},\text{Garcia},\text{63144})}`
 
 And pluging in the intermediate values from :math:`u(i,j,k)`:
 
