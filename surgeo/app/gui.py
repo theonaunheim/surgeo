@@ -63,12 +63,13 @@ class SurgeoGUI(object):
         # Bind enter to a function that starts the analysis
         self._objects['root'].bind('<Return>', self._execute)
         # Add icon
+        app_static = pathlib.Path(__file__).resolve().parents[1] / 'static'
         self._objects['root'].tk.call(
             'wm', 
             'iconphoto', 
             self._objects['root']._w, 
             tk.PhotoImage(
-                file=str(path_dir / 'surgeo' / 'static' / 'logo.gif')
+                file=str(app_static / 'logo.gif')
             )
         )
 
@@ -282,7 +283,7 @@ class SurgeoGUI(object):
             )
         return df
 
-    def _execute(self, event=None):
+    def _execute(self, event=None, show_msgbox=True):
         """This takes all the user inputs and runs the analysis.
         
         It can be triggered by the enter key (in which case it supplied an
@@ -333,14 +334,16 @@ class SurgeoGUI(object):
             else:
                 output_df.to_csv(output_var, index=False)
             # Show message on success
-            messagebox.showinfo(
-                'Success',
-                f'{len(output_df)} items successfully written.'
-            )
+            if show_msgbox:
+                messagebox.showinfo(
+                    'Success',
+                    f'{len(output_df)} items successfully written.'
+                )
         except Exception:
             # Show error box on fail
             err = traceback.format_exc()
-            messagebox.showerror('Error', err)
+            if show_msgbox:
+                messagebox.showerror('Error', err)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='surgeo',
-    version='1.0-alpha.1',
+    version='1.0-beta.1',
     description='Bayesian Improved Surname Geocoder model',
     long_description="""
         Surgeo is an impelmentation of the Bayesian Improved Surname
@@ -27,7 +27,7 @@ setup(
         'race'
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
     ],
     requires=[
@@ -36,5 +36,5 @@ setup(
         'xlrd',
     ],
     package_dir={'surgeo': './surgeo'},
-    package_data={'surgeo': ['./data/*']},
+    package_data={'surgeo': ['./data/*', './static/*']},
 )
