@@ -3,7 +3,7 @@ language:
 
 # http://craigthomas.ca/blog/2014/05/26/travis-ci-and-gui-testing/
 before_install:
-  - sh -e /etc/init.d/xvfb
+  - sh -e /etc/init.d/xvfb start
 
 install:
   - pip install -r requirements.txt
