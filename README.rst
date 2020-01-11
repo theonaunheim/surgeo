@@ -1,8 +1,6 @@
 Surgeo
 ==============
 
-**THIS IS THE DEVELOPMENT BRANCH. NOT FOR PRODUCTION.**
-
 .. image:: static/logo.gif
 
 |rtd_badge| |travis_badge| |shieldio_badge|
