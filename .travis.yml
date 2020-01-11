@@ -1,12 +1,8 @@
-os:
-  - windows
-
 language: 
   - python
 
 install:
   - pip install -r requirements.txt
-  - pip install cx_Freeze
 
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
