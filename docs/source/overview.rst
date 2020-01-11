@@ -14,10 +14,10 @@ analysis, including:
 2.  A command line interface (CLI) for automating batch processing; and,
 3.  A graphical user interface (GUI) for one-off batch processing.
 
-The base data for this module is sourced from publically available 2010
-United States Census files, specifically the `Summary File 1 dataset`_ and
-the `Frequently Occuring Surnames dataset`_.
+The base data for this module is sourced from publicly available 2010
+United States Census files, specifically the `Summary File 1 data set`_ and
+the `Frequently Occurring Surnames data set`_.
 
-.. _Summary File 1 dataset: https://www.census.gov/data/datasets/2010/dec/summary-file-1.html
+.. _Summary File 1 data set: https://www.census.gov/data/datasets/2010/dec/summary-file-1.html
 
-.. _Frequently Occuring Surnames dataset: https://www.census.gov/topics/population/genealogy/data/2010_surnames.html
+.. _Frequently Occurring Surnames data set: https://www.census.gov/topics/population/genealogy/data/2010_surnames.html
