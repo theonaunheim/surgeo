@@ -1,11 +1,17 @@
 language: 
   - python
 
+# http://craigthomas.ca/blog/2014/05/26/travis-ci-and-gui-testing/
+before_install:
+  - sh -e /etc/init.d/xvfb
+
 install:
   - pip install -r requirements.txt
 
+# http://craigthomas.ca/blog/2014/05/26/travis-ci-and-gui-testing/
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
+  - export DISPLAY=:99.0
 
 script:
   - python ./tests/test_runner.py
