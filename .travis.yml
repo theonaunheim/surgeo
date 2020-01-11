@@ -8,10 +8,8 @@ services:
 install:
   - pip install -r requirements.txt
 
-# http://craigthomas.ca/blog/2014/05/26/travis-ci-and-gui-testing/
-before_script:
-  - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
-#  - export DISPLAY=:99.0
+#before_script:
+#  - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
 
 script:
   - python ./tests/test_runner.py
