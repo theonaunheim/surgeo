@@ -1,11 +1,17 @@
 os:
-- windows
-- osx
-- linux
+  - windows
+  - osx
+  - linux
 
-language: python
+language: 
+  - python
+
+install:
+  - pip install -r requirements.txt
+  - pip install cx_Freeze
 
 before_script:
-- export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
+  - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
 
-script: python ./tests/test_runner.py
+script:
+  - python ./tests/test_runner.py
