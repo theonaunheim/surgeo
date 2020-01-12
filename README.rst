@@ -54,11 +54,14 @@ follow.
 As a Program
 ~~~~~~~~~~~~
 
-To use the GUI, simply type in "surgeo".
+To use the GUI, simply type in "surgeo_gui" or use the Start Menu after
+installing the executable.
 
 .. code-block::
 
-    $ surgeo
+    $ surgeo_gui
+    # Or alternatively if you have installed the module
+    $ python -m surgeo
 
 .. image:: ./static/gui_example.gif
 
@@ -66,9 +69,11 @@ To use the CLI, type in "surgeo" followed by your arguments.
 
 .. code-block::
 
-    $ surgeo --help
+    $ surgeo_cli --help
+    # Or alternatively if you have installed the module
+    $ python -m surgeo -h
 
-    usage: surgeo [-h] [--zcta_column ZCTA_COLUMN]
+    usage: surgeo_cli [-h] [--zcta_column ZCTA_COLUMN]
                         [--surname_column SURNAME_COLUMN]
                         input output type
 

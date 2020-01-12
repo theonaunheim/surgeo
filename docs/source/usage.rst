@@ -51,7 +51,8 @@ The available models are:
 As a Program
 ------------
 
-To use the GUI, type in "surgeo". 
+To use the GUI, type in "surgeo_gui" into your shell or open the
+application in your Start Menu (Windows only).
 
 Simply supply the input and output file paths as required and then select
 the model type. Then select any column names in your .xlsx/.csv associated
@@ -60,11 +61,13 @@ output file.
 
 .. code-block::
 
-    $ surgeo
+    $ surgeo_gui
+    # Or alternatively if you have installed the module
+    $ python -m surgeo
 
 .. image:: ./_static/gui_example.gif
 
-To use the CLI, type in "surgeo" followed by your arguments. The first
+To use the CLI, type in "surgeo_cli" followed by your arguments. The first
 argument is the input file path, the second argument is the output file
 path, and the third argument is the model being used. There are also
 optional argument to define the name of the ZCTA and surname columns if
@@ -72,9 +75,11 @@ they are not the defaults ("zcta5" and "name" respectively).
 
 .. code-block::
 
-    $ surgeo --help
+    $ surgeo_cli --help
+    # Or alternatively if you have installed the module
+    $ python -m surgeo -h
 
-    usage: surgeo [-h] [--zcta_column ZCTA_COLUMN]
+    usage: surgeo_cli [-h] [--zcta_column ZCTA_COLUMN]
                         [--surname_column SURNAME_COLUMN]
                         input output type
 
