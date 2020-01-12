@@ -12,7 +12,7 @@ import surgeo
 from surgeo.utility.surgeo_exception import SurgeoException
 from surgeo.models.geocode_model import GeocodeModel
 from surgeo.models.surgeo_model import SurgeoModel
-from surgeo.models.surname import SurnameModel
+from surgeo.models.surname_model import SurnameModel
 
 
 class SurgeoCLI(object):
