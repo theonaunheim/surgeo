@@ -6,7 +6,7 @@ services:
 
 install:
   - pip install -r requirements.txt
-  - python setup.py install
+  - python ./setup.py install
 
 #before_script:
 #  - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
@@ -14,5 +14,3 @@ install:
 script:
   - python ./tests/test_runner.py
 
-virtualenv:
-  system_site_packages: true
