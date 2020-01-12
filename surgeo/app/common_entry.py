@@ -5,8 +5,8 @@ import sys
 
 import surgeo
 
-from surgeo.app.cli import SurgeoCLI
-from surgeo.app.gui import SurgeoGUI
+from surgeo.app.surgeo_cli import SurgeoCLI
+from surgeo.app.surgeo_gui import SurgeoGUI
 
 
 class SurgeoCommonEntry(object):

@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-import surgeo.app.cli
+import surgeo.app.surgeo_cli
 
 
 class TestSurgeoCLI(unittest.TestCase):

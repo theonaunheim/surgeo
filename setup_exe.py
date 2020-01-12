@@ -2,9 +2,6 @@
 from cx_Freeze import setup
 from cx_Freeze import Executable
 
-# cx_Freeze option
-BASE = 'Win32GUI'
-
 OPTIONS = {
     'bdist_msi': {
         "add_to_path": True,
@@ -17,11 +14,16 @@ setup(
     # cx_Freeze setup.py
     executables=[
         Executable(
-            "./surgeo/app/common_entry.py", 
-            base=BASE,
-            shortcutName='surgeo',
+            "./surgeo/app/surgeo_gui.py", 
+            base='Win32GUI',
+            shortcutName='surgeo_gui',
             shortcutDir='ProgramMenuFolder',
-        )
+        ),
+        Executable(
+            "./surgeo/app/surgeo_cli.py", 
+            shortcutName='surgeo_cli',
+            shortcutDir='ProgramMenuFolder',
+        ),
     ],
     options=OPTIONS,
     # Normal setup.py

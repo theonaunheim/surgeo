@@ -8,7 +8,7 @@ import tkinter as tk
 import numpy as np
 import pandas as pd
 
-import surgeo.app.gui
+import surgeo.app.surgeo_gui
 
 
 class TestSurgeoGUI(unittest.TestCase):
