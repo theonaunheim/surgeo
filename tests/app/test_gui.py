@@ -27,7 +27,7 @@ class TestSurgeoGUI(unittest.TestCase):
             .resolve()
     )
 
-    _GUI = surgeo.app.gui.SurgeoGUI()
+    _GUI = surgeo.app.surgeo_gui.SurgeoGUI()
 
     @classmethod
     def setUpClass(cls):
