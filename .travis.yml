@@ -1,12 +1,22 @@
 language: 
-  - python
+  os: linux
+    - python
+  os: osx
+    - script
+  os: windows
+    - script
 
 # https://docs.travis-ci.com/user/gui-and-headless-browsers/
 services:
+  os: osx
   - xvfb
+  os: linux
+  - xvfb
+  os: windows
 
 install:
   - pip install -r requirements.txt
+  - python setup.py install
 
 #before_script:
 #  - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
