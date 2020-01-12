@@ -10,9 +10,9 @@ import pandas as pd
 import surgeo
 
 from surgeo.utility.surgeo_exception import SurgeoException
-from surgeo import GeocodeModel
-from surgeo import SurgeoModel
-from surgeo import SurnameModel
+from surgeo.models.geocode_model import GeocodeModel
+from surgeo.models.surgeo_model import SurgeoModel
+from surgeo.models.surname import SurnameModel
 
 
 class SurgeoCLI(object):
