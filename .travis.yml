@@ -13,3 +13,6 @@ install:
 
 script:
   - python ./tests/test_runner.py
+
+virtualenv:
+  system_site_packages: true
