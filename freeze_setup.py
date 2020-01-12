@@ -1,9 +1,19 @@
-from distutils.core import setup
+#from distutils.core import setup
+from cx_Freeze import setup
+from cx_Freeze import Executable
 
+# cx_Freeze option
+BASE = 'Win32GUI'
 
 setup(
+    # cx_Freeze setup.py
+    executables=[Executable("./surgeo/app/common_entry.py", base=BASE)],
+    target_name='surgeo',
+    add_to_path=True,
+    install_icon='./static/logo.gif',
+    # Normal setup.py
     name='surgeo',
-    version='1.0-beta.1',
+    version='1.0.1',
     description='Bayesian Improved Surname Geocoder model',
     long_description="""
         Surgeo is an impelmentation of the Bayesian Improved Surname
