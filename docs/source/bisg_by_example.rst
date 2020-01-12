@@ -118,7 +118,7 @@ Step-by-step, we can take the numbers above from :math:`P(i \mid j)`:
 ... which then results in :math:`u(i,j,k)`:
 
 +----------+----------+----------+----------+-----------+-------------+
-| White     | Black   | API      | Native   | Multiple  | Hispanic    |
+| White    |  Black   | API      | Native   | Multiple  | Hispanic    |
 +==========+==========+==========+==========+===========+=============+
 | 2.07e-06 | 3.04e-08 | 5.21e-07 | 2.30e-08 | 6.48e-08  | 4.33e-06    |
 +----------+----------+----------+----------+-----------+-------------+

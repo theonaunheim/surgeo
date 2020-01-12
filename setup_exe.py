@@ -5,12 +5,25 @@ from cx_Freeze import Executable
 # cx_Freeze option
 BASE = 'Win32GUI'
 
+OPTIONS = {
+    'bdist_msi': {
+        "add_to_path": True,
+        "target_name": "surgeo",
+        "all_users": True,
+    }
+}
+
 setup(
     # cx_Freeze setup.py
-    executables=[Executable("./surgeo/app/common_entry.py", base=BASE)],
-    target_name='surgeo',
-    add_to_path=True,
-    install_icon='./static/logo.gif',
+    executables=[
+        Executable(
+            "./surgeo/app/common_entry.py", 
+            base=BASE,
+            shortcutName='surgeo',
+            shortcutDir='ProgramMenuFolder',
+        )
+    ],
+    options=OPTIONS,
     # Normal setup.py
     name='surgeo',
     version='1.0.1',
