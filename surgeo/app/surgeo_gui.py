@@ -39,6 +39,16 @@ class SurgeoGUI(object):
     def __init__(self):
         # Create dictionary to track all objects and populate with root
         self._objects = {'root': tk.Tk()}
+        # https://cx-freeze.readthedocs.io/en/latest/faq.html#using-data-files
+        # If it's frozen, we can't use __file__
+        if getattr(sys, 'frozen', False):
+            # The application is frozen
+            freeze_package = pathlib.Path(sys.executable).parents[1]
+            self._package_root = freeze_package / 'lib' / 'surgeo'
+        else:
+            # The application is not frozen
+            self._package_root = pathlib.Path(__file__).parents[1]
+        self._app_static = self._package_root / 'app' / 'static'
 
     def main(self):
         """This is the entry point for the GUI program.
@@ -63,13 +73,12 @@ class SurgeoGUI(object):
         # Bind enter to a function that starts the analysis
         self._objects['root'].bind('<Return>', self._execute)
         # Add icon
-        app_static = pathlib.Path(__file__).resolve().parents[1] / 'static'
         self._objects['root'].tk.call(
             'wm', 
             'iconphoto', 
             self._objects['root']._w, 
             tk.PhotoImage(
-                file=str(app_static / 'logo.gif')
+                file=str(self._app_static / 'logo.gif')
             )
         )
 
