@@ -13,7 +13,7 @@ import surgeo.app.surgeo_cli
 
 class TestSurgeoCLI(unittest.TestCase):
 
-    _CLI_SCRIPT = surgeo.app.cli.__file__
+    _CLI_SCRIPT = surgeo.app.surgeo_cli.__file__
 
     _DATA_FOLDER = pathlib.Path(__file__).resolve().parents[1] / 'data'
 
