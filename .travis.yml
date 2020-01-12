@@ -8,8 +8,8 @@ install:
   - pip install -r requirements.txt
   - python ./setup.py install
 
-#before_script:
-#  - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
+before_script:
+  - export PYTHONPATH=$PYTHONPATH:$(pwd)/surgeo/
 
 script:
   - python ./tests/test_runner.py
