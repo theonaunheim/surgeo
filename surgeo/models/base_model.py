@@ -47,8 +47,8 @@ class BaseModel(object):
         # If it's frozen, we can't use __file__
         if getattr(sys, 'frozen', False):
             # The application is frozen
-            freeze_package = pathlib.Path(sys.executable).parents[1]
-            self._package_root = freeze_package / 'lib' / 'surgeo'
+            freeze_package = pathlib.Path(sys.executable).parents[0]
+            self._package_root = freeze_package / 'Lib' / 'surgeo'
         else:
             # The application is not frozen
             self._package_root = pathlib.Path(__file__).parents[1]
