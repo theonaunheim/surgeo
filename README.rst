@@ -5,9 +5,9 @@ Surgeo
 
 |rtd_badge| |travis_badge| |shieldio_badge|
 
-.. |rtd_badge| image:: https://readthedocs.org/projects/surgeo/badge/?version=dev
+.. |rtd_badge| image:: https://readthedocs.org/projects/surgeo/badge/?version=master
 
-.. |travis_badge| image:: https://travis-ci.org/theonaunheim/surgeo.svg?branch=dev
+.. |travis_badge| image:: https://travis-ci.org/theonaunheim/surgeo.svg?branch=master
 
 .. |shieldio_badge| image:: https://badge.fury.io/py/surgeo.svg
 
@@ -115,5 +115,8 @@ Surgeo is best used as a module.
 Prefab Files
 ------------
 
-Windows installer:
-TODO: Link to Windows installer
+A link to the Windows GUI/CLI is below.
+
+|installer_link|
+
+.. |installer_link| image:: https://github.com/theonaunheim/surgeo/releases/download/1.0.1/surgeo-win32.zip
