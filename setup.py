@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='surgeo',
-    version='1.0-beta.1',
+    version='1.0.1',
     description='Bayesian Improved Surname Geocoder model',
     long_description="""
         Surgeo is an impelmentation of the Bayesian Improved Surname
