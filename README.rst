@@ -11,7 +11,7 @@ Surgeo
 
 .. |shieldio_badge| image:: https://badge.fury.io/py/surgeo.svg
 
-The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/dev/>`_
+The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/master/>`_
 
 Overview
 --------
@@ -117,6 +117,4 @@ Prefab Files
 
 A link to the Windows GUI/CLI is below.
 
-|installer_link|
-
-.. |installer_link| https://github.com/theonaunheim/surgeo/releases/download/1.0.1/surgeo-win32.zip
+`Zipped Windows installer <https://github.com/theonaunheim/surgeo/releases/download/1.0.1/surgeo-win32.zip>`_.
