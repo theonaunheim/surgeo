@@ -35,9 +35,9 @@ speaking, the steps are:
    obtain :math:`u(i,j,k)` (probability intermediate) for each race; and
    then,
 3. Divide the posterior probability of each individual race dividing the
-   intermediate above by the sum of all intermediates to give
-   :math:`q(i \mid j,k)` (the probability of race given a surname and ZIP
-   code).
+   intermediate above by the sum of all intermediates (normalization
+   constant) to give :math:`q(i \mid j,k)` (the probability of race given a
+   surname and ZIP code).
 
 Using Surname Data To Obtaining :math:`P(i \mid j)`
 ---------------------------------------------------
@@ -128,8 +128,8 @@ As you can see from the above, the "White" probability for this surname is
 0.0538 times .000039, we get 0.00000207. This is also done for the
 remaining races.
 
-Obtaining Final Probability Vector :math:`q(i \mid j,k)`
---------------------------------------------------------
+Normalizing Final Probability Vector :math:`q(i \mid j,k)`
+----------------------------------------------------------
 
 The final step is defined by the following equation:
 
@@ -137,7 +137,8 @@ The final step is defined by the following equation:
 
 What this means is simply that in order to obtain our final probability for
 a given race :math:`i`, we must take the intermediate value for that race
-and then divide it by the sum of all races. For example, to run This
+and then divide it by the sum of all races. This normalizes our
+probabilities and ensures they will sum to 1. For example, to run this
 calculation for "White" the formula would read:
 
 :math:`q(\text{white} \mid \text{Garcia},\text{63144}) = \Large \frac{u(\text{white},\text{Garcia},\text{63144})}{u(\text{hispanic},\text{Garcia},\text{63144}) \, + \, u(\text{white},\text{Garcia},\text{63144}) \, + \, u(\text{black},\text{Garcia},\text{63144}) \, + \, u(\text{api},\text{Garcia},\text{63144}) \, + \, u(\text{native},\text{Garcia},\text{63144}) \, + \, u(\text{multi},\text{Garcia},\text{63144})}`
@@ -145,7 +146,7 @@ calculation for "White" the formula would read:
 And pluging in the intermediate values from :math:`u(i,j,k)`:
 
 +----------+----------+----------+----------+-----------+-------------+
-| White     | Black   | API      | Native   | Multiple  | Hispanic    |
+| White    | Black    | API      | Native   | Multiple  | Hispanic    |
 +==========+==========+==========+==========+===========+=============+
 | 2.07e-06 | 3.04e-08 | 5.21e-07 | 2.30e-08 | 6.48e-08  | 4.33e-06    |
 +----------+----------+----------+----------+-----------+-------------+

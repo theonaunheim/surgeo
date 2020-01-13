@@ -13,7 +13,7 @@ surname-based and location-based.
 The surname-based approach works because certain last names are found much
 more often in certain racial/ethnic groups. For example, over 90% of people
 with the surname "Hernandez" identify as Hispanic according to Census data.
-Similarly, over 90 of those with the last name of "Yoo" identify as Asian
+Similarly, over 90% of those with the last name of "Yoo" identify as Asian
 or Pacific Islander.
 
 The location-based approach works because racial/ethnic groups often live
