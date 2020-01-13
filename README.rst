@@ -119,4 +119,4 @@ A link to the Windows GUI/CLI is below.
 
 |installer_link|
 
-.. |installer_link| image:: https://github.com/theonaunheim/surgeo/releases/download/1.0.1/surgeo-win32.zip
+.. |installer_link| https://github.com/theonaunheim/surgeo/releases/download/1.0.1/surgeo-win32.zip
