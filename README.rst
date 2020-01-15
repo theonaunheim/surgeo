@@ -108,4 +108,4 @@ Prefab Files
 
 A link to the Windows GUI/CLI is below.
 
-`Zipped Windows installer <https://github.com/theonaunheim/surgeo/releases/download/1.0.1/surgeo-win32.zip>`_.
+`Zipped Windows installer <https://github.com/theonaunheim/surgeo/releases/download/1.0.2/surgeo-win32.zip>`_.
