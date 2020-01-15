@@ -24,7 +24,7 @@ class TestBaseModel(unittest.TestCase):
 
     _BASE_MODEL = BaseModel()
 
-    _ZCTA_DF_LENGTH = 33_223
+    _ZCTA_DF_LENGTH = 33_120
     
     _SURNAME_DF_LENGTH = 162_254
 

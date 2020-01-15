@@ -4,18 +4,18 @@ surgeo.app package
 Submodules
 ----------
 
-surgeo.app.cli module
----------------------
+surgeo.app.surgeo_cli module
+---------------------~~~~~~~
 
-.. automodule:: surgeo.app.cli
+.. automodule:: surgeo.app.surgeo_cli
    :members:
    :undoc-members:
    :show-inheritance:
 
-surgeo.app.gui module
----------------------
+surgeo.app.surgeo_gui module
+---------------------~~~~~~~
 
-.. automodule:: surgeo.app.gui
+.. automodule:: surgeo.app.surgeo_gui
    :members:
    :undoc-members:
    :show-inheritance:

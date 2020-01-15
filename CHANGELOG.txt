@@ -14,3 +14,7 @@ v.0.7.0:
 v.1.0.1:
 ========
 -Complete re-write using pandas and 2010 census data for surname/geocoding.
+
+v.1.0.2:
+========
+-Bugfix to address multiple rows returned for ZCTAs in multiple states.

@@ -25,15 +25,6 @@ It is inspired by the work of the Consumer Financial Protection Bureau
 Please see the ReadTheDocs link above for information on the implementation
 itself.
 
-New In Version 1.0.1
------------------------
-
-Version 1.0.1 is a complete rewrite that adds the following features:
-
-1.  Usage of the pandas library for clarity and vectorized calculations;
-2.  A rudimentary GUI to aid in batch processing; and,
-3.  APIs for Surname, Geocoding, and Surname-Geocoding models.
-
 Installation
 ------------
 
