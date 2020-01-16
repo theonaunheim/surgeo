@@ -11,7 +11,7 @@ Surgeo
 
 .. |shieldio_badge| image:: https://badge.fury.io/py/surgeo.svg
 
-The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/>`_
+The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/master/>`_
 
 Overview
 --------
