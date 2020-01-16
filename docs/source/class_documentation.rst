@@ -41,14 +41,14 @@ Application Classes
 SurgeoCLI
 ~~~~~~~~~
 
-.. autoclass:: surgeo.app.cli.SurgeoCLI
+.. autoclass:: surgeo.app.surgeo_cli.SurgeoCLI
     :members:
     :noindex:
 
 SurgeoGUI
 ~~~~~~~~~
 
-.. autoclass:: surgeo.app.gui.SurgeoGUI
+.. autoclass:: surgeo.app.surgeo_gui.SurgeoGUI
     :members:
     :noindex:
 
