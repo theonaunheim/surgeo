@@ -35,5 +35,27 @@ class TestGeocodeModel(unittest.TestCase):
         )
 
 
+    def test_get_probabilities_tract(self):
+        """Test Geocode model versus known result with Tracts"""
+        # Get our data and clean it
+        input_data = pd.read_csv(
+            self._DATA_FOLDER / 'tract_input.csv',
+            skip_blank_lines=False,
+        )
+        # Get prob
+        result = self._GEOCODE_MODEL.get_probabilities_tract(input_data[['state','county','tract']])
+        print(result)
+        # Get true result
+        true_result = pd.read_csv(
+            self._DATA_FOLDER / 'tract_output.csv',             
+        )
+        # Clean for consistency
+        result = result.round(4).fillna('')
+        true_result = result.round(4).fillna('')
+        # Check that all items in the series are equal
+        self.assertTrue(
+            result.equals(true_result)
+        )
+
 if __name__ == '__main__':
     unittest.main()

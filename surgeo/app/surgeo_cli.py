@@ -31,7 +31,11 @@ class SurgeoCLI(object):
             $ surgeo --help
 
             usage: cli.py [-h] [--zcta_column ZCTA_COLUMN]
+                          [-ct]
                           [--surname_column SURNAME_COLUMN]
+                          [--state_column STATE_COLUMN]
+                          [--county_column COUNTY_COLUMN]
+                          [--tract_column TRACT_COLUMN]
                           input output type
 
             Get Surgeo arguments.
@@ -42,10 +46,14 @@ class SurgeoCLI(object):
 
             optional arguments:
             -h, --help            show this help message and exit
+            -ct                  Process for CENSUS Tract as opposed to ZCTA/ZIP
             --zcta_column ZCTA_COLUMN
                                 The input column to analyze as ZCTA/ZIP)
             --surname_column SURNAME_COLUMN
-                                The input column to analyze as surname")
+                                The input column to analyze as surname"
+            --state_column STATE_COLUMN input column containing two digit FIPS state code
+            --county_column input column containing three digit FIPS County Code
+            --tract_column input column containing six digit tract code)
 
     """
 
@@ -58,6 +66,10 @@ class SurgeoCLI(object):
         self._model_type = args.type.lower()
         self._zcta_col = args.zcta_column
         self._sur_col = args.surname_column
+        self._state_col = args.state_column
+        self._county_col = args.county_column
+        self._tract_col = args.tract_column
+        self._ct = args.ct
 
     def main(self):
         """This is the public interface function for this CLI.
@@ -109,12 +121,23 @@ class SurgeoCLI(object):
 
     def _run_geo(self, df):
         """Method called from self._process_df() to get geo results"""
-        model = GeocodeModel()
+        if self._ct:
+            model = GeocodeModel("tract")
+        else:
+            model = GeocodeModel("ZCTA")
         # If an optional name is speicied, select that column and run
-        if self._zcta_col is not None:
+        if self._zcta_col is not None and not self._ct:
             target = df[self._zcta_col]
             result = model.get_probabilities(target)
         # Otherwise use 'zcta5' (and raise error if need be.)
+        elif self._state_col is not None and self._ct:
+            target = df[[self._state_col, self._county_col, self._tract_col]]
+            result = model.get_probabilities(target)
+        elif self._ct:
+            try:
+                target = df[['state', 'column', 'tract']]
+            except KeyError:
+                raise SurgeoException("No state county or tract column found")
         else:
             try:
                 target = df['zcta5']
@@ -147,11 +170,18 @@ class SurgeoCLI(object):
         # Instantiate model
         model = SurgeoModel()
         # If ZIP target is specified, check accuracy
-        if self._zcta_col is not None:
+        if self._zcta_col is not None and not self._ct:
             try:
                 geo_target = df[self._zcta_col]
             except KeyError:
                 raise SurgeoException(f'Column "{self._zcta_col}"" not found.')
+        elif self._ct and self._state_col is not None:
+            try:
+                geo_target = df[[self._state_col, self._county_col, self._tract_col]]
+            except KeyError:
+                raise SurgeoException(f'Columns for state, county, and tract not found.')
+        elif self._ct:
+            geo_target = df[['state','county','tract']]
         # Otherwise use zcta5 for ZIP target
         else:
             geo_target = df['zcta5']
@@ -236,6 +266,25 @@ class SurgeoCLI(object):
             '--surname_column',
             help='The input column to analyze as surname")',
             dest='surname_column'
+        )
+        parser.add_argument(
+            '--ct', type=bool, help='Process at Census Tract Level instead of default ZCTA/Zip',
+            dest='ct'
+        )
+        parser.add_argument(
+            '--state_column',
+            help='The input column to analyze as two digit state code (required for census tract calculation)',
+            dest='state_column'
+        )
+        parser.add_argument(
+            '--county_column',
+            help='The input column to analyze as 3 digit county code (required for census tract calculation)',
+            dest='county_column'
+        )
+        parser.add_argument(
+            '--tract_column',
+            help='The input column to analyze as the 6 digit census tract  (required for census tract calculation)',
+            dest='tract_column'
         )
         # Parse args and return
         parsed_args = parser.parse_args()
