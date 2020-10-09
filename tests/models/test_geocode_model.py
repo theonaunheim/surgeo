@@ -10,7 +10,7 @@ from surgeo.models.geocode_model import GeocodeModel
 class TestGeocodeModel(unittest.TestCase):
 
     _GEOCODE_MODEL = GeocodeModel()
-    _GEOCODE_MODEL_TRACT = GeocodeModel(geo_level='tract')
+    _GEOCODE_MODEL_TRACT = GeocodeModel(geo_level='TRACT')
 
     _DATA_FOLDER = pathlib.Path(__file__).resolve().parents[1] / 'data'
 
