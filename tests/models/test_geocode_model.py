@@ -10,6 +10,7 @@ from surgeo.models.geocode_model import GeocodeModel
 class TestGeocodeModel(unittest.TestCase):
 
     _GEOCODE_MODEL = GeocodeModel()
+    _GEOCODE_MODEL_TRACT = GeocodeModel(geo_level='tract')
 
     _DATA_FOLDER = pathlib.Path(__file__).resolve().parents[1] / 'data'
 
@@ -43,8 +44,7 @@ class TestGeocodeModel(unittest.TestCase):
             skip_blank_lines=False,
         )
         # Get prob
-        result = self._GEOCODE_MODEL.get_probabilities_tract(input_data[['state','county','tract']])
-        print(result)
+        result = self._GEOCODE_MODEL_TRACT.get_probabilities_tract(input_data[['state','county','tract']])
         # Get true result
         true_result = pd.read_csv(
             self._DATA_FOLDER / 'tract_output.csv',             

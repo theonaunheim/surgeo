@@ -34,7 +34,8 @@ class GeocodeModel(BaseModel):
         super().__init__()
         if geo_level == 'tract':
             self._PROB_RACE_GIVEN_GEO = self._get_prob_race_given_tract()
-        self._PROB_RACE_GIVEN_GEO = self._get_prob_race_given_zcta()
+        else:
+            self._PROB_RACE_GIVEN_GEO = self._get_prob_race_given_zcta()
 
     def get_probabilities(self, zctas):
         """Obtain race probabilities for a set of ZIP codes or ZCTAs.

@@ -70,18 +70,21 @@ class BaseModel(object):
     def _get_prob_race_given_tract(self):
         prob_race_given_tract = pd.read_csv(
             self._package_root / 'data' / 'prob_race_given_tract_2010.csv',
-            index_col=['state', 'county','tract'],
             na_values=[''],
             keep_default_na=False,
-        )
+            dtype={'state':str,'county':str,'tract':str}
+        ).set_index(['state','county','tract'])
+        return prob_race_given_tract
 
     def _get_prob_tract_given_race(self):
         prob_tract_given_race = pd.read_csv(
             self._package_root / 'data' / 'prob_tract_given_race_2010.csv',
-            index_col=['state', 'county','tract'],
+            
             na_values=[''],
             keep_default_na=False,
-        )
+            dtype={'state':str,'county':str,'tract':str}
+        ).set_index(['state','county','tract'])
+        return prob_tract_given_race
 
     def _get_prob_zcta_given_race(self):
         """Create dataframe of ZCTA ratios given a race (for SurGeo)"""
@@ -142,5 +145,5 @@ class BaseModel(object):
 
     def _normalize_tracts(self, geo_target_df: pd.DataFrame) -> pd.DataFrame:
         """Transform rename the columns to standard into standardized strings"""
-        converted = geo_target_df.rename(columns=['state','county','tract'])
+        converted = geo_target_df.rename(columns={old_col:new_col for old_col, new_col in zip(geo_target_df.columns, ['state','county','tract'])})
         return converted
