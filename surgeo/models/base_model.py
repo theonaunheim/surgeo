@@ -1,4 +1,4 @@
-"""Contains the base model for Surname, Geocode, and Surgeo models."""
+"""Contains the base model for Surname, Geocode, BIFSG, and Surgeo models."""
 
 import pathlib
 import string
@@ -9,7 +9,8 @@ import pandas as pd
 
 
 class BaseModel(object):
-    """Base class for the surname, geocode, and surname-geocode models.
+    """Base class for the first name, surname, geocode, bifsg, and
+    surname-geocode models.
 
     Class creation is greatly simplified by placing most of the
     funcionality wihtin a single base class and leaving only small areas
@@ -17,11 +18,11 @@ class BaseModel(object):
     operations:
 
     1. Creating functions to provide lookup dataframes; and,
-    2. Houseing normalization routines for dirty ZIP code and surname data.
+    2. Houseing normalization routines for dirty ZIP code and name data.
 
     Note
     ----
-    Surnames are normalized in a manner consistent with Word et. al (2007)
+    Names are normalized in a manner consistent with Word et. al (2007)
     [#]_. This includes removing all whitespace/punctuation/digits,
     making the strings upper case, and then removing elements such as
     "JR", "SR", "IV" from the tail of the string. AN example would be
@@ -93,6 +94,27 @@ class BaseModel(object):
             keep_default_na=False,
         )
         return prob_race_given_surname
+
+    def _get_prob_race_given_first_name(self):
+        """Create dataframe of race probabilities given first names (for First)"""
+        # Create first name df (beware ... some NA values like "NAN" are names)
+        prob_race_given_first_name = pd.read_csv(
+            self._package_root / 'data' / 'prob_race_given_first_name_harvard.csv',
+            index_col='name',
+            na_values=[''],
+            keep_default_na=False,
+        )
+        return prob_race_given_first_name
+
+    def _get_prob_first_name_given_race(self):
+        """Create dataframe of first name ratios given a race (for BIFSG)"""
+        prob_first_name_given_race = pd.read_csv(
+            self._package_root / 'data' / 'prob_first_name_given_race_harvard.csv',
+            index_col='name',
+            na_values=[''],
+            keep_default_na=False,
+        )
+        return prob_first_name_given_race
 
     def _normalize_names(self, names: pd.Series) -> pd.Series:
         """Take names and run a normalization routine"""

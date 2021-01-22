@@ -28,7 +28,7 @@ class TestGeocodeModel(unittest.TestCase):
         )
         # Clean for consistency
         result = result.round(4).fillna('')
-        true_result = result.round(4).fillna('')
+        true_result = true_result.round(4).fillna('')
         # Check that all items in the series are equal
         self.assertTrue(
             result.equals(true_result)

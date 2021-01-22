@@ -76,7 +76,7 @@ class SurgeoModel(BaseModel):
         """Obtain a set of BISG probabilities for name/ZCTA series
 
         This method first takes the data and checks to see if the data is
-        formatted appropraitely. It triggers the _get_surname_probs() and
+        formatted appropriately. It triggers the _get_surname_probs() and
         _get_geocode_probs() helper function to merge the probabilities
         for the inputs with their looked-up values. It then runs the
         _combined_probs() helper function to actually conduct the data
