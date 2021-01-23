@@ -6,6 +6,8 @@ Surgeo
 .. contents:: Table of Contents
    :depth: 1
 
+.. include:: contributors.rst
+
 .. include:: overview.rst
 
 .. include:: background.rst

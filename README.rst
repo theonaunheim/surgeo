@@ -56,7 +56,7 @@ As a Program
 To use the GUI, simply type in "surgeo_gui" or use the Start Menu after
 installing the executable. For Mac or Linux users, ensure that you have tkinter
 setup on your
-`Python distribution<stackoverflow.com/questions/22550068/python-not-configured-for-tk>`_.
+`Python distribution <stackoverflow.com/questions/22550068/python-not-configured-for-tk>`_.
 
 .. code-block::
 
