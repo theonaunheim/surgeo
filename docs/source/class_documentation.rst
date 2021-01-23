@@ -13,7 +13,7 @@ SurgeoModel
     :noindex:
 
 BIFSGModel
-~~~~~~~~~~~
+~~~~~~~~~~
 
 .. autoclass:: surgeo.models.bifsg_model.BIFSGModel
     :members:
@@ -21,7 +21,7 @@ BIFSGModel
     :noindex:
 
 FirstNameModel
-~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 .. autoclass:: surgeo.models.first_name_model.FirstNameModel
     :members:
