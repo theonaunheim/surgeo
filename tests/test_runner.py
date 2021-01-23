@@ -1,5 +1,11 @@
-"""Script to create and run a test suite."""
+"""Script to create and run a test suite.
+
+Note: this requires that you have installed surgeo.
+"""
 import unittest
+
+from surgeo import app
+from surgeo import models
 
 # Import test modules
 import app.test_cli
