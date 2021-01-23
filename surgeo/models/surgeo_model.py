@@ -31,7 +31,7 @@ class SurgeoModel(BaseModel):
     `prob_race_given_zcta_2010.csv` file, which has the race percentages
     for a given ZCTA (e.g. 90% of ZCTA 63144 is White).
 
-    The manner in which the geogrpahy data file was created can be found in
+    The manner in which the geography data file was created can be found in
     the "fetch_geography" Jupyter notebook.
 
     This is based of the following general formula from Elliott et al [#]_.

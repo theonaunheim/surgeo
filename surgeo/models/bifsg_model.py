@@ -24,17 +24,25 @@ class BIFSGModel(BaseModel):
     -----
     The surname probability dataframe for this model is identical to that
     used for the SurnameModel (`prob_race_given_surname_2010.csv`);
-    The first name probability dataframe for this model is identical to that
-    used for the FirstNameModel (`prob_race_given_first_name_harvard.csv`);
-    the geocode probability dataframe for this model is not the same as that
-    used for the GeocodeModel. This model uses the
+    the first name probability dataframe for this modelis not the same as that
+    used for the FirstNameModel. his model uses the
+    `prob_first_name_given_race_harvard.csv` file, which has the percentage of
+    a particular race that uses that first name (e.g. 3% of all
+    White US citizens have the first name AARON). The FirstNameModel uses the
+    `prob_race_given_first_name_harvard.csv` file, which has the race percentages
+    for a given first name (e.g. 92% of people with the first name AARON are
+    White); the geocode probability dataframe for this model is not the same as
+    that used for the GeocodeModel. This model uses the
     `prob_zcta_given_race_2010.csv` file, which has the percentage of
     a particular race that falls within that ZCTA (e.g. .002% of all
     White US citizens live within this ZIP code). The GeocodeModel uses the
     `prob_race_given_zcta_2010.csv` file, which has the race percentages
     for a given ZCTA (e.g. 90% of ZCTA 63144 is White).
 
-    The manner in which the geogrpahy data file was created can be found in
+    The manner in which the first name data file was created can be found in
+    the "fetch_first_names" Jupyter notebook.
+
+    The manner in which the geography data file was created can be found in
     the "fetch_geography" Jupyter notebook.
 
     This is based of the following general formula from Voicu [#]_.
@@ -163,7 +171,7 @@ class BIFSGModel(BaseModel):
                       first_names: pd.Series,
                       surnames: pd.Series,
                       zctas: pd.Series):
-        """Check first names, surnames,  and ZCTAs and ensure they are same
+        """Check first names, surnames, and ZCTAs and ensure they are the same
         length
         """
         if len(first_names) != len(surnames) or len(surnames) != len(zctas):

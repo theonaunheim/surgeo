@@ -10,7 +10,7 @@ class FirstNameModel(BaseModel):
 
     This class uses a get_probabilities() method to provide a simple
     mechanism for obtaining race data. It is created using a simple join
-    of a race data table and the first ames that are input.
+    of a race data table and the first names that are input.
 
     Notes
     -----

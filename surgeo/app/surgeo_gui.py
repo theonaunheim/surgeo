@@ -76,9 +76,9 @@ class SurgeoGUI(object):
         self._objects['root'].bind('<Return>', self._execute)
         # Add icon
         self._objects['root'].tk.call(
-            'wm', 
-            'iconphoto', 
-            self._objects['root']._w, 
+            'wm',
+            'iconphoto',
+            self._objects['root']._w,
             tk.PhotoImage(
                 file=str(self._app_static / 'logo.gif')
             )
@@ -148,7 +148,7 @@ class SurgeoGUI(object):
         select_path_text.grid(row=0, column=1, padx=10, stick='w')
         # File selection button
         select_button = ttk.Button(
-            root, 
+            root,
             text='Select',
             command=self._select_input,
         )
@@ -175,7 +175,7 @@ class SurgeoGUI(object):
         output_path_text.grid(row=1, column=1, padx=10, sticky='w')
         # Output selection button
         output_button = ttk.Button(
-            root, 
+            root,
             text='Select',
             command=self._select_output,
         )
@@ -186,8 +186,8 @@ class SurgeoGUI(object):
         #######################################################################
         # First Name label
         first_name_label = ttk.Label(
-            root, 
-            text='First Name Column Header', 
+            root,
+            text='First Name Column Header',
         )
         first_name_label.grid(row=2, column=0, padx=10, sticky='w')
         self._objects['first_name_label'] = first_name_label
@@ -206,8 +206,8 @@ class SurgeoGUI(object):
         #######################################################################
         # Surname label
         surname_label = ttk.Label(
-            root, 
-            text='Surname Column Header', 
+            root,
+            text='Surname Column Header',
         )
         surname_label.grid(row=3, column=0, padx=10, sticky='w')
         self._objects['surname_label'] = surname_label
@@ -226,8 +226,8 @@ class SurgeoGUI(object):
         #######################################################################
         # ZCTA label
         zcta_label = ttk.Label(
-            root, 
-            text='ZIP/ZCTA Column Header', 
+            root,
+            text='ZIP/ZCTA Column Header',
         )
         zcta_label.grid(row=4, column=0, padx=10, sticky='w')
         self._objects['zcta_label'] = zcta_label
@@ -244,7 +244,7 @@ class SurgeoGUI(object):
         #######################################################################
         # Row 6
         #######################################################################
-        # Model selector label 
+        # Model selector label
         model_label = ttk.Label(root, text='Model Type')
         model_label.grid(row=5, column=0, padx=10, sticky='w')
         self._objects['model_label'] = model_label
@@ -269,7 +269,7 @@ class SurgeoGUI(object):
         # Proces inputs button (this runs self._execute)
         # Note: this is also bound to <Enter> in the window setup func.
         execute_button = ttk.Button(
-            root, 
+            root,
             text='Execute',
             command=self._execute,
         )
@@ -333,7 +333,7 @@ class SurgeoGUI(object):
 
     def _execute(self, event=None, show_msgbox=True):
         """This takes all the user inputs and runs the analysis.
-        
+
         It can be triggered by the enter key (in which case it supplied an
         event), or it can be triggered by clicking the "Execute" button.
         The outcome in either event is identical.
@@ -386,7 +386,7 @@ class SurgeoGUI(object):
                 surgeo = SurgeoModel()
                 # Note that surgeo takes two input columns unlike others
                 output_df = surgeo.get_probabilities(
-                    input_df[surname_var], 
+                    input_df[surname_var],
                     input_df[zip_var]
                 )
             # If output is .xlsx, write to Excel

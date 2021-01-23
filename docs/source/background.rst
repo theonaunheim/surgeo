@@ -16,7 +16,7 @@ with the surname "Hernandez" identify as Hispanic according to Census data.
 Similarly, over 90% of those with the last name of "Yoo" identify as Asian
 or Pacific Islander.
 
-The fist name-based approach works similarly to the last name approach, with
+The first name-based approach works similarly to the last name approach, with
 first name being used as the proxy for racial/ethnic probability.
 
 The location-based approach works because racial/ethnic groups often live

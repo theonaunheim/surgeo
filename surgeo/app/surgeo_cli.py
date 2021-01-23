@@ -102,7 +102,7 @@ class SurgeoCLI(object):
         # If CSV, read read_csv()
         elif suffix == '.csv':
             df = pd.read_csv(
-                self._input_path, 
+                self._input_path,
                 skip_blank_lines=False,
             )
         # If path is unrecognized, throw error
@@ -179,7 +179,7 @@ class SurgeoCLI(object):
         # Otherwise use zcta5 for ZIP target
         else:
             geo_target = df['zcta5']
-        # If Surname target spcified, check for accuracy
+        # If Surname target eified, check for accuracy
         if self._sur_col is not None:
             sur_target = df[self._sur_col]
             try:
@@ -206,7 +206,7 @@ class SurgeoCLI(object):
         # Otherwise use zcta5 for ZIP target
         else:
             geo_target = df['zcta5']
-        # If Surname target spcified, check for accuracy
+        # If Surname target specified, check for accuracy
         if self._sur_col is not None:
             sur_target = df[self._sur_col]
             try:
@@ -216,7 +216,7 @@ class SurgeoCLI(object):
         # Otherwise, use name for surname column
         else:
             sur_target = df['name']
-        # If fist name target spcified, check for accuracy
+        # If first name target specified, check for accuracy
         if self._first_col is not None:
             first_target = df[self._first_col]
             try:
@@ -300,7 +300,7 @@ class SurgeoCLI(object):
             help='The input column to analyze as surname")',
             dest='surname_column'
         )
-        # Optional surname column argument
+        # Optional first name column argument
         parser.add_argument(
             '--first_name_column',
             help='The input column to analyze as first name")',

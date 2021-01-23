@@ -1,4 +1,4 @@
-"""Contains the base model for Surname, Geocode, BIFSG, and Surgeo models."""
+"""Contains the base model for First Name, Surname, Geocode, BIFSG, and Surgeo models."""
 
 import pathlib
 import string
@@ -18,14 +18,14 @@ class BaseModel(object):
     operations:
 
     1. Creating functions to provide lookup dataframes; and,
-    2. Houseing normalization routines for dirty ZIP code and name data.
+    2. Housing normalization routines for dirty ZIP code and name data.
 
     Note
     ----
     Names are normalized in a manner consistent with Word et. al (2007)
     [#]_. This includes removing all whitespace/punctuation/digits,
     making the strings upper case, and then removing elements such as
-    "JR", "SR", "IV" from the tail of the string. AN example would be
+    "JR", "SR", "IV" from the tail of the string. An example would be
     "Dav 3idson" being translated to "DAVIDSON".
 
     ZCTAs, which serve as a proxy for ZIP codes, are normalized by simply
@@ -38,7 +38,7 @@ class BaseModel(object):
     .. [#]
 
         Word, David L., Charles D. Coleman, Robert Nunziata and Robert
-        Kominski. 2007. Demographic Aspects of Surnames from Census 2000.   
+        Kominski. 2007. Demographic Aspects of Surnames from Census 2000.
         `<http://www2.census.gov/topics/genealogy/2000surnames/surnames.pdf>`_.
 
     """

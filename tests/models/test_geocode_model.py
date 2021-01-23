@@ -24,7 +24,7 @@ class TestGeocodeModel(unittest.TestCase):
         result = self._GEOCODE_MODEL.get_probabilities(input_data['zcta5'])
         # Get true result
         true_result = pd.read_csv(
-            self._DATA_FOLDER / 'geocode_output.csv',             
+            self._DATA_FOLDER / 'geocode_output.csv',
         )
         # Clean for consistency
         result = result.round(4).fillna('')
