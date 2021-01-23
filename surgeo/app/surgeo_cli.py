@@ -179,7 +179,7 @@ class SurgeoCLI(object):
         # Otherwise use zcta5 for ZIP target
         else:
             geo_target = df['zcta5']
-        # If Surname target eified, check for accuracy
+        # If Surname target specified, check for accuracy
         if self._sur_col is not None:
             sur_target = df[self._sur_col]
             try:

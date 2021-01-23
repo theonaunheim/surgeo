@@ -14,13 +14,13 @@ setup(
     # cx_Freeze setup.py
     executables=[
         Executable(
-            "./surgeo/app/surgeo_gui.py", 
+            "./surgeo/app/surgeo_gui.py",
             base='Win32GUI',
             shortcutName='surgeo_gui',
             shortcutDir='ProgramMenuFolder',
         ),
         Executable(
-            "./surgeo/app/surgeo_cli.py", 
+            "./surgeo/app/surgeo_cli.py",
             shortcutName='surgeo_cli',
             shortcutDir='ProgramMenuFolder',
         ),
