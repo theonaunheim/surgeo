@@ -11,7 +11,7 @@ Surgeo
 
 .. |shieldio_badge| image:: https://badge.fury.io/py/surgeo.svg
 
-The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/>`_
+The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/master/>`_
 
 Overview
 --------
@@ -21,6 +21,9 @@ algorithm. In other words, Surgeo allows you to construct race
 probabilities from commonly available data such as ZIP codes and surnames.
 It is inspired by the work of the Consumer Financial Protection Bureau
 (CFPB) and was initially created by Mark Elliot et al.
+
+Surgeo also has an imlementation of the Bayesian Improved First Name Surname
+Geocode (BIFSG) as created by Ioan Voicu building off of BISG.
 
 Please see the ReadTheDocs link above for information on the implementation
 itself.
@@ -46,7 +49,9 @@ As a Program
 ~~~~~~~~~~~~
 
 To use the GUI, simply type in "surgeo_gui" or use the Start Menu after
-installing the executable.
+installing the executable. For Mac or Linux users, ensure that you have tkinter
+setup on your python distribution:
+<https://stackoverflow.com/questions/22550068/python-not-configured-for-tk>
 
 .. code-block::
 

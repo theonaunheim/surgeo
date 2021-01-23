@@ -14,13 +14,13 @@ setup(
     # cx_Freeze setup.py
     executables=[
         Executable(
-            "./surgeo/app/surgeo_gui.py", 
+            "./surgeo/app/surgeo_gui.py",
             base='Win32GUI',
             shortcutName='surgeo_gui',
             shortcutDir='ProgramMenuFolder',
         ),
         Executable(
-            "./surgeo/app/surgeo_cli.py", 
+            "./surgeo/app/surgeo_cli.py",
             shortcutName='surgeo_cli',
             shortcutDir='ProgramMenuFolder',
         ),
@@ -34,7 +34,9 @@ setup(
         Surgeo is an impelmentation of the Bayesian Improved Surname
         Geocode (BISG) model created by Mark N. Elliot et al. and
         incluenced by the Consumer Financial Protection Bureau's (CFPB)
-        implementation of the same.
+        implementation of the same. It also includes an implementation
+        of the Bayesian Improved First Name Surname Geocode (BIFSG) model
+        created by Ioan Voicu.
 
     """,
     author='Theo Naunheim',
