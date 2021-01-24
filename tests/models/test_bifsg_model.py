@@ -29,7 +29,7 @@ class TestSurgeoModel(unittest.TestCase):
         )
         # Get probs
         result = self._BIFSG_MODEL.get_probabilities(
-            first_name_data['name'],
+            first_name_data['first_name'],
             surname_data['name'],
             geocode_data['zcta5'],
         )

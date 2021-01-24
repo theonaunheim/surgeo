@@ -98,7 +98,7 @@ class TestSurgeoGUI(unittest.TestCase):
         MODEL = 'First Name'
         TRUE_OUTPUT = 'first_name_output.csv'
         SURNAME_HEADER = 'surname'
-        FIRST_NAME_HEADER = 'name'
+        FIRST_NAME_HEADER = 'first_name'
         ZIP_HEADER = 'zcta5'
         self._run_model(
             self._DATA_FOLDER / INPUT,

@@ -21,7 +21,7 @@ class TestFirstNameModel(unittest.TestCase):
             skip_blank_lines=False,
         )
         # Get prob
-        result = self._FIRST_NAME_MODEL.get_probabilities(input_data['name'])
+        result = self._FIRST_NAME_MODEL.get_probabilities(input_data['first_name'])
         # Get true result
         true_result = pd.read_csv(
             self._DATA_FOLDER / 'first_name_output.csv',

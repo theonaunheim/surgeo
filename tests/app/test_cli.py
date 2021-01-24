@@ -36,7 +36,21 @@ class TestSurgeoCLI(unittest.TestCase):
             os.unlink(self._EXCEL_OUTPUT_PATH)
 
     def _compare(self, input_name, model_type, true_output_name, **kwargs):
-        """"Helper function that runs the comparison"""
+        """"Helper function that runs the comparison
+        
+        Parameters
+        ----------
+        input_name : str
+            The file name of the data to be tested
+        model_type : str
+            The model type being tested: ['bifsg', 'surgeo', 'first', 'sur', 'geo']
+        true_output_name: str
+            The correct data for comparison
+        kwargs : **kwargs
+            A kwarg dict with the keys being the --optional arguments and the values
+            being the values associated with those arguments.
+
+        """
         # Generate input name based on input file
         input_path = str(self._DATA_FOLDER / input_name)
         # Run a process that writes to CSV output
@@ -48,7 +62,19 @@ class TestSurgeoCLI(unittest.TestCase):
             model_type,
         ]
         if kwargs:
-            subprocess_commands.extend([command for kvp in [[f'--{key}', kwargs[key]] for key in kwargs.keys()] for command in kvp])
+            # Initial clever code:
+            # subprocess_commands.extend([command for kvp in [[f'--{key}', kwargs[key]] for key in kwargs.keys()] for command in kvp])
+            # 
+            # Subsequent dumbed down code:
+            # Convert kwarg key, value pairs to optional arguments e.g. ['--surname_column', 'custom_surname_col_name']
+            argument_pairs = [
+                [f'--{key}', value]
+                for key, value
+                in kwargs.items()
+            ]
+            # Add them to the subprocess arguments
+            for argument_pair in argument_pairs:
+                subprocess_commands.extend(argument_pair)
         subprocess.run(subprocess_commands, stderr=None)
         # Read the newly generated information
         df_generated = pd.read_csv(self._CSV_OUTPUT_PATH)
