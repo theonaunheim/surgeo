@@ -1,6 +1,8 @@
 """Script to create and run a test suite.
 
-Note: this requires that you have installed surgeo.
+These tests are done completely on source. This presumes that you do
+not have Surgeo installed. This allows TravisCI
+
 """
 import unittest
 
