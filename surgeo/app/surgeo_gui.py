@@ -319,7 +319,7 @@ class SurgeoGUI(object):
         suffix = path.suffix
         # If it's excel, read_excel()
         if suffix == '.xlsx' or suffix == 'xls':
-            df = pd.read_excel(path)
+            df = pd.read_excel(path, engine='openpyxl')
         # If CSV, read read_csv()
         elif suffix == '.csv':
             df = pd.read_csv(path, skip_blank_lines=False)

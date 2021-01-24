@@ -118,9 +118,9 @@ class TestSurgeoCLI(unittest.TestCase):
             'surgeo'
         ])
         # Read the newly generated information
-        df_generated = pd.read_excel(self._EXCEL_OUTPUT_PATH)
+        df_generated = pd.read_excel(self._EXCEL_OUTPUT_PATH, engine='openpyxl')
         # Read the true information
-        df_true = pd.read_excel(self._DATA_FOLDER / 'surgeo_output.xlsx')
+        df_true = pd.read_excel(self._DATA_FOLDER / 'surgeo_output.xlsx', engine='openpyxl')
         self._is_close_enough(df_generated, df_true)
 
     def test_malformed(self):

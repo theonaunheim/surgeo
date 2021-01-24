@@ -219,8 +219,8 @@ class TestSurgeoGUI(unittest.TestCase):
             ZIP_HEADER,
         )
         # Get our data
-        df_generated = pd.read_excel(self._EXCEL_OUTPUT_PATH)
-        df_true = pd.read_excel(self._DATA_FOLDER / TRUE_OUTPUT)
+        df_generated = pd.read_excel(self._EXCEL_OUTPUT_PATH, engine='openpyxl')
+        df_true = pd.read_excel(self._DATA_FOLDER / TRUE_OUTPUT, engine='openpyxl')
         # Compare values
         self._is_close_enough(df_generated, df_true)
 
