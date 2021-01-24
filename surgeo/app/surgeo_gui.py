@@ -27,8 +27,8 @@ class SurgeoGUI(object):
     This script creates a single window tkinter application. This
     application allows a user to specify inputs/outputs, specify which
     model that they want to run, and then define the column headers for the
-    ZCTA and surname fields in their data. It then runs the model and
-    stores the results in a file.
+    ZCTA, first name, and surname fields as applicable. It then runs the
+    model and stores the results in a file.
 
     It also has various helper functions to integrate the surgeo logic
     within the program.
@@ -71,7 +71,7 @@ class SurgeoGUI(object):
         self._objects['frame'] = tk.Frame(master=self._objects['root'])
         # Set title and window size
         self._objects['root'].title(f"Surgeo v.{surgeo.VERSION}")
-        self._objects['root'].minsize(700, 150)
+        self._objects['root'].minsize(700, 160)
         # Bind enter to a function that starts the analysis
         self._objects['root'].bind('<Return>', self._execute)
         # Add icon
@@ -128,7 +128,7 @@ class SurgeoGUI(object):
         # Root alias to save typing
         root = self._objects['root']
         #######################################################################
-        # Row 1
+        # Row 1: INPUT
         #######################################################################
         # File selection label
         select_label = ttk.Label(root, text='Input File')
@@ -155,7 +155,7 @@ class SurgeoGUI(object):
         select_button.grid(row=0, column=2, padx=10, sticky='w')
         self._objects['select_button'] = select_button
         #######################################################################
-        # Row 2
+        # Row 2: OUTPUT
         #######################################################################
         # Output file label
         output_label = ttk.Label(root, text='Output File')
@@ -182,7 +182,7 @@ class SurgeoGUI(object):
         output_button.grid(row=1, column=2, padx=10, sticky='w')
         self._objects['output_button'] = output_button
         #######################################################################
-        # Row 3
+        # Row 3 FIRST NAME
         #######################################################################
         # First Name label
         first_name_label = ttk.Label(
@@ -199,10 +199,10 @@ class SurgeoGUI(object):
             text='Enter First Name Column Header',
             textvariable=first_name_var,
         )
-        first_name_entry.grid(row=2, column=1, padx=10, sticky='w')
+        first_name_entry.grid(row=2, column=1, padx=10, pady=3, sticky='w')
         self._objects['first_name_entry'] = first_name_entry
         #######################################################################
-        # Row 4
+        # Row 4 SURNAME
         #######################################################################
         # Surname label
         surname_label = ttk.Label(
@@ -219,10 +219,10 @@ class SurgeoGUI(object):
             text='Enter Surname Column Header',
             textvariable=surname_var,
         )
-        surname_entry.grid(row=3, column=1, padx=10, sticky='w')
+        surname_entry.grid(row=3, column=1, padx=10, pady=3, sticky='w')
         self._objects['surname_entry'] = surname_entry
         #######################################################################
-        # Row 5
+        # Row 5 ZCTA
         #######################################################################
         # ZCTA label
         zcta_label = ttk.Label(
@@ -242,7 +242,7 @@ class SurgeoGUI(object):
         zcta_entry.grid(row=4, column=1, padx=10, pady=3, sticky='w')
         self._objects['zcta_entry'] = zcta_entry
         #######################################################################
-        # Row 6
+        # Row 6 MODEL TYPE
         #######################################################################
         # Model selector label
         model_label = ttk.Label(root, text='Model Type')
@@ -264,7 +264,7 @@ class SurgeoGUI(object):
         model_selector.grid(row=5, column=1, padx=10, sticky='w')
         self._objects['model_selector'] = model_selector
         #######################################################################
-        # Row 7
+        # Row 7 EXECUTE
         #######################################################################
         # Proces inputs button (this runs self._execute)
         # Note: this is also bound to <Enter> in the window setup func.
@@ -273,7 +273,7 @@ class SurgeoGUI(object):
             text='Execute',
             command=self._execute,
         )
-        execute_button.grid(row=6, column=2, padx=10, sticky='w')
+        execute_button.grid(row=6, column=2, padx=10, pady=3, sticky='w')
         self._objects['execute_button'] = execute_button
 
     def _check_inputs(self, df):

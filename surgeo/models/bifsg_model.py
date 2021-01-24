@@ -141,8 +141,11 @@ class BIFSGModel(BaseModel):
                         geo_probs: pd.DataFrame) -> pd.DataFrame:
         """Performs the BIFSG calculation"""
         # Calculate each of the numerators
-        bifsg_numer = first_name_probs.iloc[:, 1:] * sur_probs.iloc[:, 1:] * \
-                      geo_probs.iloc[:, 1:]
+        bifsg_numer = (
+            first_name_probs.iloc[:, 1:] *
+            sur_probs.iloc[:, 1:] *
+            geo_probs.iloc[:, 1:]
+        )
         # Calculate the denominator
         bifsg_denom = bifsg_numer.sum(axis=1)
         # Caluclate the bifsg probabilities (each num / denom)

@@ -74,22 +74,25 @@ To use the CLI, type in "surgeo" followed by your arguments.
     # Or alternatively if you have installed the module
     $ python -m surgeo -h
 
-    usage: surgeo_cli [-h] [--zcta_column ZCTA_COLUMN]
-                        [--surname_column SURNAME_COLUMN]
-                        input output type
+    usage: surgeo_cli [-h] [--zcta_column ZCTA_COLUMN] [--surname_column SURNAME_COLUMN]
+                    [--first_name_column FIRST_NAME_COLUMN]
+                    input output type
 
     Get Surgeo arguments.
 
+    positional arguments:
     input                 Input CSV or XLSX of data.
     output                Output CSV or XLSX of data.
-    type                  The model type being run ("sur", "geo" or "surgeo")
+    type                  The model type being run ("first", "sur", "geo", "bifsg", or "surgeo")
 
     optional arguments:
     -h, --help            show this help message and exit
     --zcta_column ZCTA_COLUMN
-                        The input column to analyze as ZCTA/ZIP)
+                            The input column to analyze as ZCTA/ZIP)
     --surname_column SURNAME_COLUMN
-                        The input column to analyze as surname")
+                            The input column to analyze as surname")
+    --first_name_column FIRST_NAME_COLUMN
+                            The input column to analyze as first name")
 
 As a Module
 ~~~~~~~~~~~

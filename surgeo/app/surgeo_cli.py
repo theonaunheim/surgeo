@@ -64,6 +64,9 @@ class SurgeoCLI(object):
         self._zcta_col = args.zcta_column
         self._first_col = args.first_name_column
         self._sur_col = args.surname_column
+        self._zcta_col_default = 'zcta5'
+        self._first_col_default = 'first_name'
+        self._sur_col_default = 'name'
 
     def main(self):
         """This is the public interface function for this CLI.
@@ -76,7 +79,7 @@ class SurgeoCLI(object):
         3. Route that dataframe to a speciic processing function based on the
            "type" function argument (e.g. first_name, surname, geocoding, bifsg, or surgeo);
         4. Optional specifies the column names to analyze (if not using the
-           default "zcta5" or "name" headers);
+           default "zcta5", "name", or "first_name" headers);
         5. Runs the appropriate algorithm and returns a new dataframe;
         6. Writes the resulting data to a new CSV based to output path
            specified by user.
@@ -124,11 +127,11 @@ class SurgeoCLI(object):
         # Otherwise use 'zcta5' (and raise error if need be.)
         else:
             try:
-                target = df['zcta5']
+                target = df[self._zcta_col_default]
                 result = model.get_probabilities(target)
             except KeyError:
-                raise SurgeoException('No "zcta5" column and no column '
-                                      'specified.')
+                raise SurgeoException(f'No "{self._zcta_col_default}" column '
+                                       'and no column specified.')
         return result
 
     def _run_sur(self, df):
@@ -142,11 +145,11 @@ class SurgeoCLI(object):
         # Otherwise use "name" as default (will throw error if unfound)
         else:
             try:
-                target = df['name']
+                target = df[self._sur_col_default]
                 result = model.get_probabilities(target)
             except KeyError:
-                raise SurgeoException('No "name" column and no column '
-                                      'specified.')
+                raise SurgeoException(f'No "{self._sur_col_default}" column '
+                                       'and no column specified.')
         return result
 
     def _run_first(self, df):
@@ -160,11 +163,11 @@ class SurgeoCLI(object):
         # Otherwise use "name" as default (will throw error if unfound)
         else:
             try:
-                target = df['name']
+                target = df[self._first_col_default]
                 result = model.get_probabilities(target)
             except KeyError:
-                raise SurgeoException('No "name" column and no column '
-                                      'specified.')
+                raise SurgeoException(f'No "{self._first_col_default}" column '
+                                       'and no column specified.')
         return result
 
     def _run_surgeo(self, df):
@@ -177,9 +180,9 @@ class SurgeoCLI(object):
                 geo_target = df[self._zcta_col]
             except KeyError:
                 raise SurgeoException(f'Column "{self._zcta_col}"" not found.')
-        # Otherwise use zcta5 for ZIP target
+        # Otherwise use default "zcta5" for ZIP target
         else:
-            geo_target = df['zcta5']
+            geo_target = df[self._zcta_col_default]
         # If Surname target specified, check for accuracy
         if self._sur_col is not None:
             sur_target = df[self._sur_col]
@@ -189,7 +192,7 @@ class SurgeoCLI(object):
                 raise SurgeoException(f'Column "{self._sur_col}" not found.')
         # Otherwise, use name for surname column
         else:
-            sur_target = df['name']
+            sur_target = df[self._sur_col_default]
         # Get probabilities
         result = model.get_probabilities(sur_target, geo_target)
         return result
@@ -206,7 +209,7 @@ class SurgeoCLI(object):
                 raise SurgeoException(f'Column "{self._zcta_col}"" not found.')
         # Otherwise use zcta5 for ZIP target
         else:
-            geo_target = df['zcta5']
+            geo_target = df[self._geo_col_default]
         # If Surname target specified, check for accuracy
         if self._sur_col is not None:
             sur_target = df[self._sur_col]
@@ -216,7 +219,7 @@ class SurgeoCLI(object):
                 raise SurgeoException(f'Column "{self._sur_col}" not found.')
         # Otherwise, use name for surname column
         else:
-            sur_target = df['name']
+            sur_target = df[self._sur_col_default]
         # If first name target specified, check for accuracy
         if self._first_col is not None:
             first_target = df[self._first_col]
@@ -226,7 +229,7 @@ class SurgeoCLI(object):
                 raise SurgeoException(f'Column "{self._first_col}" not found.')
         # Otherwise, use name for surname column
         else:
-            first_target = df['name']
+            first_target = df[self._first_col_default]
         # Get probabilities
         result = model.get_probabilities(first_target, sur_target, geo_target)
         return result
