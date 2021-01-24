@@ -98,7 +98,8 @@ class SurgeoCLI(object):
         suffix = self._input_path.suffix
         # If it's excel, read_excel()
         if suffix == '.xlsx' or suffix == 'xls':
-            df = pd.read_excel(self._input_path)
+            # xlrd doesn't support xlsx as of 2021-01-23
+            df = pd.read_excel(self._input_path, engine='openpyxl')
         # If CSV, read read_csv()
         elif suffix == '.csv':
             df = pd.read_csv(
