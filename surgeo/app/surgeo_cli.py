@@ -120,7 +120,8 @@ class SurgeoCLI(object):
     def _run_geo(self, df):
         """Method called from self._process_df() to get geo results"""
         model = GeocodeModel()
-        # If an optional name is speicied, select that column and run
+        # TODO: if they supply a name not found in CSV ... more specific error?
+        # If an optional name is specified, select that column and run
         if self._zcta_col is not None:
             target = df[self._zcta_col]
             result = model.get_probabilities(target)
@@ -139,6 +140,7 @@ class SurgeoCLI(object):
         # Instantiate model
         model = SurnameModel()
         # If target is specified, get probabilities based on that target
+        # TODO: if they supply a name not found in CSV ... more specific error?
         if self._sur_col is not None:
             target = df[self._sur_col]
             result = model.get_probabilities(target)
@@ -156,7 +158,8 @@ class SurgeoCLI(object):
         """This runs a first name model for a given dataframe"""
         # Instantiate model
         model = FirstNameModel()
-        # If target is specified, get probabilities based on that target
+        # If target is specified, get probabilities based on that 
+        # TODO: if they supply a name not found in CSV ... more specific error?
         if self._first_col is not None:
             target = df[self._first_col]
             result = model.get_probabilities(target)
@@ -209,7 +212,7 @@ class SurgeoCLI(object):
                 raise SurgeoException(f'Column "{self._zcta_col}"" not found.')
         # Otherwise use zcta5 for ZIP target
         else:
-            geo_target = df[self._geo_col_default]
+            geo_target = df[self._zcta_col_default]
         # If Surname target specified, check for accuracy
         if self._sur_col is not None:
             sur_target = df[self._sur_col]
@@ -295,19 +298,19 @@ class SurgeoCLI(object):
         # Optional zcta column argument
         parser.add_argument(
             '--zcta_column',
-            help='The input column to analyze as ZCTA/ZIP)',
+            help='The input column to analyze as ZCTA/ZIP',
             dest='zcta_column'
         )
         # Optional surname column argument
         parser.add_argument(
             '--surname_column',
-            help='The input column to analyze as surname")',
+            help='The input column to analyze as surname',
             dest='surname_column'
         )
         # Optional first name column argument
         parser.add_argument(
             '--first_name_column',
-            help='The input column to analyze as first name")',
+            help='The input column to analyze as first name',
             dest='first_name_column'
         )
         # Parse args and return

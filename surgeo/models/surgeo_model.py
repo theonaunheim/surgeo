@@ -43,7 +43,7 @@ class SurgeoModel(BaseModel):
     |
     | And where:
     | :math:`\hspace{25px} P(i \mid j)` is the probability of a selected race given surname
-    | :math:`\hspace{25px} r(k \mid i)` is the probability of a selected ZCTA of residence given race
+    | :math:`\hspace{25px} r(k \mid i)` is the probability of a selected census block of residence given race
     | :math:`\hspace{25px} k` is Census Block
     | :math:`\hspace{25px} j` is Surname
     | :math:`\hspace{25px} i` is Race

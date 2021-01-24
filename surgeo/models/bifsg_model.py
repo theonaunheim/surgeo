@@ -54,7 +54,7 @@ class BIFSGModel(BaseModel):
     |
     | And where:
     | :math:`\hspace{25px} p(r \mid s)` is the probability of a selected race given surname
-    | :math:`\hspace{25px} p(g \mid r)` is the probability of a selected ZCTA of residence given race
+    | :math:`\hspace{25px} p(g \mid r)` is the probability of a selected census block of residence given race
     | :math:`\hspace{25px} p(f \mid r)` is the probability of a selected first name given race
     | :math:`\hspace{25px} g` is Census Block
     | :math:`\hspace{25px} f` is First Name

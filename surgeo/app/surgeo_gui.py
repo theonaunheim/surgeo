@@ -255,7 +255,6 @@ class SurgeoGUI(object):
             root,
             model_var,
             'Surgeo (Surname + Geocode)',
-            'Surgeo (Surname + Geocode)',
             'BIFSG',
             'First Name',
             'Surname',
@@ -287,31 +286,39 @@ class SurgeoGUI(object):
         if model_var == 'First Name':
             if first_name_var not in df.columns:
                 # Otherwise raise error
-                raise SurgeoException(f'{first_name_var} not in input data.')
+                raise SurgeoException(f'{first_name_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
         # If it's geocode, make sure column is there. Otherwise error.
         elif model_var == 'Geocode':
             if zip_var not in df.columns:
                 # Otherwise raise error
-                raise SurgeoException(f'{surname_var} not in input data.')
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
         # If Surname, make sure the user-specified surname column is there.
         elif model_var == 'Surname':
             # Otherwise raise error
             if surname_var not in df.columns:
-                raise SurgeoException(f'{surname_var} not in input data.')
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
         # If BIFSG, make sure the user-specified columns are present.
         elif model_var == 'BIFSG':
             if first_name_var not in df.columns:
-                raise SurgeoException(f'{first_name_var} not in input data.')
+                raise SurgeoException(f'{first_name_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
             if zip_var not in df.columns:
-                raise SurgeoException(f'{surname_var} not in input data.')
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
             if surname_var not in df.columns:
-                raise SurgeoException(f'{surname_var} not in input data.')
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
         # If Surgeo, make sure both user-specified columns are present.
         else:
             if zip_var not in df.columns:
-                raise SurgeoException(f'{surname_var} not in input data.')
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
             if surname_var not in df.columns:
-                raise SurgeoException(f'{surname_var} not in input data.')
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
 
     def _load_df(self, input_path):
         """This creates a dataframe based on self._input_path"""
