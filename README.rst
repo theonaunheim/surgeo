@@ -104,15 +104,19 @@ Surgeo is best used as a module.
     import pandas as pd
     import surgeo
 
-    # Series of names
-    names = pd.Series(['DIAZ', 'JOHNSON', 'WASHINGTON'])
+    # Instatiate your model
+    fsg = surgeo.BIFSGModel()
+
+    # Create pd.Series objects to analze (or load them)
+    first_names = pd.Series(['HECTOR', 'PHILLIP', 'JANICE'])
+    surnames = pd.Series(['DIAZ', 'JOHNSON', 'WASHINGTON'])
     zctas = pd.Series(['65201', '63144', '63110'])
 
-    # Create model
-    model = surgeo.SurgeoModel()
+    # Get results using the get_probabilities() function
+    fsg_results = fsg.get_probabilities(first_names, surnames, zctas)
 
-    # Run model and get dataframe
-    results = model.get_probabilities(names, zctas)
+    # Show Surgeo BIFSG results
+    fsg_results
 
 .. image:: static/model_results.gif
 
