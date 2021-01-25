@@ -254,6 +254,9 @@ class SurgeoGUI(object):
         model_selector = ttk.OptionMenu(
             root,
             model_var,
+            # Default value
+            'Surgeo (Surname + Geocode)',
+            # Other values
             'Surgeo (Surname + Geocode)',
             'BIFSG',
             'First Name',
