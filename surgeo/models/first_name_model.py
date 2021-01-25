@@ -53,4 +53,6 @@ class FirstNameModel(BaseModel):
             right_index=True,
             how='left',
         )
+        # Rename to avoid clashes with "name"
+        first_name_probs = first_name_probs.rename(columns={'name': 'first_name'})
         return first_name_probs
