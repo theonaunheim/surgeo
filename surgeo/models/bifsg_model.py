@@ -117,7 +117,6 @@ class BIFSGModel(BaseModel):
         # Check inputs
         self._check_inputs(first_names, surnames, zctas)
 
-        # Get models
         # Get component probabilities
         first_name_probs = self._get_first_name_probs(first_names)
         sur_probs = self._get_surname_probs(surnames)
