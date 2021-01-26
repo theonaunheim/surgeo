@@ -53,4 +53,13 @@ class FirstNameModel(BaseModel):
             right_index=True,
             how='left',
         )
+
+        # Replace missing first names with "other" values
+        all_others = self._PROB_RACE_GIVEN_FIRST_NAME.query('name == "ALL OTHER FIRST NAMES"')
+        other_name_probs = all_others.to_dict('index')["ALL OTHER FIRST NAMES"]
+        first_name_probs = first_name_probs.fillna(value=other_name_probs)
+
+        # Rename to avoid clashes with "name"
+        first_name_probs = first_name_probs.rename(columns={'name': 'first_name'})
+
         return first_name_probs

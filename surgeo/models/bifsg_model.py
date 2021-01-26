@@ -116,6 +116,8 @@ class BIFSGModel(BaseModel):
 
         # Check inputs
         self._check_inputs(first_names, surnames, zctas)
+
+        # Get models
         # Get component probabilities
         first_name_probs = self._get_first_name_probs(first_names)
         sur_probs = self._get_surname_probs(surnames)
@@ -185,11 +187,13 @@ class BIFSGModel(BaseModel):
 
     def _get_first_name_probs(self, first_names: pd.Series) -> pd.DataFrame:
         """Normalizes ZCTAs/ZIPs and joins them to their race probs."""
+
         # Normalize
         normalized_first_names = (
             self._normalize_names(first_names)
                 .to_frame()
         )
+
         # Merge names to dataframe, which gives probs for each name.
         first_name_probs = normalized_first_names.merge(
             self._PROB_FIRST_NAME_GIVEN_RACE,
@@ -197,15 +201,23 @@ class BIFSGModel(BaseModel):
             right_index=True,
             how='left',
         )
+
+        # Replace missing first names with "other" values
+        all_others = self._PROB_FIRST_NAME_GIVEN_RACE.query('name == "ALL OTHER FIRST NAMES"')
+        other_name_probs = all_others.to_dict('index')["ALL OTHER FIRST NAMES"]
+        first_name_probs = first_name_probs.fillna(value=other_name_probs)
+
         return first_name_probs
 
     def _get_surname_probs(self, surnames: pd.Series) -> pd.DataFrame:
         """Normalizes names and joins names to their race probabilities."""
+
         # Normalize names
         normalized_names = (
             self._normalize_names(surnames)
                 .to_frame()
         )
+
         # Merge names to dataframe, which gives probs for each name
         surname_probs = normalized_names.merge(
             self._PROB_RACE_GIVEN_SURNAME,
@@ -213,6 +225,12 @@ class BIFSGModel(BaseModel):
             right_index=True,
             how='left',
         )
+
+        # Replace missing first names with "other" values
+        all_others = self._PROB_RACE_GIVEN_SURNAME.query('name == "ALL OTHER NAMES"')
+        other_name_probs = all_others.to_dict('index')["ALL OTHER NAMES"]
+        surname_probs = surname_probs.fillna(value=other_name_probs)
+
         return surname_probs
 
     def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:

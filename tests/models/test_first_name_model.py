@@ -30,7 +30,8 @@ class TestFirstNameModel(unittest.TestCase):
         result = result.round(4).fillna('')
         true_result = true_result.round(4).fillna('')
         # Check that all items in the series are equal
-        pd.testing.assert_frame_equal(result, true_result)
+        pd.testing.assert_frame_equal(result, true_result, check_dtype=False)
+
 
 if __name__ == '__main__':
     unittest.main()

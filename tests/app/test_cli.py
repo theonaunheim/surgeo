@@ -59,9 +59,11 @@ class TestSurgeoCLI(unittest.TestCase):
 
     def _is_close_enough(self, df_generated, df_true):
         """Helper function to select floats, round them, and compare"""
+
         df_generated = df_generated.select_dtypes(np.float64).round(4)
         df_true = df_true.select_dtypes(np.float64).round(4)
-        self.assertTrue(df_generated.equals(df_true))
+        
+        pd.testing.assert_frame_equal(df_generated, df_true, check_dtype=False)
 
     def test_surgeo_cli(self):
         """Test BISG model functionality of CLI"""

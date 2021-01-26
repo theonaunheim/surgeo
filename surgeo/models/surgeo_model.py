@@ -157,6 +157,7 @@ class SurgeoModel(BaseModel):
             self._normalize_names(names)
                 .to_frame()
         )
+
         # Merge names to dataframe, which gives probs for each name
         surname_probs = normalized_names.merge(
             self._PROB_RACE_GIVEN_SURNAME,
@@ -164,6 +165,12 @@ class SurgeoModel(BaseModel):
             right_index=True,
             how='left',
         )
+
+        # Replace missing first names with "other" values
+        all_others = self._PROB_RACE_GIVEN_SURNAME.query('name == "ALL OTHER NAMES"')
+        other_name_probs = all_others.to_dict('index')["ALL OTHER NAMES"]
+        surname_probs = surname_probs.fillna(value=other_name_probs)
+
         return surname_probs
 
     def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:
