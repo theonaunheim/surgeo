@@ -16,13 +16,13 @@ setup(
         Executable(
             "./surgeo/app/surgeo_gui.py",
             base='Win32GUI',
-            shortcutName='surgeo_gui',
-            shortcutDir='ProgramMenuFolder',
+            shortcut_name='surgeo_gui',
+            shortcut_dir='ProgramMenuFolder',
         ),
         Executable(
             "./surgeo/app/surgeo_cli.py",
-            shortcutName='surgeo_cli',
-            shortcutDir='ProgramMenuFolder',
+            shortcut_name='surgeo_cli',
+            shortcut_dir='ProgramMenuFolder',
         ),
     ],
     options=OPTIONS,
