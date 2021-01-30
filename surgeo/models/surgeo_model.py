@@ -43,7 +43,7 @@ class SurgeoModel(BaseModel):
     |
     | And where:
     | :math:`\hspace{25px} P(i \mid j)` is the probability of a selected race given surname
-    | :math:`\hspace{25px} r(k \mid i)` is the probability of a selected ZCTA of residence given race
+    | :math:`\hspace{25px} r(k \mid i)` is the probability of a selected census block of residence given race
     | :math:`\hspace{25px} k` is Census Block
     | :math:`\hspace{25px} j` is Surname
     | :math:`\hspace{25px} i` is Race
@@ -157,7 +157,6 @@ class SurgeoModel(BaseModel):
             self._normalize_names(names)
                 .to_frame()
         )
-
         # Merge names to dataframe, which gives probs for each name
         surname_probs = normalized_names.merge(
             self._PROB_RACE_GIVEN_SURNAME,
@@ -165,12 +164,6 @@ class SurgeoModel(BaseModel):
             right_index=True,
             how='left',
         )
-
-        # Replace missing first names with "other" values
-        all_others = self._PROB_RACE_GIVEN_SURNAME.query('name == "ALL OTHER NAMES"')
-        other_name_probs = all_others.to_dict('index')["ALL OTHER NAMES"]
-        surname_probs = surname_probs.fillna(value=other_name_probs)
-
         return surname_probs
 
     def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:

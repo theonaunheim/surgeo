@@ -7,28 +7,28 @@ OPTIONS = {
         "add_to_path": True,
         "target_name": "surgeo",
         "all_users": True,
-    }
+    },
 }
 
+# cx_Freeze setup.py
 setup(
-    # cx_Freeze setup.py
     executables=[
         Executable(
             "./surgeo/app/surgeo_gui.py",
             base='Win32GUI',
-            shortcutName='surgeo_gui',
-            shortcutDir='ProgramMenuFolder',
+            shortcut_name='surgeo_gui',
+            shortcut_dir='ProgramMenuFolder',
         ),
         Executable(
             "./surgeo/app/surgeo_cli.py",
-            shortcutName='surgeo_cli',
-            shortcutDir='ProgramMenuFolder',
+            shortcut_name='surgeo_cli',
+            shortcut_dir='ProgramMenuFolder',
         ),
     ],
     options=OPTIONS,
     # Normal setup.py
     name='surgeo',
-    version='1.0.2',
+    version='1.1.0',
     description='Bayesian Improved Surname Geocoder model',
     long_description="""
         Surgeo is an impelmentation of the Bayesian Improved Surname
@@ -62,6 +62,7 @@ setup(
         'pandas',
         'numpy',
         'xlrd',
+        'openpyxl',
     ],
     package_dir={'surgeo': './surgeo'},
     package_data={'surgeo': ['./data/*', './static/*']},

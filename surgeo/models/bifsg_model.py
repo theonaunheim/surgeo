@@ -54,7 +54,7 @@ class BIFSGModel(BaseModel):
     |
     | And where:
     | :math:`\hspace{25px} p(r \mid s)` is the probability of a selected race given surname
-    | :math:`\hspace{25px} p(g \mid r)` is the probability of a selected ZCTA of residence given race
+    | :math:`\hspace{25px} p(g \mid r)` is the probability of a selected census block of residence given race
     | :math:`\hspace{25px} p(f \mid r)` is the probability of a selected first name given race
     | :math:`\hspace{25px} g` is Census Block
     | :math:`\hspace{25px} f` is First Name
@@ -116,7 +116,6 @@ class BIFSGModel(BaseModel):
 
         # Check inputs
         self._check_inputs(first_names, surnames, zctas)
-
         # Get component probabilities
         first_name_probs = self._get_first_name_probs(first_names)
         sur_probs = self._get_surname_probs(surnames)
@@ -142,8 +141,11 @@ class BIFSGModel(BaseModel):
                         geo_probs: pd.DataFrame) -> pd.DataFrame:
         """Performs the BIFSG calculation"""
         # Calculate each of the numerators
-        bifsg_numer = first_name_probs.iloc[:, 1:] * sur_probs.iloc[:, 1:] * \
-                      geo_probs.iloc[:, 1:]
+        bifsg_numer = (
+            first_name_probs.iloc[:, 1:] *
+            sur_probs.iloc[:, 1:] *
+            geo_probs.iloc[:, 1:]
+        )
         # Calculate the denominator
         bifsg_denom = bifsg_numer.sum(axis=1)
         # Caluclate the bifsg probabilities (each num / denom)
@@ -186,13 +188,11 @@ class BIFSGModel(BaseModel):
 
     def _get_first_name_probs(self, first_names: pd.Series) -> pd.DataFrame:
         """Normalizes ZCTAs/ZIPs and joins them to their race probs."""
-
         # Normalize
         normalized_first_names = (
             self._normalize_names(first_names)
                 .to_frame()
         )
-
         # Merge names to dataframe, which gives probs for each name.
         first_name_probs = normalized_first_names.merge(
             self._PROB_FIRST_NAME_GIVEN_RACE,
@@ -200,23 +200,15 @@ class BIFSGModel(BaseModel):
             right_index=True,
             how='left',
         )
-
-        # Replace missing first names with "other" values
-        all_others = self._PROB_FIRST_NAME_GIVEN_RACE.query('name == "ALL OTHER FIRST NAMES"')
-        other_name_probs = all_others.to_dict('index')["ALL OTHER FIRST NAMES"]
-        first_name_probs = first_name_probs.fillna(value=other_name_probs)
-
         return first_name_probs
 
     def _get_surname_probs(self, surnames: pd.Series) -> pd.DataFrame:
         """Normalizes names and joins names to their race probabilities."""
-
         # Normalize names
         normalized_names = (
             self._normalize_names(surnames)
                 .to_frame()
         )
-
         # Merge names to dataframe, which gives probs for each name
         surname_probs = normalized_names.merge(
             self._PROB_RACE_GIVEN_SURNAME,
@@ -224,12 +216,6 @@ class BIFSGModel(BaseModel):
             right_index=True,
             how='left',
         )
-
-        # Replace missing first names with "other" values
-        all_others = self._PROB_RACE_GIVEN_SURNAME.query('name == "ALL OTHER NAMES"')
-        other_name_probs = all_others.to_dict('index')["ALL OTHER NAMES"]
-        surname_probs = surname_probs.fillna(value=other_name_probs)
-
         return surname_probs
 
     def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:

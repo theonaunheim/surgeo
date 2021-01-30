@@ -6,7 +6,7 @@ setup(
     version='1.1.0',
     description='Bayesian Improved Surname Geocoder model',
     long_description="""
-        Surgeo is an impelmentation of the Bayesian Improved Surname
+        **Surgeo** is an impelmentation of the Bayesian Improved Surname
         Geocode (BISG) model created by Mark N. Elliot et al. and
         incluenced by the Consumer Financial Protection Bureau's (CFPB)
         implementation of the same. It also includes an implementation
@@ -37,6 +37,7 @@ setup(
         'pandas',
         'numpy',
         'xlrd',
+        'openpyxl',
     ],
     package_dir={'surgeo': './surgeo'},
     package_data={'surgeo': ['./data/*', './static/*']},

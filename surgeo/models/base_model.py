@@ -132,10 +132,10 @@ class BaseModel(object):
                  .astype(str)
                  .str.translate(translation_table)
                  .str.upper()
-                 .str.replace(r'\s?J\.*?R\.*\s*?$', '')
-                 .str.replace(r'\s?S\.*?R\.*\s*?$', '')
-                 .str.replace(r'\s?III\s*?$',      '')
-                 .str.replace(r'\s?IV\s*?$',       '')
+                 .str.replace(r'\s?J\.*?R\.*\s*?$', '', regex=True)
+                 .str.replace(r'\s?S\.*?R\.*\s*?$', '', regex=True)
+                 .str.replace(r'\s?III\s*?$',      '', regex=True)
+                 .str.replace(r'\s?IV\s*?$',       '', regex=True)
         )
         output.name = 'name'
         return output

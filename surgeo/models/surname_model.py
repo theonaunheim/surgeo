@@ -46,7 +46,6 @@ class SurnameModel(BaseModel):
             self._normalize_names(names)
                 .to_frame()
         )
-
         # Do a simple join to obtain the names along with provs.
         surname_probs = normalized_names.merge(
             self._PROB_RACE_GIVEN_SURNAME,
@@ -54,10 +53,4 @@ class SurnameModel(BaseModel):
             right_index=True,
             how='left',
         )
-
-        # Replace missing first names with "other" values
-        all_others = self._PROB_RACE_GIVEN_SURNAME.query('name == "ALL OTHER NAMES"')
-        other_name_probs = all_others.to_dict('index')["ALL OTHER NAMES"]
-        surname_probs = surname_probs.fillna(value=other_name_probs)
-
         return surname_probs

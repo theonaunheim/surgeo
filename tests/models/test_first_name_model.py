@@ -21,7 +21,7 @@ class TestFirstNameModel(unittest.TestCase):
             skip_blank_lines=False,
         )
         # Get prob
-        result = self._FIRST_NAME_MODEL.get_probabilities(input_data['name'])
+        result = self._FIRST_NAME_MODEL.get_probabilities(input_data['first_name'])
         # Get true result
         true_result = pd.read_csv(
             self._DATA_FOLDER / 'first_name_output.csv',
@@ -30,8 +30,7 @@ class TestFirstNameModel(unittest.TestCase):
         result = result.round(4).fillna('')
         true_result = true_result.round(4).fillna('')
         # Check that all items in the series are equal
-        pd.testing.assert_frame_equal(result, true_result, check_dtype=False)
-
+        pd.testing.assert_frame_equal(result, true_result)
 
 if __name__ == '__main__':
     unittest.main()

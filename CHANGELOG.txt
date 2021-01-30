@@ -1,24 +1,24 @@
-v0.6.8:
-=======
--Changelog started
--Experimental weighted mean added.
-
-v.0.6.9:
+v.1.1.0:
 ========
--Weighted mean pushed to PyPi and installer.
-
-v.0.7.0:
-========
--Quick fix. Previous version weighted stdev was incorrect.
-
-v.1.0.1:
-========
--Complete re-write using pandas and 2010 census data for surname/geocoding.
+-Addition of First Name and BIFSG models
 
 v.1.0.2:
 ========
 -Bugfix to address multiple rows returned for ZCTAs in multiple states.
 
-v.1.1.0:
+v.1.0.1:
 ========
--Addition of First Name and BIFSG models
+-Complete re-write using pandas and 2010 census data for surname/geocoding.
+
+v.0.7.0:
+========
+-Quick fix. Previous version weighted stdev was incorrect.
+
+v.0.6.9:
+========
+-Weighted mean pushed to PyPi and installer.
+
+v0.6.8:
+=======
+-Changelog started
+-Experimental weighted mean added.

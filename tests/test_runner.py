@@ -1,6 +1,9 @@
 """Script to create and run a test suite."""
 import unittest
 
+from surgeo import app
+from surgeo import models
+
 # Import test modules
 import app.test_cli
 import app.test_gui

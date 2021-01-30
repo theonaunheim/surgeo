@@ -98,7 +98,7 @@ class TestSurgeoGUI(unittest.TestCase):
         MODEL = 'First Name'
         TRUE_OUTPUT = 'first_name_output.csv'
         SURNAME_HEADER = 'surname'
-        FIRST_NAME_HEADER = 'name'
+        FIRST_NAME_HEADER = 'first_name'
         ZIP_HEADER = 'zcta5'
         self._run_model(
             self._DATA_FOLDER / INPUT,
@@ -219,8 +219,8 @@ class TestSurgeoGUI(unittest.TestCase):
             ZIP_HEADER,
         )
         # Get our data
-        df_generated = pd.read_excel(self._EXCEL_OUTPUT_PATH)
-        df_true = pd.read_excel(self._DATA_FOLDER / TRUE_OUTPUT)
+        df_generated = pd.read_excel(self._EXCEL_OUTPUT_PATH, engine='openpyxl')
+        df_true = pd.read_excel(self._DATA_FOLDER / TRUE_OUTPUT, engine='openpyxl')
         # Compare values
         self._is_close_enough(df_generated, df_true)
 
