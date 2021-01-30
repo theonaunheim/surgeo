@@ -7,11 +7,11 @@ OPTIONS = {
         "add_to_path": True,
         "target_name": "surgeo",
         "all_users": True,
-    }
+    },
 }
 
+# cx_Freeze setup.py
 setup(
-    # cx_Freeze setup.py
     executables=[
         Executable(
             "./surgeo/app/surgeo_gui.py",
@@ -62,6 +62,7 @@ setup(
         'pandas',
         'numpy',
         'xlrd',
+        'openpyxl',
     ],
     package_dir={'surgeo': './surgeo'},
     package_data={'surgeo': ['./data/*', './static/*']},

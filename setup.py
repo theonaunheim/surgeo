@@ -37,6 +37,7 @@ setup(
         'pandas',
         'numpy',
         'xlrd',
+        'openpyxl',
     ],
     package_dir={'surgeo': './surgeo'},
     package_data={'surgeo': ['./data/*', './static/*']},

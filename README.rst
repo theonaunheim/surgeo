@@ -11,6 +11,8 @@ Surgeo
 
 .. |shieldio_badge| image:: https://badge.fury.io/py/surgeo.svg
 
+[![Gitter](https://badges.gitter.im/Surgeo_project/community.svg)](https://gitter.im/Surgeo_project/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/master/>`_
 
 Contributors
@@ -21,17 +23,28 @@ Contributors
 Overview
 --------
 
-Surgeo is an open source Bayesian Improved Surname Geocode (BISG)
-algorithm. In other words, Surgeo allows you to construct race
-probabilities from commonly available data such as ZIP codes and surnames.
-It is inspired by the work of the Consumer Financial Protection Bureau
-(CFPB) and was initially created by Mark Elliot et al.
+**Surgeo** is a module that contains a variety of open source demographic
+tools that allow you to construct race probabilities from more commonly
+available information such as location, first name, and last name
+information. This imputed race data is often used in the public health
+and fair lending contexts when race information is not otherwise
+available.
 
-Surgeo also has an implementation of the Bayesian Improved First Name Surname
-Geocode (BIFSG) as created by Ioan Voicu building off of BISG.
+Specifically Surgeo contains the following models:
 
-Please see the ReadTheDocs link above for information on the implementation
-itself.
+* **Bayesian Improved First Name Surname Geocode (BIFSG)** an adaptation
+of an algorithm created by Ioan Voicu that uses forename, surname, and
+location information to obtain probable races
+* **Bayesian Improved Surname Geocode (BISG)** an adaptation of an
+algorithm created by Mark Elliot and popularized by the Consumer Financial
+Protection Bureau (CFPB) that uses surname and location to obtain probable
+races
+* **Forename** a helper model to pull race data based on first name
+* **Surname** a helper model to pull race data based on last name
+* **Geocode** a helper model to pull race data based on location
+
+Please see the ReadTheDocs link above for additional information on the
+data sources used and the implementations themselves.
 
 Installation
 ------------
