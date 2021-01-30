@@ -35,18 +35,21 @@ class TestSurgeoCLI(unittest.TestCase):
         if pathlib.Path(self._EXCEL_OUTPUT_PATH).exists():
             os.unlink(self._EXCEL_OUTPUT_PATH)
 
-    def _compare(self, input_name, model_type, true_output_name):
+    def _compare(self, input_name, model_type, true_output_name, **kwargs):
         """"Helper function that runs the comparison"""
         # Generate input name based on input file
         input_path = str(self._DATA_FOLDER / input_name)
         # Run a process that writes to CSV output
-        subprocess.run([
-            sys.executable, 
+        subprocess_commands = [
+            sys.executable,
             self._CLI_SCRIPT,
             input_path,
             self._CSV_OUTPUT_PATH,
-            model_type
-        ], stderr=None)
+            model_type,
+        ]
+        if kwargs:
+            subprocess_commands.extend([command for kvp in [[f'--{key}', kwargs[key]] for key in kwargs.keys()] for command in kvp])
+        subprocess.run(subprocess_commands, stderr=None)
         # Read the newly generated information
         df_generated = pd.read_csv(self._CSV_OUTPUT_PATH)
         # Read the true information
@@ -56,9 +59,11 @@ class TestSurgeoCLI(unittest.TestCase):
 
     def _is_close_enough(self, df_generated, df_true):
         """Helper function to select floats, round them, and compare"""
+
         df_generated = df_generated.select_dtypes(np.float64).round(4)
         df_true = df_true.select_dtypes(np.float64).round(4)
-        self.assertTrue(df_generated.equals(df_true))          
+        
+        pd.testing.assert_frame_equal(df_generated, df_true, check_dtype=False)
 
     def test_surgeo_cli(self):
         """Test BISG model functionality of CLI"""
@@ -66,6 +71,24 @@ class TestSurgeoCLI(unittest.TestCase):
             'surgeo_input.csv',
             'surgeo',
             'surgeo_output.csv',
+        )
+
+    def test_bifsg_cli(self):
+        """Test bifsg model functionality of CLI"""
+        self._compare(
+            'bifsg_input.csv',
+            'bifsg',
+            'bifsg_output.csv',
+            surname_column='surname',
+            first_name_column='first_name'
+        )
+
+    def test_first_cli(self):
+        """Test first name model functionality of CLI"""
+        self._compare(
+            'first_name_input.csv',
+            'first',
+            'first_name_output.csv',
         )
 
     def test_sur_cli(self):
@@ -90,7 +113,7 @@ class TestSurgeoCLI(unittest.TestCase):
         input_path = str(self._DATA_FOLDER / 'surgeo_input.xlsx')
         # Run a process that writes to CSV output
         subprocess.run([
-            sys.executable, 
+            sys.executable,
             self._CLI_SCRIPT,
             input_path,
             self._EXCEL_OUTPUT_PATH,

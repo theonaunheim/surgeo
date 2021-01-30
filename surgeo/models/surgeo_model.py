@@ -31,7 +31,7 @@ class SurgeoModel(BaseModel):
     `prob_race_given_zcta_2010.csv` file, which has the race percentages
     for a given ZCTA (e.g. 90% of ZCTA 63144 is White).
 
-    The manner in which the geogrpahy data file was created can be found in
+    The manner in which the geography data file was created can be found in
     the "fetch_geography" Jupyter notebook.
 
     This is based of the following general formula from Elliott et al [#]_.
@@ -76,7 +76,7 @@ class SurgeoModel(BaseModel):
         """Obtain a set of BISG probabilities for name/ZCTA series
 
         This method first takes the data and checks to see if the data is
-        formatted appropraitely. It triggers the _get_surname_probs() and
+        formatted appropriately. It triggers the _get_surname_probs() and
         _get_geocode_probs() helper function to merge the probabilities
         for the inputs with their looked-up values. It then runs the
         _combined_probs() helper function to actually conduct the data
@@ -157,6 +157,7 @@ class SurgeoModel(BaseModel):
             self._normalize_names(names)
                 .to_frame()
         )
+
         # Merge names to dataframe, which gives probs for each name
         surname_probs = normalized_names.merge(
             self._PROB_RACE_GIVEN_SURNAME,
@@ -164,6 +165,12 @@ class SurgeoModel(BaseModel):
             right_index=True,
             how='left',
         )
+
+        # Replace missing first names with "other" values
+        all_others = self._PROB_RACE_GIVEN_SURNAME.query('name == "ALL OTHER NAMES"')
+        other_name_probs = all_others.to_dict('index')["ALL OTHER NAMES"]
+        surname_probs = surname_probs.fillna(value=other_name_probs)
+
         return surname_probs
 
     def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:

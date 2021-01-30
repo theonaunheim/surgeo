@@ -5,6 +5,8 @@ import unittest
 import app.test_cli
 import app.test_gui
 import models.test_base_model
+import models.test_bifsg_model
+import models.test_first_name_model
 import models.test_geocode_model
 import models.test_surgeo_model
 import models.test_surname_model
@@ -14,6 +16,8 @@ test_modules = [
     app.test_cli,
     app.test_gui,
     models.test_base_model,
+    models.test_bifsg_model,
+    models.test_first_name_model,
     models.test_geocode_model,
     models.test_surgeo_model,
     models.test_surname_model,
