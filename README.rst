@@ -11,7 +11,8 @@ Surgeo
 
 .. |shieldio_badge| image:: https://badge.fury.io/py/surgeo.svg
 
-[![Gitter](https://badges.gitter.im/Surgeo_project/community.svg)](https://gitter.im/Surgeo_project/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+.. image:: https://badges.gitter.im/Surgeo_project/community.svg
+   :target: https://gitter.im/Surgeo_project/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
 The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/master/>`_
 
@@ -138,4 +139,4 @@ Prefab Files
 
 A link to the Windows GUI/CLI is below.
 
-`Zipped Windows installer <https://github.com/theonaunheim/surgeo/releases/download/1.0.2/surgeo-win32.zip>`_.
+`Windows installer <https://github.com/theonaunheim/surgeo/releases/download/v1.1.0/surgeo-amd64.msi>`_.
