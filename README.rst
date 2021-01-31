@@ -36,12 +36,16 @@ Specifically Surgeo contains the following models:
 * **Bayesian Improved First Name Surname Geocode (BIFSG)** an adaptation
 of an algorithm created by Ioan Voicu that uses forename, surname, and
 location information to obtain probable races
+
 * **Bayesian Improved Surname Geocode (BISG)** an adaptation of an
 algorithm created by Mark Elliot and popularized by the Consumer Financial
 Protection Bureau (CFPB) that uses surname and location to obtain probable
 races
+
 * **Forename** a helper model to pull race data based on first name
+
 * **Surname** a helper model to pull race data based on last name
+
 * **Geocode** a helper model to pull race data based on location
 
 Please see the ReadTheDocs link above for additional information on the
