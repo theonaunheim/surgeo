@@ -1,5 +1,0 @@
-surgeo
-pandas>=0.24.1
-numpy>=1.16.1
-openpyxl>=3.0.2
-xlrd>=1.2.0
