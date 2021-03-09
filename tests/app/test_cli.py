@@ -125,5 +125,26 @@ class TestSurgeoCLI(unittest.TestCase):
         self._is_close_enough(df_generated, df_true)
 
 
+    def test_tract_simple(self):
+        """Test arguments to specify column names for census tract defaults"""
+        # Generate input name based on input file
+        input_path = str(self._DATA_FOLDER / 'tract_input.csv')
+        # Run a process that writes to CSV output
+        subprocess.run([
+            sys.executable,
+            self._CLI_SCRIPT,
+            input_path,
+            self._CSV_OUTPUT_PATH,
+            'surgeo',
+            '-c'
+            '--surname_column',
+            'name',
+        ])
+        # Read the newly generated information
+        df_generated = pd.read_csv(self._CSV_OUTPUT_PATH)
+        # Read the true information
+        df_true = pd.read_csv(self._DATA_FOLDER / 'tract_output.csv')
+        self._is_close_enough(df_generated, df_true)
+
 if __name__ == '__main__':
     unittest.main()

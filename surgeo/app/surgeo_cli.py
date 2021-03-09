@@ -255,6 +255,10 @@ class SurgeoCLI(object):
             'type',
             help='The model type being run ("sur", "geo" or "surgeo")',
         )
+        parser.add_argument(
+            '-c','--census_tract', action='store_true', help='Process at Census Tract Level instead of default ZCTA/Zip',
+            dest='ct',  default=False
+        )
         # Optional zcta column argument
         parser.add_argument(
             '--zcta_column',
@@ -267,10 +271,7 @@ class SurgeoCLI(object):
             help='The input column to analyze as surname")',
             dest='surname_column'
         )
-        parser.add_argument(
-            '--ct', type=bool, help='Process at Census Tract Level instead of default ZCTA/Zip',
-            dest='ct'
-        )
+
         parser.add_argument(
             '--state_column',
             help='The input column to analyze as two digit state code (required for census tract calculation)',
