@@ -12,6 +12,22 @@ SurgeoModel
     :inherited-members:
     :noindex:
 
+BIFSGModel
+~~~~~~~~~~
+
+.. autoclass:: surgeo.models.bifsg_model.BIFSGModel
+    :members:
+    :inherited-members:
+    :noindex:
+
+FirstNameModel
+~~~~~~~~~~~~~~
+
+.. autoclass:: surgeo.models.first_name_model.FirstNameModel
+    :members:
+    :inherited-members:
+    :noindex:
+
 GeocodeModel
 ~~~~~~~~~~~~
 

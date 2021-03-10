@@ -1,1 +1,1 @@
-"""This contains the Geocode, Surname, and Surname-Geocode models"""
+"""This contains the First Name, Geocode, Surname, Surname-Geocode, and First Name-Surname-Geocode models"""

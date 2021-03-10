@@ -11,19 +11,40 @@ Surgeo
 
 .. |shieldio_badge| image:: https://badge.fury.io/py/surgeo.svg
 
+.. image:: https://badges.gitter.im/Surgeo_project/community.svg
+   :target: https://gitter.im/Surgeo_project/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
+
 The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/en/master/>`_
+
+Contributors
+------------
+* `Adam Weeden <https://github.com/TheCleric>`_
+* `Theo Naunheim <https://github.com/theonaunheim>`_
 
 Overview
 --------
 
-Surgeo is an open source Bayesian Improved Surname Geocode (BISG)
-algorithm. In other words, Surgeo allows you to construct race
-probabilities from commonly available data such as ZIP codes and surnames.
-It is inspired by the work of the Consumer Financial Protection Bureau
-(CFPB) and was initially created by Mark Elliot et al.
+**Surgeo** is a module that contains a variety of open source demographic
+tools that allow you to construct race probabilities from more commonly
+available information such as location, first name, and last name
+information. This imputed race data is often used in the public health
+and fair lending contexts when race information is not otherwise
+available.
 
-Please see the ReadTheDocs link above for information on the implementation
-itself.
+Specifically Surgeo contains the following models:
+
+* **Bayesian Improved First Name Surname Geocode (BIFSG)**: an adaptation
+  of an algorithm created by Ioan Voicu that uses forename, surname, and
+  location information to obtain probable races
+* **Bayesian Improved Surname Geocode (BISG)**: an adaptation of an algorithm
+  created by Mark Elliot and popularized by the Consumer Financial Protection
+  Bureau (CFPB) that uses surname and location to obtain probable races
+* **Forename**: a helper model to pull race data based on first name
+* **Surname**: a helper model to pull race data based on last name
+* **Geocode**: a helper model to pull race data based on location
+
+Please see the ReadTheDocs link above for additional information on the
+data sources used and the implementations themselves.
 
 Installation
 ------------
@@ -46,7 +67,9 @@ As a Program
 ~~~~~~~~~~~~
 
 To use the GUI, simply type in "surgeo_gui" or use the Start Menu after
-installing the executable.
+installing the executable. For Mac or Linux users, ensure that you have tkinter
+setup on your
+`Python distribution <https://stackoverflow.com/questions/22550068/python-not-configured-for-tk>`_.
 
 .. code-block::
 
@@ -64,22 +87,25 @@ To use the CLI, type in "surgeo" followed by your arguments.
     # Or alternatively if you have installed the module
     $ python -m surgeo -h
 
-    usage: surgeo_cli [-h] [--zcta_column ZCTA_COLUMN]
-                        [--surname_column SURNAME_COLUMN]
-                        input output type
+    usage: surgeo_cli [-h] [--zcta_column ZCTA_COLUMN] [--surname_column SURNAME_COLUMN]
+                    [--first_name_column FIRST_NAME_COLUMN]
+                    input output type
 
     Get Surgeo arguments.
 
+    positional arguments:
     input                 Input CSV or XLSX of data.
     output                Output CSV or XLSX of data.
-    type                  The model type being run ("sur", "geo" or "surgeo")
+    type                  The model type being run ("first", "sur", "geo", "bifsg", or "surgeo")
 
     optional arguments:
     -h, --help            show this help message and exit
     --zcta_column ZCTA_COLUMN
-                        The input column to analyze as ZCTA/ZIP)
+                            The input column to analyze as ZCTA/ZIP)
     --surname_column SURNAME_COLUMN
-                        The input column to analyze as surname")
+                            The input column to analyze as surname")
+    --first_name_column FIRST_NAME_COLUMN
+                            The input column to analyze as first name")
 
 As a Module
 ~~~~~~~~~~~
@@ -91,15 +117,19 @@ Surgeo is best used as a module. Add Census Tract Input Examples.
     import pandas as pd
     import surgeo
 
-    # Series of names
-    names = pd.Series(['DIAZ', 'JOHNSON', 'WASHINGTON'])
+    # Instatiate your model
+    fsg = surgeo.BIFSGModel()
+
+    # Create pd.Series objects to analze (or load them)
+    first_names = pd.Series(['HECTOR', 'PHILLIP', 'JANICE'])
+    surnames = pd.Series(['DIAZ', 'JOHNSON', 'WASHINGTON'])
     zctas = pd.Series(['65201', '63144', '63110'])
 
-    # Create model
-    model = surgeo.SurgeoModel()
+    # Get results using the get_probabilities() function
+    fsg_results = fsg.get_probabilities(first_names, surnames, zctas)
 
-    # Run model and get dataframe
-    results = model.get_probabilities(names, zctas)
+    # Show Surgeo BIFSG results
+    fsg_results
 
 .. image:: static/model_results.gif
 
@@ -108,4 +138,4 @@ Prefab Files
 
 A link to the Windows GUI/CLI is below.
 
-`Zipped Windows installer <https://github.com/theonaunheim/surgeo/releases/download/1.0.2/surgeo-win32.zip>`_.
+`Windows installer <https://github.com/theonaunheim/surgeo/releases/download/v1.1.0/surgeo-amd64.msi>`_.

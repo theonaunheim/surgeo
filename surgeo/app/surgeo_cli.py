@@ -10,6 +10,8 @@ import pandas as pd
 import surgeo
 
 from surgeo.utility.surgeo_exception import SurgeoException
+from surgeo.models.bifsg_model import BIFSGModel
+from surgeo.models.first_name_model import FirstNameModel
 from surgeo.models.geocode_model import GeocodeModel
 from surgeo.models.surgeo_model import SurgeoModel
 from surgeo.models.surname_model import SurnameModel
@@ -19,7 +21,7 @@ class SurgeoCLI(object):
     """A CLI application class to function as an executable
 
     This script adds surgeo to path and runs a simple command line script.
-    The class pulls in a parser, parsers the command line arguments as
+    The class pulls in a parser, parses the command line arguments as
     needed, loads the data, processes the data, and sends the output to a
     file. It uses the "main()" function and then uses other methods as
     helpers.
@@ -32,6 +34,7 @@ class SurgeoCLI(object):
 
             usage: cli.py [-h] [--zcta_column ZCTA_COLUMN]
                           [-ct]
+                          [--first_name_column FIRST_NAME_COLUMN]
                           [--surname_column SURNAME_COLUMN]
                           [--state_column STATE_COLUMN]
                           [--county_column COUNTY_COLUMN]
@@ -42,13 +45,15 @@ class SurgeoCLI(object):
 
             input                 Input CSV or XLSX of data.
             output                Output CSV or XLSX of data.
-            type                  The model type being run ("sur", "geo" or "surgeo")
+            type                  The model type being run ("first", "sur", "geo", "bifsg", or "surgeo")
 
             optional arguments:
             -h, --help            show this help message and exit
             -ct                  Process for CENSUS Tract as opposed to ZCTA/ZIP
             --zcta_column ZCTA_COLUMN
                                 The input column to analyze as ZCTA/ZIP)
+            --first_name_column FIRST_NAME_COLUMN
+                                The input column to analyze as first name")
             --surname_column SURNAME_COLUMN
                                 The input column to analyze as surname"
             --state_column STATE_COLUMN input column containing two digit FIPS state code
@@ -65,11 +70,15 @@ class SurgeoCLI(object):
         self._output_path = pathlib.Path(args.output)
         self._model_type = args.type.lower()
         self._zcta_col = args.zcta_column
+        self._first_col = args.first_name_column
         self._sur_col = args.surname_column
         self._state_col = args.state_column
         self._county_col = args.county_column
         self._tract_col = args.tract_column
         self._ct = args.ct
+        self._zcta_col_default = 'zcta5'
+        self._first_col_default = 'first_name'
+        self._sur_col_default = 'name'
 
     def main(self):
         """This is the public interface function for this CLI.
@@ -80,9 +89,9 @@ class SurgeoCLI(object):
         2. Take a user defined path argument and load an Excel or CSV into a
            dataframe;
         3. Route that dataframe to a speciic processing function based on the
-           "type" function argument (e.g. surname, geocoding, or surgeo);
+           "type" function argument (e.g. first_name, surname, geocoding, bifsg, or surgeo);
         4. Optional specifies the column names to analyze (if not using the
-           default "zcta5" or "name" headers);
+           default "zcta5", "name", or "first_name" headers);
         5. Runs the appropriate algorithm and returns a new dataframe;
         6. Writes the resulting data to a new CSV based to output path
            specified by user.
@@ -104,11 +113,12 @@ class SurgeoCLI(object):
         suffix = self._input_path.suffix
         # If it's excel, read_excel()
         if suffix == '.xlsx' or suffix == 'xls':
-            df = pd.read_excel(self._input_path)
+            # xlrd doesn't support xlsx as of 2021-01-23
+            df = pd.read_excel(self._input_path, engine='openpyxl')
         # If CSV, read read_csv()
         elif suffix == '.csv':
             df = pd.read_csv(
-                self._input_path, 
+                self._input_path,
                 skip_blank_lines=False,
             )
         # If path is unrecognized, throw error
@@ -127,6 +137,10 @@ class SurgeoCLI(object):
             model = GeocodeModel("ZCTA")
         # If an optional name is speicied, select that column and run
         if self._zcta_col is not None and not self._ct:
+            model = GeocodeModel()
+        # TODO: if they supply a name not found in CSV ... more specific error?
+        # If an optional name is specified, select that column and run
+        if self._zcta_col is not None:
             target = df[self._zcta_col]
             result = model.get_probabilities(target)
         # Otherwise use 'zcta5' (and raise error if need be.)
@@ -140,11 +154,11 @@ class SurgeoCLI(object):
                 raise SurgeoException("No state county or tract column found")
         else:
             try:
-                target = df['zcta5']
+                target = df[self._zcta_col_default]
                 result = model.get_probabilities(target)
             except KeyError:
-                raise SurgeoException('No "zcta5" column and no column '
-                                      'specified.')
+                raise SurgeoException(f'No "{self._zcta_col_default}" column '
+                                       'and no column specified.')
         return result
 
     def _run_sur(self, df):
@@ -152,17 +166,37 @@ class SurgeoCLI(object):
         # Instantiate model
         model = SurnameModel()
         # If target is specified, get probabilities based on that target
+        # TODO: if they supply a name not found in CSV ... more specific error?
         if self._sur_col is not None:
             target = df[self._sur_col]
             result = model.get_probabilities(target)
         # Otherwise use "name" as default (will throw error if unfound)
         else:
             try:
-                target = df['name']
+                target = df[self._sur_col_default]
                 result = model.get_probabilities(target)
             except KeyError:
-                raise SurgeoException('No "name" column and no column '
-                                      'specified.')
+                raise SurgeoException(f'No "{self._sur_col_default}" column '
+                                       'and no column specified.')
+        return result
+
+    def _run_first(self, df):
+        """This runs a first name model for a given dataframe"""
+        # Instantiate model
+        model = FirstNameModel()
+        # If target is specified, get probabilities based on that 
+        # TODO: if they supply a name not found in CSV ... more specific error?
+        if self._first_col is not None:
+            target = df[self._first_col]
+            result = model.get_probabilities(target)
+        # Otherwise use "name" as default (will throw error if unfound)
+        else:
+            try:
+                target = df[self._first_col_default]
+                result = model.get_probabilities(target)
+            except KeyError:
+                raise SurgeoException(f'No "{self._first_col_default}" column '
+                                       'and no column specified.')
         return result
 
     def _run_surgeo(self, df):
@@ -186,7 +220,7 @@ class SurgeoCLI(object):
             model = SurgeoModel(geo_level='TRACT')
         # Otherwise use zcta5 for ZIP target
         else:
-            geo_target = df['zcta5']
+            geo_target = df[self._zcta_col_default]
             model = SurgeoModel()
         # If Surname target spcified, check for accuracy
         if self._sur_col is not None:
@@ -197,9 +231,46 @@ class SurgeoCLI(object):
                 raise SurgeoException(f'Column "{self._sur_col}" not found.')
         # Otherwise, use name for surname column
         else:
-            sur_target = df['name']
+            sur_target = df[self._sur_col_default]
         # Get probabilities
         result = model.get_probabilities(sur_target, geo_target)
+        return result
+
+    def _run_bifsg(self, df):
+        """Runs a BIFSG model for a given dataframe"""
+        # Instantiate model
+        model = BIFSGModel()
+        # If ZIP target is specified, check accuracy
+        if self._zcta_col is not None:
+            try:
+                geo_target = df[self._zcta_col]
+            except KeyError:
+                raise SurgeoException(f'Column "{self._zcta_col}"" not found.')
+        # Otherwise use zcta5 for ZIP target
+        else:
+            geo_target = df[self._zcta_col_default]
+        # If Surname target specified, check for accuracy
+        if self._sur_col is not None:
+            sur_target = df[self._sur_col]
+            try:
+                sur_target = df[self._sur_col]
+            except KeyError:
+                raise SurgeoException(f'Column "{self._sur_col}" not found.')
+        # Otherwise, use name for surname column
+        else:
+            sur_target = df[self._sur_col_default]
+        # If first name target specified, check for accuracy
+        if self._first_col is not None:
+            first_target = df[self._first_col]
+            try:
+                first_target = df[self._first_col]
+            except KeyError:
+                raise SurgeoException(f'Column "{self._first_col}" not found.')
+        # Otherwise, use name for surname column
+        else:
+            first_target = df[self._first_col_default]
+        # Get probabilities
+        result = model.get_probabilities(first_target, sur_target, geo_target)
         return result
 
     def _process_df(self, df):
@@ -207,21 +278,23 @@ class SurgeoCLI(object):
         # Get model type and create type map
         model_type = self._model_type
         type_map = {
+            'first' : self._run_first,
             'sur'   : self._run_sur,
             'geo'   : self._run_geo,
+            'bifsg' : self._run_bifsg,
             'surgeo': self._run_surgeo,
         }
         # Look up model in type_map and process
         try:
             process_func = type_map[model_type]
-            result_df = process_func(df)
-            return result_df
         # And throw error if not present
         except KeyError:
             raise SurgeoException(
                 f'"{model_type}" is not valid model type. '
-                f'Please use "sur", "geo", or "surgeo".'
+                f'Please use one of {type_map.keys()}.'
             )
+        result_df = process_func(df)
+        return result_df
 
     def _write_df(self, df):
         """Write to CSV or XLSX depending on file suffix"""
@@ -256,7 +329,7 @@ class SurgeoCLI(object):
         # Model type argument
         parser.add_argument(
             'type',
-            help='The model type being run ("sur", "geo" or "surgeo")',
+            help='The model type being run ("first", "sur", "geo", "bifsg", or "surgeo")',
         )
         parser.add_argument(
             '--census_tract', action='store_true', help='Process at Census Tract Level instead of default ZCTA/Zip',
@@ -265,13 +338,13 @@ class SurgeoCLI(object):
         # Optional zcta column argument
         parser.add_argument(
             '--zcta_column',
-            help='The input column to analyze as ZCTA/ZIP)',
+            help='The input column to analyze as ZCTA/ZIP',
             dest='zcta_column'
         )
         # Optional surname column argument
         parser.add_argument(
             '--surname_column',
-            help='The input column to analyze as surname")',
+            help='The input column to analyze as surname',
             dest='surname_column'
         )
 
@@ -288,7 +361,12 @@ class SurgeoCLI(object):
         parser.add_argument(
             '--tract_column',
             help='The input column to analyze as the 6 digit census tract  (required for census tract calculation)',
-            dest='tract_column'
+            dest='tract_column')
+        # Optional first name column argument
+        parser.add_argument(
+            '--first_name_column',
+            help='The input column to analyze as first name',
+            dest='first_name_column'
         )
         # Parse args and return
         parsed_args = parser.parse_args()

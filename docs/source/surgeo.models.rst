@@ -12,6 +12,22 @@ surgeo.models.base\_model module
    :undoc-members:
    :show-inheritance:
 
+surgeo.models.bifsg\_model module
+---------------------------------
+
+.. automodule:: surgeo.models.bifsg_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+surgeo.models.first\_name\_model module
+---------------------------------------
+
+.. automodule:: surgeo.models.first_name_model
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 surgeo.models.geocode\_model module
 -----------------------------------
 

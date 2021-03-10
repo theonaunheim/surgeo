@@ -18,7 +18,7 @@ class GeocodeModel(BaseModel):
     codes. While ZIP codes change, ZCTAs are static for a given census
     cycle. They are not identical.
 
-    The manner in which the geogrpahy data file was created can be found in
+    The manner in which the geography data file was created can be found in
     the "fetch_geography" Jupyter notebook.
 
     This does not use the same Geocode data as the Surgeo class. This model

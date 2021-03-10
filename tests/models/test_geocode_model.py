@@ -25,11 +25,11 @@ class TestGeocodeModel(unittest.TestCase):
         result = self._GEOCODE_MODEL.get_probabilities(input_data['zcta5'])
         # Get true result
         true_result = pd.read_csv(
-            self._DATA_FOLDER / 'geocode_output.csv',             
+            self._DATA_FOLDER / 'geocode_output.csv',
         )
         # Clean for consistency
         result = result.round(4).fillna('')
-        true_result = result.round(4).fillna('')
+        true_result = true_result.round(4).fillna('')
         # Check that all items in the series are equal
         self.assertTrue(
             result.equals(true_result)

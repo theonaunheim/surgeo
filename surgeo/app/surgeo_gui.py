@@ -14,6 +14,8 @@ import pandas as pd
 import surgeo
 
 from surgeo.utility.surgeo_exception import SurgeoException
+from surgeo.models.bifsg_model import BIFSGModel
+from surgeo.models.first_name_model import FirstNameModel
 from surgeo.models.geocode_model import GeocodeModel
 from surgeo.models.surgeo_model import SurgeoModel
 from surgeo.models.surname_model import SurnameModel
@@ -25,8 +27,8 @@ class SurgeoGUI(object):
     This script creates a single window tkinter application. This
     application allows a user to specify inputs/outputs, specify which
     model that they want to run, and then define the column headers for the
-    ZCTA and surname fields in their data. It then runs the model and
-    stores the results in a file.
+    ZCTA, first name, and surname fields as applicable. It then runs the
+    model and stores the results in a file.
 
     It also has various helper functions to integrate the surgeo logic
     within the program.
@@ -69,14 +71,14 @@ class SurgeoGUI(object):
         self._objects['frame'] = tk.Frame(master=self._objects['root'])
         # Set title and window size
         self._objects['root'].title(f"Surgeo v.{surgeo.VERSION}")
-        self._objects['root'].minsize(700, 150)
+        self._objects['root'].minsize(700, 160)
         # Bind enter to a function that starts the analysis
         self._objects['root'].bind('<Return>', self._execute)
         # Add icon
         self._objects['root'].tk.call(
-            'wm', 
-            'iconphoto', 
-            self._objects['root']._w, 
+            'wm',
+            'iconphoto',
+            self._objects['root']._w,
             tk.PhotoImage(
                 file=str(self._app_static / 'logo.gif')
             )
@@ -126,7 +128,7 @@ class SurgeoGUI(object):
         # Root alias to save typing
         root = self._objects['root']
         #######################################################################
-        # Row 1
+        # Row 1: INPUT
         #######################################################################
         # File selection label
         select_label = ttk.Label(root, text='Input File')
@@ -146,14 +148,14 @@ class SurgeoGUI(object):
         select_path_text.grid(row=0, column=1, padx=10, stick='w')
         # File selection button
         select_button = ttk.Button(
-            root, 
+            root,
             text='Select',
             command=self._select_input,
         )
         select_button.grid(row=0, column=2, padx=10, sticky='w')
         self._objects['select_button'] = select_button
         #######################################################################
-        # Row 2
+        # Row 2: OUTPUT
         #######################################################################
         # Output file label
         output_label = ttk.Label(root, text='Output File')
@@ -173,41 +175,61 @@ class SurgeoGUI(object):
         output_path_text.grid(row=1, column=1, padx=10, sticky='w')
         # Output selection button
         output_button = ttk.Button(
-            root, 
+            root,
             text='Select',
             command=self._select_output,
         )
         output_button.grid(row=1, column=2, padx=10, sticky='w')
         self._objects['output_button'] = output_button
         #######################################################################
-        # Row 3
+        # Row 3 FIRST NAME
+        #######################################################################
+        # First Name label
+        first_name_label = ttk.Label(
+            root,
+            text='First Name Column Header',
+        )
+        first_name_label.grid(row=2, column=0, padx=10, sticky='w')
+        self._objects['first_name_label'] = first_name_label
+        # Text entry box and associated variable
+        first_name_var = tk.StringVar()
+        self._objects['first_name_var'] = first_name_var
+        first_name_entry = ttk.Entry(
+            root,
+            text='Enter First Name Column Header',
+            textvariable=first_name_var,
+        )
+        first_name_entry.grid(row=2, column=1, padx=10, pady=3, sticky='w')
+        self._objects['first_name_entry'] = first_name_entry
+        #######################################################################
+        # Row 4 SURNAME
         #######################################################################
         # Surname label
         surname_label = ttk.Label(
-            root, 
-            text='Surname Column Header', 
+            root,
+            text='Surname Column Header',
         )
-        surname_label.grid(row=2, column=0, padx=10, sticky='w')
+        surname_label.grid(row=3, column=0, padx=10, sticky='w')
         self._objects['surname_label'] = surname_label
         # Text entry box and associated variable
-        name_var = tk.StringVar()
-        self._objects['name_var'] = name_var
+        surname_var = tk.StringVar()
+        self._objects['surname_var'] = surname_var
         surname_entry = ttk.Entry(
             root,
-            text='Enter Name Column Header',
-            textvariable=name_var,
+            text='Enter Surname Column Header',
+            textvariable=surname_var,
         )
-        surname_entry.grid(row=2, column=1, padx=10, sticky='w')
+        surname_entry.grid(row=3, column=1, padx=10, pady=3, sticky='w')
         self._objects['surname_entry'] = surname_entry
         #######################################################################
-        # Row 4
+        # Row 5 ZCTA
         #######################################################################
         # ZCTA label
         zcta_label = ttk.Label(
-            root, 
-            text='ZIP/ZCTA Column Header', 
+            root,
+            text='ZIP/ZCTA Column Header',
         )
-        zcta_label.grid(row=3, column=0, padx=10, sticky='w')
+        zcta_label.grid(row=4, column=0, padx=10, sticky='w')
         self._objects['zcta_label'] = zcta_label
         # String variable and text entry box
         zip_var = tk.StringVar()
@@ -217,14 +239,14 @@ class SurgeoGUI(object):
             text='Enter ZIP/ZCTA Column Header',
             textvariable=zip_var,
         )
-        zcta_entry.grid(row=3, column=1, padx=10, pady=3, sticky='w')
+        zcta_entry.grid(row=4, column=1, padx=10, pady=3, sticky='w')
         self._objects['zcta_entry'] = zcta_entry
         #######################################################################
-        # Row 5
+        # Row 6 MODEL TYPE
         #######################################################################
-        # Model selector label 
+        # Model selector label
         model_label = ttk.Label(root, text='Model Type')
-        model_label.grid(row=4, column=0, padx=10, sticky='w')
+        model_label.grid(row=5, column=0, padx=10, sticky='w')
         self._objects['model_label'] = model_label
         # Dropdown to select which model to use. Also create variable
         model_var = tk.StringVar()
@@ -232,47 +254,74 @@ class SurgeoGUI(object):
         model_selector = ttk.OptionMenu(
             root,
             model_var,
+            # Default value
             'Surgeo (Surname + Geocode)',
+            # Other values
+            'Surgeo (Surname + Geocode)',
+            'BIFSG',
+            'First Name',
             'Surname',
             'Geocode',
         )
-        model_selector.grid(row=4, column=1, padx=10, sticky='w')
+        model_selector.grid(row=5, column=1, padx=10, sticky='w')
         self._objects['model_selector'] = model_selector
         #######################################################################
-        # Row 6
+        # Row 7 EXECUTE
         #######################################################################
         # Proces inputs button (this runs self._execute)
         # Note: this is also bound to <Enter> in the window setup func.
         execute_button = ttk.Button(
-            root, 
+            root,
             text='Execute',
             command=self._execute,
         )
-        execute_button.grid(row=5, column=2, padx=10, sticky='w')
+        execute_button.grid(row=6, column=2, padx=10, pady=3, sticky='w')
         self._objects['execute_button'] = execute_button
 
     def _check_inputs(self, df):
         """Take DF and raise error if improper column names given"""
         # Create shortnames for variables
-        name_var = self._objects['name_var'].get()
+        first_name_var = self._objects['first_name_var'].get()
+        surname_var = self._objects['surname_var'].get()
         zip_var = self._objects['zip_var'].get()
         model_var = self._objects['model_var'].get()
+        # If it's first name, make sure column is there. Otherwise error.
+        if model_var == 'First Name':
+            if first_name_var not in df.columns:
+                # Otherwise raise error
+                raise SurgeoException(f'{first_name_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
         # If it's geocode, make sure column is there. Otherwise error.
-        if model_var == 'Geocode':
+        elif model_var == 'Geocode':
             if zip_var not in df.columns:
                 # Otherwise raise error
-                raise SurgeoException(f'{name_var} not in input data.')
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
         # If Surname, make sure the user-specified surname column is there.
         elif model_var == 'Surname':
             # Otherwise raise error
-            if name_var not in df.columns:
-                raise SurgeoException(f'{name_var} not in input data.')
+            if surname_var not in df.columns:
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
+        # If BIFSG, make sure the user-specified columns are present.
+        elif model_var == 'BIFSG':
+            if first_name_var not in df.columns:
+                raise SurgeoException(f'{first_name_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
+            if zip_var not in df.columns:
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
+            if surname_var not in df.columns:
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
         # If Surgeo, make sure both user-specified columns are present.
         else:
             if zip_var not in df.columns:
-                raise SurgeoException(f'{name_var} not in input data.')
-            if name_var not in df.columns:
-                raise SurgeoException(f'{name_var} not in input data.')
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
+            if surname_var not in df.columns:
+                raise SurgeoException(f'{surname_var} not in input data. '
+                                      f'Columns are: {df.columns}.')
 
     def _load_df(self, input_path):
         """This creates a dataframe based on self._input_path"""
@@ -280,7 +329,7 @@ class SurgeoGUI(object):
         suffix = path.suffix
         # If it's excel, read_excel()
         if suffix == '.xlsx' or suffix == 'xls':
-            df = pd.read_excel(path)
+            df = pd.read_excel(path, engine='openpyxl')
         # If CSV, read read_csv()
         elif suffix == '.csv':
             df = pd.read_csv(path, skip_blank_lines=False)
@@ -294,7 +343,7 @@ class SurgeoGUI(object):
 
     def _execute(self, event=None, show_msgbox=True):
         """This takes all the user inputs and runs the analysis.
-        
+
         It can be triggered by the enter key (in which case it supplied an
         event), or it can be triggered by clicking the "Execute" button.
         The outcome in either event is identical.
@@ -307,7 +356,9 @@ class SurgeoGUI(object):
         # Output path from file selection
         output_var = self._objects['output_var'].get()
         # Surname column header from text field
-        name_var = self._objects['name_var'].get()
+        first_name_var = self._objects['first_name_var'].get()
+        # Surname column header from text field
+        surname_var = self._objects['surname_var'].get()
         # ZCTA column header from text field
         zip_var = self._objects['zip_var'].get()
         # Model being run from drop down window
@@ -320,20 +371,32 @@ class SurgeoGUI(object):
             input_df = self._load_df(input_var)
             # Ensure the inputs are OK
             self._check_inputs(input_df)
+            # If first name, run the first name model assign result to df
+            if model_var == 'BIFSG':
+                bifsg = BIFSGModel()
+                output_df = bifsg.get_probabilities(
+                    input_df[first_name_var],
+                    input_df[surname_var],
+                    input_df[zip_var]
+                )
+            # If first name, run the first name model assign result to df
+            elif model_var == 'First Name':
+                first = FirstNameModel()
+                output_df = first.get_probabilities(input_df[first_name_var])
             # If geo, run the geo model assign result to df
-            if model_var == 'Geocode':
+            elif model_var == 'Geocode':
                 geo = GeocodeModel()
                 output_df = geo.get_probabilities(input_df[zip_var])
             # If sur, run the sur model and assign result to df
-            if model_var == 'Surname':
+            elif model_var == 'Surname':
                 sur = SurnameModel()
-                output_df = sur.get_probabilities(input_df[name_var])
+                output_df = sur.get_probabilities(input_df[surname_var])
             # If surgeo, run the surgeo model and assign to df
-            if model_var == 'Surgeo (Surname + Geocode)':
+            else: # model_var == 'Surgeo (Surname + Geocode)':
                 surgeo = SurgeoModel()
                 # Note that surgeo takes two input columns unlike others
                 output_df = surgeo.get_probabilities(
-                    input_df[name_var], 
+                    input_df[surname_var],
                     input_df[zip_var]
                 )
             # If output is .xlsx, write to Excel

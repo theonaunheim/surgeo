@@ -32,7 +32,7 @@ class SurgeoModel(BaseModel):
     `prob_race_given_zcta_2010.csv` file, which has the race percentages
     for a given ZCTA (e.g. 90% of ZCTA 63144 is White).
 
-    The manner in which the geogrpahy data file was created can be found in
+    The manner in which the geography data file was created can be found in
     the "fetch_geography" Jupyter notebook.
 
     This is based of the following general formula from Elliott et al [#]_.
@@ -44,7 +44,7 @@ class SurgeoModel(BaseModel):
     |
     | And where:
     | :math:`\hspace{25px} P(i \mid j)` is the probability of a selected race given surname
-    | :math:`\hspace{25px} r(k \mid i)` is the probability of a selected ZCTA of residence given race
+    | :math:`\hspace{25px} r(k \mid i)` is the probability of a selected census block of residence given race
     | :math:`\hspace{25px} k` is Census Block
     | :math:`\hspace{25px} j` is Surname
     | :math:`\hspace{25px} i` is Race
@@ -81,7 +81,7 @@ class SurgeoModel(BaseModel):
         """Obtain a set of BISG probabilities for name/ZCTA series
 
         This method first takes the data and checks to see if the data is
-        formatted appropraitely. It triggers the _get_surname_probs() and
+        formatted appropriately. It triggers the _get_surname_probs() and
         _get_geocode_probs() helper function to merge the probabilities
         for the inputs with their looked-up values. It then runs the
         _combined_probs() helper function to actually conduct the data
