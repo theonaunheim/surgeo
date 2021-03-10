@@ -45,7 +45,7 @@ class TestSurgeoModel(unittest.TestCase):
         """Test Surgeo model versus known result"""
         # Load data
         surname_data = pd.read_csv(
-            self._DATA_FOLDER / 'surname_input.csv',
+            self._DATA_FOLDER / 'tract_input.csv',
             skip_blank_lines=False,
         )
         geocode_data = pd.read_csv(

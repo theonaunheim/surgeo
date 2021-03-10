@@ -122,7 +122,7 @@ class SurgeoCLI(object):
     def _run_geo(self, df):
         """Method called from self._process_df() to get geo results"""
         if self._ct:
-            model = GeocodeModel("tract")
+            model = GeocodeModel("TRACT")
         else:
             model = GeocodeModel("ZCTA")
         # If an optional name is speicied, select that column and run
@@ -132,7 +132,7 @@ class SurgeoCLI(object):
         # Otherwise use 'zcta5' (and raise error if need be.)
         elif self._state_col is not None and self._ct:
             target = df[[self._state_col, self._county_col, self._tract_col]]
-            result = model.get_probabilities(target)
+            result = model.get_probabilities_tract(target)
         elif self._ct:
             try:
                 target = df[['state', 'column', 'tract']]
@@ -167,24 +167,27 @@ class SurgeoCLI(object):
 
     def _run_surgeo(self, df):
         """Runs a BISG model for a given dataframe"""
-        # Instantiate model
-        model = SurgeoModel()
+        
         # If ZIP target is specified, check accuracy
         if self._zcta_col is not None and not self._ct:
             try:
                 geo_target = df[self._zcta_col]
+                model = SurgeoModel()
             except KeyError:
                 raise SurgeoException(f'Column "{self._zcta_col}"" not found.')
         elif self._ct and self._state_col is not None:
             try:
                 geo_target = df[[self._state_col, self._county_col, self._tract_col]]
+                model = SurgeoModel(geo_level='TRACT')
             except KeyError:
                 raise SurgeoException(f'Columns for state, county, and tract not found.')
         elif self._ct:
             geo_target = df[['state','county','tract']]
+            model = SurgeoModel(geo_level='TRACT')
         # Otherwise use zcta5 for ZIP target
         else:
             geo_target = df['zcta5']
+            model = SurgeoModel()
         # If Surname target spcified, check for accuracy
         if self._sur_col is not None:
             sur_target = df[self._sur_col]
@@ -256,7 +259,7 @@ class SurgeoCLI(object):
             help='The model type being run ("sur", "geo" or "surgeo")',
         )
         parser.add_argument(
-            '-c','--census_tract', action='store_true', help='Process at Census Tract Level instead of default ZCTA/Zip',
+            '--census_tract', action='store_true', help='Process at Census Tract Level instead of default ZCTA/Zip',
             dest='ct',  default=False
         )
         # Optional zcta column argument

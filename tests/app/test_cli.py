@@ -135,10 +135,16 @@ class TestSurgeoCLI(unittest.TestCase):
             self._CLI_SCRIPT,
             input_path,
             self._CSV_OUTPUT_PATH,
-            'surgeo',
-            '-c'
+            'geo',
+            '--census_tract', 
             '--surname_column',
             'name',
+            '--state_column',
+            'state', 
+            '--tract_column',
+            'tract',
+            '--county_column',
+            'county'
         ])
         # Read the newly generated information
         df_generated = pd.read_csv(self._CSV_OUTPUT_PATH)

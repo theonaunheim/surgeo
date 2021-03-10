@@ -81,7 +81,6 @@ class GeocodeModel(BaseModel):
 
         """
 
-        # Clean ZCTAs
         normalized_tracts = (
             self._normalize_tracts(geo_df)
         )
