@@ -110,7 +110,7 @@ To use the CLI, type in "surgeo" followed by your arguments.
 As a Module
 ~~~~~~~~~~~
 
-Surgeo is best used as a module.
+Surgeo is best used as a module. Add Census Tract Input Examples. 
 
 .. code-block:: python
 

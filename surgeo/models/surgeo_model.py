@@ -1,6 +1,7 @@
 """Module containing Surgeo BISG class"""
 
 import pandas as pd
+from typing import Union
 
 from surgeo.models.base_model import BaseModel
 from surgeo.utility.surgeo_exception import SurgeoException
@@ -67,12 +68,16 @@ class SurgeoModel(BaseModel):
         69. `<https://link.springer.com/article/10.1007/s10742-009-0047-1>`_
 
     """
-    def __init__(self):
+    def __init__(self, geo_level="ZCTA"):
         super().__init__()
-        self._PROB_ZCTA_GIVEN_RACE = self._get_prob_zcta_given_race()
+        self.geo_level = geo_level
+        if geo_level == "TRACT":
+            self._PROB_GEO_GIVEN_RACE = self._get_prob_tract_given_race()
+        else:
+            self._PROB_GEO_GIVEN_RACE = self._get_prob_zcta_given_race()
         self._PROB_RACE_GIVEN_SURNAME = self._get_prob_race_given_surname()
 
-    def get_probabilities(self, names, zctas):
+    def get_probabilities(self, names, geo_df):
         """Obtain a set of BISG probabilities for name/ZCTA series
 
         This method first takes the data and checks to see if the data is
@@ -88,8 +93,8 @@ class SurgeoModel(BaseModel):
         ----------
         names : pd.Series
             A series of names to use for the BISG algorithm
-        zctas : pd.Series
-            A series of ZIP/ZCTA codes for the BISG algorithm
+        geo_df : Union[pd.Series , pd.DataFrame]
+            A series of target ZIP/ZCTA codes or State County Tract for the BISG algorithm
 
         Returns
         -------
@@ -99,10 +104,10 @@ class SurgeoModel(BaseModel):
         """
 
         # Check inputs
-        self._check_inputs(names, zctas)
+        self._check_inputs(names, geo_df)
         # Get component probabilities
         sur_probs = self._get_surname_probs(names)
-        geo_probs = self._get_geocode_probs(zctas)
+        geo_probs = self._get_geocode_probs(geo_df)
         # Run Surgeo algorithm
         surgeo_probs = self._combined_probs(sur_probs, geo_probs)
         # Combine inputs with results and adjust as necessary
@@ -130,22 +135,27 @@ class SurgeoModel(BaseModel):
                       geo_probs: pd.DataFrame,
                       surgeo_probs: pd.DataFrame) -> pd.DataFrame:
         # Build frame from zctas, names, and probabilities
-        surgeo_data = pd.concat([
-            geo_probs['zcta5'].to_frame(),
-            sur_probs['name'].to_frame(),
-            surgeo_probs
-        ], axis=1)
+        if self.geo_level == 'TRACT':
+            surgeo_data = pd.concat([geo_probs, 
+            sur_probs['name'].to_frame()
+            ], axis=1)
+        else:
+            surgeo_data = pd.concat([
+                geo_probs['zcta5'].to_frame(),
+                sur_probs['name'].to_frame(),
+                surgeo_probs
+            ], axis=1)
         return surgeo_data
 
     def _check_inputs(self,
                       names: pd.Series,
-                      zctas: pd.Series):
+                      geo_df: Union[pd.Series, pd.DataFrame]):
         """Check names and ZCTAs and ensure they are same length"""
-        if len(names) != len(zctas):
+        if len(names) != len(geo_df):
             err_string = (
                 f'Length mismatch. '
                 f'Name length: {len(names)}. '
-                f'ZCTA length: {len(zctas)}.'
+                f'Geo DF length: {len(geo_df)}.'
             )
             raise SurgeoException(err_string)
 
@@ -166,18 +176,29 @@ class SurgeoModel(BaseModel):
         )
         return surname_probs
 
-    def _get_geocode_probs(self, zctas: pd.Series) -> pd.DataFrame:
+    def _get_geocode_probs(self, geo_df: Union[pd.Series,pd.DataFrame]) -> pd.DataFrame:
         """Normalizes ZCTAs/ZIPs and joins them to their race probs."""
         # Normalize
-        normalized_zctas = (
-            self._normalize_zctas(zctas)
-                .to_frame()
-        )
-        # Merge names to dataframe, which gives probs for each name.
-        geocode_probs = normalized_zctas.merge(
-            self._PROB_ZCTA_GIVEN_RACE,
-            left_on='zcta5',
-            right_index=True,
-            how='left',
-        )
+        if self.geo_level == 'TRACT':
+            normalized_tracts = (
+                self._normalize_tracts(geo_df)
+            )
+            geocode_probs = normalized_tracts.merge(
+                self._PROB_GEO_GIVEN_RACE,
+                left_on=['state','county','tract'],
+                right_index=True,
+                how='left',
+            )
+        else: 
+            normalized_zctas = (
+                self._normalize_zctas(geo_df)
+                    .to_frame()
+            )
+            # Merge names to dataframe, which gives probs for each name.
+            geocode_probs = normalized_zctas.merge(
+                self._PROB_GEO_GIVEN_RACE,
+                left_on='zcta5',
+                right_index=True,
+                how='left',
+            )
         return geocode_probs

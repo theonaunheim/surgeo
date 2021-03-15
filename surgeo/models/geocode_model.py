@@ -30,9 +30,12 @@ class GeocodeModel(BaseModel):
 
     """
 
-    def __init__(self):
+    def __init__(self, geo_level='ZCTA'):
         super().__init__()
-        self._PROB_RACE_GIVEN_ZCTA = self._get_prob_race_given_zcta()
+        if geo_level == 'TRACT':
+            self._PROB_RACE_GIVEN_GEO = self._get_prob_race_given_tract()
+        else:
+            self._PROB_RACE_GIVEN_GEO = self._get_prob_race_given_zcta()
 
     def get_probabilities(self, zctas):
         """Obtain race probabilities for a set of ZIP codes or ZCTAs.
@@ -56,8 +59,35 @@ class GeocodeModel(BaseModel):
         )
         # Merge ZCTAs to race probabilities
         geocode_probs = normalized_zctas.merge(
-            self._PROB_RACE_GIVEN_ZCTA,
+            self._PROB_RACE_GIVEN_GEO,
             left_on='zcta5',
+            right_index=True,
+            how='left',
+        )
+        return geocode_probs
+
+    def get_probabilities_tract(self, geo_df):
+        """Obtain race probabilities for a set of State, County, Tract.
+
+        Parameters
+        ----------
+        geo_df : pd.DataFrame
+            DF of ['state','county','tract'] codes to retrun probabilities for
+
+        Return
+        ------
+        pd.DataFrame
+            Dataframe of race probability results
+
+        """
+
+        normalized_tracts = (
+            self._normalize_tracts(geo_df)
+        )
+        # Merge ZCTAs to race probabilities
+        geocode_probs = normalized_tracts.merge(
+            self._PROB_RACE_GIVEN_GEO,
+            left_on=['state','county','tract'],
             right_index=True,
             how='left',
         )
