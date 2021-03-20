@@ -40,7 +40,6 @@ class TestSurgeoModel(unittest.TestCase):
             result.equals(true_result)
         )
 
-
     def test_get_probabilities_tract(self):
         """Test Surgeo model versus known result"""
         # Load data

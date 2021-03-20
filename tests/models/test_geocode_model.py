@@ -35,7 +35,6 @@ class TestGeocodeModel(unittest.TestCase):
             result.equals(true_result)
         )
 
-
     def test_get_probabilities_tract(self):
         """Test Geocode model versus known result with Tracts"""
         # Get our data and clean it

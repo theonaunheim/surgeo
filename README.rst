@@ -19,6 +19,7 @@ The documentation for Surgeo may be found here: `<https://surgeo.readthedocs.io/
 Contributors
 ------------
 * `Adam Weeden <https://github.com/TheCleric>`_
+* `Algorex Health <https://github.com/AlgorexHealth>`_
 * `Theo Naunheim <https://github.com/theonaunheim>`_
 
 Overview
@@ -101,16 +102,16 @@ To use the CLI, type in "surgeo" followed by your arguments.
     optional arguments:
     -h, --help            show this help message and exit
     --zcta_column ZCTA_COLUMN
-                            The input column to analyze as ZCTA/ZIP)
+                            The input column to analyze as ZCTA/ZIP
     --surname_column SURNAME_COLUMN
-                            The input column to analyze as surname")
+                            The input column to analyze as surname
     --first_name_column FIRST_NAME_COLUMN
-                            The input column to analyze as first name")
+                            The input column to analyze as first name
 
 As a Module
 ~~~~~~~~~~~
 
-Surgeo is best used as a module. Add Census Tract Input Examples. 
+Surgeo is best used as a module.
 
 .. code-block:: python
 

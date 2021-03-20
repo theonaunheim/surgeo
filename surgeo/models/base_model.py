@@ -68,6 +68,7 @@ class BaseModel(object):
                                 .str.zfill(5)
         )
         return prob_race_given_zcta
+        
     def _get_prob_race_given_tract(self):
         prob_race_given_tract = pd.read_csv(
             self._package_root / 'data' / 'prob_race_given_tract_2010.csv',
@@ -80,7 +81,6 @@ class BaseModel(object):
     def _get_prob_tract_given_race(self):
         prob_tract_given_race = pd.read_csv(
             self._package_root / 'data' / 'prob_tract_given_race_2010.csv',
-            
             na_values=[''],
             keep_default_na=False,
             dtype={'state':str,'county':str,'tract':str}
