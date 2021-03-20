@@ -1,0 +1,4 @@
+state,county,tract,white,black,api,native,multiple,hispanic,name
+01,001,020100,0.000499,0.000174,0.000255,0.000502,0.000364,0.000237,WILSON
+01,003,010705,0.002090,0.000825,0.002975,0.001896,0.001774,0.001512,
+bad,data,tested,,,,,,,ROBINSON

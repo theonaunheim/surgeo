@@ -1,0 +1,7 @@
+state,county,tract,name
+01,001,020100,Brown
+01,003,010705,Davis
+26,163,515400,Rodriguez
+48,471,790102,Jones
+37,025,040500,Williams
+bad,data,tested

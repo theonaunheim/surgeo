@@ -33,8 +33,12 @@ class SurgeoCLI(object):
             $ surgeo --help
 
             usage: cli.py [-h] [--zcta_column ZCTA_COLUMN]
+                          [-ct]
                           [--first_name_column FIRST_NAME_COLUMN]
                           [--surname_column SURNAME_COLUMN]
+                          [--state_column STATE_COLUMN]
+                          [--county_column COUNTY_COLUMN]
+                          [--tract_column TRACT_COLUMN]
                           input output type
 
             Get Surgeo arguments.
@@ -45,12 +49,16 @@ class SurgeoCLI(object):
 
             optional arguments:
             -h, --help            show this help message and exit
+            -ct                  Process for CENSUS Tract as opposed to ZCTA/ZIP
             --zcta_column ZCTA_COLUMN
                                 The input column to analyze as ZCTA/ZIP)
             --first_name_column FIRST_NAME_COLUMN
                                 The input column to analyze as first name")
             --surname_column SURNAME_COLUMN
-                                The input column to analyze as surname")
+                                The input column to analyze as surname"
+            --state_column STATE_COLUMN input column containing two digit FIPS state code
+            --county_column input column containing three digit FIPS County Code
+            --tract_column input column containing six digit tract code)
 
     """
 
@@ -64,6 +72,10 @@ class SurgeoCLI(object):
         self._zcta_col = args.zcta_column
         self._first_col = args.first_name_column
         self._sur_col = args.surname_column
+        self._state_col = args.state_column
+        self._county_col = args.county_column
+        self._tract_col = args.tract_column
+        self._ct = args.ct
         self._zcta_col_default = 'zcta5'
         self._first_col_default = 'first_name'
         self._sur_col_default = 'name'
@@ -119,13 +131,27 @@ class SurgeoCLI(object):
 
     def _run_geo(self, df):
         """Method called from self._process_df() to get geo results"""
-        model = GeocodeModel()
+        if self._ct:
+            model = GeocodeModel("TRACT")
+        else:
+            model = GeocodeModel("ZCTA")
+        # If an optional name is speicied, select that column and run
+        if self._zcta_col is not None and not self._ct:
+            model = GeocodeModel()
         # TODO: if they supply a name not found in CSV ... more specific error?
         # If an optional name is specified, select that column and run
         if self._zcta_col is not None:
             target = df[self._zcta_col]
             result = model.get_probabilities(target)
         # Otherwise use 'zcta5' (and raise error if need be.)
+        elif self._state_col is not None and self._ct:
+            target = df[[self._state_col, self._county_col, self._tract_col]]
+            result = model.get_probabilities_tract(target)
+        elif self._ct:
+            try:
+                target = df[['state', 'column', 'tract']]
+            except KeyError:
+                raise SurgeoException("No state county or tract column found")
         else:
             try:
                 target = df[self._zcta_col_default]
@@ -175,18 +201,28 @@ class SurgeoCLI(object):
 
     def _run_surgeo(self, df):
         """Runs a BISG model for a given dataframe"""
-        # Instantiate model
-        model = SurgeoModel()
+        
         # If ZIP target is specified, check accuracy
-        if self._zcta_col is not None:
+        if self._zcta_col is not None and not self._ct:
             try:
                 geo_target = df[self._zcta_col]
+                model = SurgeoModel()
             except KeyError:
                 raise SurgeoException(f'Column "{self._zcta_col}"" not found.')
-        # Otherwise use default "zcta5" for ZIP target
+        elif self._ct and self._state_col is not None:
+            try:
+                geo_target = df[[self._state_col, self._county_col, self._tract_col]]
+                model = SurgeoModel(geo_level='TRACT')
+            except KeyError:
+                raise SurgeoException(f'Columns for state, county, and tract not found.')
+        elif self._ct:
+            geo_target = df[['state','county','tract']]
+            model = SurgeoModel(geo_level='TRACT')
+        # Otherwise use zcta5 for ZIP target
         else:
             geo_target = df[self._zcta_col_default]
-        # If Surname target specified, check for accuracy
+            model = SurgeoModel()
+        # If Surname target spcified, check for accuracy
         if self._sur_col is not None:
             sur_target = df[self._sur_col]
             try:
@@ -295,6 +331,10 @@ class SurgeoCLI(object):
             'type',
             help='The model type being run ("first", "sur", "geo", "bifsg", or "surgeo")',
         )
+        parser.add_argument(
+            '--census_tract', action='store_true', help='Process at Census Tract Level instead of default ZCTA/Zip',
+            dest='ct',  default=False
+        )
         # Optional zcta column argument
         parser.add_argument(
             '--zcta_column',
@@ -307,6 +347,21 @@ class SurgeoCLI(object):
             help='The input column to analyze as surname',
             dest='surname_column'
         )
+
+        parser.add_argument(
+            '--state_column',
+            help='The input column to analyze as two digit state code (required for census tract calculation)',
+            dest='state_column'
+        )
+        parser.add_argument(
+            '--county_column',
+            help='The input column to analyze as 3 digit county code (required for census tract calculation)',
+            dest='county_column'
+        )
+        parser.add_argument(
+            '--tract_column',
+            help='The input column to analyze as the 6 digit census tract  (required for census tract calculation)',
+            dest='tract_column')
         # Optional first name column argument
         parser.add_argument(
             '--first_name_column',
