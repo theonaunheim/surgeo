@@ -139,4 +139,4 @@ Prefab Files
 
 A link to the Windows GUI/CLI is below.
 
-`Windows installer <https://github.com/theonaunheim/surgeo/releases/download/v1.1.0/surgeo-amd64.msi>`_.
+`Windows installer <https://github.com/theonaunheim/surgeo/releases/download/v1.1.1/surgeo-amd64.msi>`_.
