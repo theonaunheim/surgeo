@@ -88,25 +88,33 @@ To use the CLI, type in "surgeo" followed by your arguments.
     # Or alternatively if you have installed the module
     $ python -m surgeo -h
 
-    usage: surgeo_cli [-h] [--zcta_column ZCTA_COLUMN] [--surname_column SURNAME_COLUMN]
-                    [--first_name_column FIRST_NAME_COLUMN]
-                    input output type
+    usage: cli.py [-h] [--zcta_column ZCTA_COLUMN]
+    [-ct]
+    [--first_name_column FIRST_NAME_COLUMN]
+    [--surname_column SURNAME_COLUMN]
+    [--state_column STATE_COLUMN]
+    [--county_column COUNTY_COLUMN]
+    [--tract_column TRACT_COLUMN]
+    input output type
 
     Get Surgeo arguments.
 
-    positional arguments:
     input                 Input CSV or XLSX of data.
     output                Output CSV or XLSX of data.
     type                  The model type being run ("first", "sur", "geo", "bifsg", or "surgeo")
 
     optional arguments:
     -h, --help            show this help message and exit
+    -ct                  Process for CENSUS Tract as opposed to ZCTA/ZIP
     --zcta_column ZCTA_COLUMN
-                            The input column to analyze as ZCTA/ZIP
-    --surname_column SURNAME_COLUMN
-                            The input column to analyze as surname
+              The input column to analyze as ZCTA/ZIP
     --first_name_column FIRST_NAME_COLUMN
-                            The input column to analyze as first name
+              The input column to analyze as first name
+    --surname_column SURNAME_COLUMN
+              The input column to analyze as surname
+    --state_column STATE_COLUMN input column containing two digit FIPS state code
+    --county_column input column containing three digit FIPS County Code
+    --tract_column input column containing six digit tract code
 
 As a Module
 ~~~~~~~~~~~
