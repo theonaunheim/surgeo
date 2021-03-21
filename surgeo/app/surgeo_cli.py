@@ -51,14 +51,14 @@ class SurgeoCLI(object):
             -h, --help            show this help message and exit
             -ct                  Process for CENSUS Tract as opposed to ZCTA/ZIP
             --zcta_column ZCTA_COLUMN
-                                The input column to analyze as ZCTA/ZIP)
+                                The input column to analyze as ZCTA/ZIP
             --first_name_column FIRST_NAME_COLUMN
-                                The input column to analyze as first name")
+                                The input column to analyze as first name
             --surname_column SURNAME_COLUMN
-                                The input column to analyze as surname"
+                                The input column to analyze as surname
             --state_column STATE_COLUMN input column containing two digit FIPS state code
             --county_column input column containing three digit FIPS County Code
-            --tract_column input column containing six digit tract code)
+            --tract_column input column containing six digit tract code
 
     """
 
@@ -135,7 +135,7 @@ class SurgeoCLI(object):
             model = GeocodeModel("TRACT")
         else:
             model = GeocodeModel("ZCTA")
-        # If an optional name is speicied, select that column and run
+        # If an optional name is specified, select that column and run
         if self._zcta_col is not None and not self._ct:
             model = GeocodeModel()
         # TODO: if they supply a name not found in CSV ... more specific error?
@@ -151,7 +151,7 @@ class SurgeoCLI(object):
             try:
                 target = df[['state', 'column', 'tract']]
             except KeyError:
-                raise SurgeoException("No state county or tract column found")
+                raise SurgeoException("Columns for state, county, and tract not found.")
         else:
             try:
                 target = df[self._zcta_col_default]

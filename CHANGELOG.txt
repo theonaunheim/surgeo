@@ -1,3 +1,7 @@
+v.1.1.1:
+========
+-Addition of tract-level processing
+
 v.1.1.0:
 ========
 -Addition of First Name and BIFSG models

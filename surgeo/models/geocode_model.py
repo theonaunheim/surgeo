@@ -32,7 +32,7 @@ class GeocodeModel(BaseModel):
 
     def __init__(self, geo_level='ZCTA'):
         super().__init__()
-        if geo_level == 'TRACT':
+        if geo_level.upper() == 'TRACT':
             self._PROB_RACE_GIVEN_GEO = self._get_prob_race_given_tract()
         else:
             self._PROB_RACE_GIVEN_GEO = self._get_prob_race_given_zcta()

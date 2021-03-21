@@ -70,7 +70,7 @@ class SurgeoModel(BaseModel):
     """
     def __init__(self, geo_level="ZCTA"):
         super().__init__()
-        self.geo_level = geo_level
+        self.geo_level = geo_level.upper()
         if geo_level == "TRACT":
             self._PROB_GEO_GIVEN_RACE = self._get_prob_tract_given_race()
         else:
@@ -93,7 +93,7 @@ class SurgeoModel(BaseModel):
         ----------
         names : pd.Series
             A series of names to use for the BISG algorithm
-        geo_df : Union[pd.Series , pd.DataFrame]
+        geo_df : Union[pd.Series, pd.DataFrame]
             A series of target ZIP/ZCTA codes or State County Tract for the BISG algorithm
 
         Returns
@@ -137,7 +137,7 @@ class SurgeoModel(BaseModel):
         # Build frame from zctas, names, and probabilities
         if self.geo_level == 'TRACT':
             surgeo_data = pd.concat([geo_probs, 
-            sur_probs['name'].to_frame()
+                sur_probs['name'].to_frame()
             ], axis=1)
         else:
             surgeo_data = pd.concat([
@@ -176,7 +176,7 @@ class SurgeoModel(BaseModel):
         )
         return surname_probs
 
-    def _get_geocode_probs(self, geo_df: Union[pd.Series,pd.DataFrame]) -> pd.DataFrame:
+    def _get_geocode_probs(self, geo_df: Union[pd.Series, pd.DataFrame]) -> pd.DataFrame:
         """Normalizes ZCTAs/ZIPs and joins them to their race probs."""
         # Normalize
         if self.geo_level == 'TRACT':
