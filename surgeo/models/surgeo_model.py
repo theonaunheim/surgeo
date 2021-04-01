@@ -72,7 +72,7 @@ class SurgeoModel(BaseModel):
         super().__init__()
         self.geo_level = geo_level.upper()
         if geo_level == "TRACT":
-            self._PROB_GEO_GIVEN_RACE = self._get_prob_tract_given_race()
+            self._PROB_GEO_GIVEN_RACE = self._get_prob_race_given_tract()
         else:
             self._PROB_GEO_GIVEN_RACE = self._get_prob_zcta_given_race()
         self._PROB_RACE_GIVEN_SURNAME = self._get_prob_race_given_surname()

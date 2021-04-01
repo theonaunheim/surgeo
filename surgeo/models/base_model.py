@@ -78,14 +78,6 @@ class BaseModel(object):
         ).set_index(['state','county','tract'])
         return prob_race_given_tract
 
-    def _get_prob_tract_given_race(self):
-        prob_tract_given_race = pd.read_csv(
-            self._package_root / 'data' / 'prob_tract_given_race_2010.csv',
-            na_values=[''],
-            keep_default_na=False,
-            dtype={'state':str,'county':str,'tract':str}
-        ).set_index(['state','county','tract'])
-        return prob_tract_given_race
 
     def _get_prob_zcta_given_race(self):
         """Create dataframe of ZCTA ratios given a race (for SurGeo)"""
