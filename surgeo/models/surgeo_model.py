@@ -136,8 +136,9 @@ class SurgeoModel(BaseModel):
                       surgeo_probs: pd.DataFrame) -> pd.DataFrame:
         # Build frame from zctas, names, and probabilities
         if self.geo_level == 'TRACT':
-            surgeo_data = pd.concat([geo_probs, 
-                sur_probs['name'].to_frame()
+            surgeo_data = pd.concat([geo_probs[['state','county','tract']], 
+                sur_probs['name'].to_frame(),
+                surgeo_probs
             ], axis=1)
         else:
             surgeo_data = pd.concat([
