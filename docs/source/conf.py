@@ -22,8 +22,8 @@ sys.path.append(str(
 project = 'surgeo'
 copyright = '2020, Theo Naunheim'
 author = 'Theo Naunheim'
-release = '1.1.1'
-version = '1.1.1'
+release = '1.1.2'
+version = '1.1.2'
 
 
 # -- General configuration ---------------------------------------------------

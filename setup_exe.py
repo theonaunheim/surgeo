@@ -28,7 +28,7 @@ setup(
     options=OPTIONS,
     # Normal setup.py
     name='surgeo',
-    version='1.1.1',
+    version='1.1.2',
     description='Bayesian Improved Surname Geocoder model',
     long_description="""
         Surgeo is an impelmentation of the Bayesian Improved Surname

@@ -1,3 +1,7 @@
+v.1.1.2:
+========
+-Remove duplicate tract functions from base_model.py and surgeo_model.py
+
 v.1.1.1:
 ========
 -Addition of tract-level processing
@@ -8,21 +12,21 @@ v.1.1.0:
 
 v.1.0.2:
 ========
--Bugfix to address multiple rows returned for ZCTAs in multiple states.
+-Bugfix to address multiple rows returned for ZCTAs in multiple states
 
 v.1.0.1:
 ========
--Complete re-write using pandas and 2010 census data for surname/geocoding.
+-Complete re-write using pandas and 2010 census data for surname/geocoding
 
 v.0.7.0:
 ========
--Quick fix. Previous version weighted stdev was incorrect.
+-Quick fix. Previous version weighted stdev was incorrect
 
 v.0.6.9:
 ========
--Weighted mean pushed to PyPi and installer.
+-Weighted mean pushed to PyPi and installer
 
 v0.6.8:
 =======
 -Changelog started
--Experimental weighted mean added.
+-Experimental weighted mean added
