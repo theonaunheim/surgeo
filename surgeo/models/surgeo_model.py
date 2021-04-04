@@ -72,7 +72,7 @@ class SurgeoModel(BaseModel):
         super().__init__()
         self.geo_level = geo_level.upper()
         if geo_level == "TRACT":
-            self._PROB_GEO_GIVEN_RACE = self._get_prob_tract_given_race()
+            self._PROB_GEO_GIVEN_RACE = self._get_prob_race_given_tract()
         else:
             self._PROB_GEO_GIVEN_RACE = self._get_prob_zcta_given_race()
         self._PROB_RACE_GIVEN_SURNAME = self._get_prob_race_given_surname()
@@ -136,8 +136,9 @@ class SurgeoModel(BaseModel):
                       surgeo_probs: pd.DataFrame) -> pd.DataFrame:
         # Build frame from zctas, names, and probabilities
         if self.geo_level == 'TRACT':
-            surgeo_data = pd.concat([geo_probs, 
-                sur_probs['name'].to_frame()
+            surgeo_data = pd.concat([geo_probs[['state','county','tract']], 
+                sur_probs['name'].to_frame(),
+                surgeo_probs
             ], axis=1)
         else:
             surgeo_data = pd.concat([
